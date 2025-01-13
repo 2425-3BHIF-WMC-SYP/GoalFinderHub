@@ -14,7 +14,13 @@
   - [3.3 Use Case B](#33-use-case-b)
     - [3.3.1 GUI Design](#331-gui-design)
     - [3.3.2 Workflow](#332-workflow)
-  - [3.4 ...](#34)
+  - [3.4. Use Case C](#34-use-case-a)
+    - [3.4.1 GUI-Design](#341-gui-design)
+    - [3.4.2 Workflow](#342-workflow)
+  - [3.5 Use Case D](#35-use-case-b)
+    - [3.5.1 GUI Design](#351-gui-design)
+    - [3.5.2 Workflow](#352-workflow)
+  
 - [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
   - [`Usability`: Benutzbarkeitsanforderung](#usability-benutzbarkeitsanforderung)
   - [`Efficiency`: Effizienzanforderung](#efficiency-effizienzanforderung)
@@ -85,33 +91,43 @@ Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität
   - Daten der Spiele, wie Endergebnis und Teams in einer Datenbank speichern
 
 ### 3.1. Use Case Überblick
-
-- Ein oder mehrere `UML Use Case Diagramme` (=> siehe https://hoelzel.at/flip/160775/280/index.html S. 280 - 282) visualisieren das gesamte geplante Featureset im Groben
-- Basis dafür ist die Mindmap aus dem Projektantrag => Ergänzen Sie relevante Rollen (für welche User-Gruppe ist ein Feature wichtig?)
-- Mit kurzen verbalen Beschreibungen der Diagramme
-
 <img src="img/UCD.png">
+<p> Auf diesem Diagramm sieht man den groben Featureset und, was der User auf der Webapp des GoalfinderHubs bedienen oder sehen kann. </p>
 
-### 3.2. Use Case A
-
-Nun folgen Detailbeschreibungen für alle Use Cases aus dem Use Case Diagramm. Für jeden Use Case sind folgende Details notwendig:
+### 3.2. Use Case A: Übersicht der Goalfinder
 
 #### 3.2.1 GUI-Design
-
-- Zeigen Sie hier den GUI-Mockup, den Sie für diesen Use Case designed haben (mit Figma oder einem anderen GUI-Mockup-Tool Ihrer Wahl)
-- Ergänzen Sie das Bild mit verbalen Beschreibungen, wenn nötig.
+<img src="img/a.png" width="700" height="400">
 
 #### 3.2.2 Workflow
-
-- Erklären Sie hier die internen Abläufe, die für die Umsetzung des Use Cases notwendig sind
-- Verwenden Sie dazu - wenn der Ablauf komplex genug ist - ein `UML Activity Diagram`
-
-### 3.3 Use Case B
+Hierfür wird man eine Sammlung an Goalfinders brauchen. Jeder Goalfinder muss aufgelistet werden, mit dem entsprechenden Status. Dazu wird man die Sammlung durchgehen müssen und auch schauen müssen, ob der Goalfinder ein- oder ausgeschaltet ist.
+### 3.3 Use Case B: Hinzufügen eines Goalfinders
 
 #### 3.3.1 GUI Design
-#### 3.3.2 Workflow
+<img src="img/b.png" width="700" height="400">
 
-### 3.4 ...
+#### 3.3.2 Workflow
+Hier braucht man erstmal ein Eingabefeld für den Namen und den Status, mit dem der Goalfinder initialisiert werden soll. Außerdem muss man überprüfen, ob der Name nicht leer ist und beim Status nur "online" oder "offline" (Groß- oder Kleinschreibung egal) eingegeben wird. Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Danach braucht man einen Button fürs Hinzufügen oder Abbrechen. Falls der User auf Hinzufügen klickt, soll der neue Goalfinder der Sammlung hinzugefügt werden. Falls der User auf Abbrechen klickt, sollen die Daten aus den Eingabefeldern gelöscht werden.
+
+### 3.4 Use Case C: Verwalten eines Goalfinders
+
+#### 3.4.1 GUI Design
+<img src="img/c1.png" width="700" height="150">
+<img src="img/c2.png" width="600" height="150">
+
+#### 3.4.2 Workflow
+Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern, wo der User selbst etwas eintippt, überprüft werden, ob die Werte zur jeweiligen Einstellung passen und nicht leer sind. Bei den Feldern, wo der User die Einstellung auswählen kann, muss überprüft werden, ob er eh etwas ausgewählt hat.Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Falls der User auf die Option "Software-Update durchführen" klickt, könnte man das mit einem SUOTA-Dienst lösen, der die Änderungen in den jeweiligen Dateien, die durch das Software-Update entstanden sind, in einem bin-Ordner sammelt und sie dann auf den ESP flasht. Um dann die Einstellungen zu übernehmen, braucht man einen Web-Server, um mit dem ESP zu kommunizieren.
+
+### 3.5 Use Case D: Match verwalten
+
+#### 3.5.1 GUI Design
+<img src="img/d1.png" width="700" height="400">
+<img src="img/d2.png" width="700" height="300">
+<img src="img/d3.png" width="700" height="400">
+
+#### 3.5.2 Workflow
+
+Erstmal wählt der User den Spielmodus aus. Kann dann 1-beliebig viele Teams erstellen und in diese Teams 1-beliebig viele Spieler hinzufügen. Dabei muss überprüft werden,ob der User einen Modus ausgewählt hat, mindestens ein Team erstellt hat und jedem Team mindestens einen Sieler hinzugefügt hat. Außerdem muss man darauf achten, dass der User die Team- und Spielernamen nicht leer ausfüllt. Falls ein Fehler auftritt, soll der User darüber informiert werden, diesen zu korriegieren. Wenn dann alles passt und der User bereit ist, kann er das Match starten, mithilfe des "Match starten" Buttons. Nachdem soll sich eine Seite öffnen, wo alle laufenden Matches angezeigt werden. Dies könnte man mithilfe von Klassen abbilden. Falls der User dann das jeweilige Match beenden will, kann er auf den "Match beenden" Button klicken. Danach soll sich wieder eine neue Seite öffnen, wo dann die Rangliste des jeweiligen Spiels angezeigt wird. Die Rangliste bildet sich im Körbezähler-Modus aus der Differenz der Treffer und Fehltreffer, im Team vs Team Modus aus Treffern. Falls der User möchte, kann er die Rangliste speichern.
 
 ## 4. Nicht-funktionale Anforderungen
 
