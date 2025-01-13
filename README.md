@@ -30,19 +30,59 @@
 
 ### 1.1. Ist-Situation
 
-- Siehe Projektantrag
+Ballsportarten wie Fußball und Basketball haben sich in den letzten Jahrzehnten zu den beliebtesten Sportarten der Welt entwickelt.
+Jedoch können Personen mit Beeinträchtigungen nur schwer und nur mit vielen Einschränkungen an diesen Ballsportarten teilnehmen.
+
+Da eine Basketballpartie mit zwei gegnerischen Teams mit sehbehinderten Personen derzeit nur schwer realisierbar ist, 
+spielen betroffene Personen eine Vereinfachung von Basketball - ein Wurfspiel, 
+wo die SpielerInnen nacheinander den Ball werfen und versuchen einen Korb zu erzielen. Bei einem erfolgreichen Treffer erhalten sie Punkte.
+
+Dabei benötigen die sehbehinderten SpielerInnen eine akustische Unterstützung zur Ortung des Korbes und eine Rückmeldung, wenn der Korb getroffen wird. Diese Aufgaben erfüllt meistens eine Person.
+
+![Aktuelle Situation](img/current_situation.png)
+
+Um den sehbehinderten Spielern mehr Freiheit z.B. neue Spielmodi zusätzlich zum Wurfspiel, eine verbesserte Ortung (akustisch und visuell) und bessere Rückmeldung zu ermöglichen, wurde ein Gerät entwickelt, das alle zuvor genannten Funktionen erfüllen soll - der **GoalFinder**.
+
+<img src="img/goalfinder_live.jpg" alt="GoalFinder" width="400">
+
+GoalFinder umfasst derzeit folgendes Feature-Set:
+- Ein LED-Streifen zur visuellen Ortung & ständige akustische Hinweise (Metronomsound) zur akustischen Ortung des Korbs 
+- Erkennung eines Treffers bzw. Fehlschusses mithilfe von ToF- und Vibrationssensor
+- Ausgabe eines "Win" bzw. "Lose" Sounds bei Treffer bzw. Fehlschuss
+- Konfiguration des GoalFinders, wie Lautstärke, Empfindlichkeit der Sensoren, allgemeine Systemeinstellungen, usw. durch Webapp
+- Erstellen und Spielen von Spielmodi (derzeit nur Wurfspiel (Trefferzähler)) mit Webapp
+- Rangliste bei abgeschlossenem Spiel.
+- Aktualisierung der Gerätesoftware „Over-the-Air“ (drahtlos)
 
 ### 1.2. Verbesserungspotenziale
 
-- Siehe Projektantrag
+Derzeit sind die GoalFinder nur einzeln konfigurierbar, was in einer Sporthalle, mit mehreren Körben, an denen ein GoalFinder montiert ist, ziemlich unübersichtlich werden kann. Wenn man z.B. die Lautstärke auf jedem GoalFinder ändern will, müsste man sich mit jedem einzeln verbinden, um dies zu tun. 
+
+Zusätzlich werden keine Spieldaten gespeichert und man muss somit die Spieldaten händisch notieren.
+
+Deswegen soll eine Zentrale geschaffen werden, die die Verwaltung aller GoalFinder ermöglicht und die einzelnen Spieldaten der GoalFinder speichern und weiterverarbeiten kann.
 
 ## 2. Zielsetzung
 
-- Siehe Projektantrag
+Der GoalFinder Hub soll es ermöglichen, mehrere GoalFinder zu verwalten und die Spieldaten an einem zentralen Ort zu speichern und diese weiter in Statistiken und Ranglisten zu verarbeiten. Zudem sollen die aktuell laufenden Spiele alle an einem zentralen Ort überwacht werden können (z.B. für Wettbewerbe).
 
 ## 3. Funktionale Anforderungen
 
-Dieser Abschnitt hat die Aufgabe, die Funktionalität des zu entwickelnden Systems aus End-User-Sicht sowohl überblicksartig als auch detaillierter zu beschreiben.
+Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität auf einer Webapp an.
+
+- Konfiguration und Fernwartung von mehreren GoalFindern mit Persistenz in einer Datenbank
+- Kommunikation mit GoalFinders
+  - damit deren Korbtreffer und Korbrahmentreffer-Meldungen empfangen und ausgewertet werden
+  - Ansteuern von GoalFindern (z.B. Lautstärke, Empfindlichkeit des Vibrationssensors, usw.)
+  - Kommunikation der einzelnen GoalFinder über REST API
+- Spiele-Verwaltung
+  - Dashboard über Spiele
+  - Spieler und Spieler-Teams hinzufügen/bearbeiten/löschen
+  - Spiele anlegen/bearbeiten/löschen und Spieler dafür managen
+  - Spiel starten und durchführen: Hub legt fest, welcher Spieler an der Reihe ist. Erkennung Treffer oder Fehlschuss etc.
+  - Spiele Statistik, Ranglisten, Bonussystem
+  - Regeln für Spiele konfigurieren
+  - Daten der Spiele, wie Endergebnis und Teams in einer Datenbank speichern
 
 ### 3.1. Use Case Überblick
 
@@ -50,8 +90,7 @@ Dieser Abschnitt hat die Aufgabe, die Funktionalität des zu entwickelnden Syste
 - Basis dafür ist die Mindmap aus dem Projektantrag => Ergänzen Sie relevante Rollen (für welche User-Gruppe ist ein Feature wichtig?)
 - Mit kurzen verbalen Beschreibungen der Diagramme
 
-<img src="./UCD.png">
-
+<img src="img/UCD.png">
 
 ### 3.2. Use Case A
 

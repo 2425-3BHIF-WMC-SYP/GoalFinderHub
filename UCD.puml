@@ -1,0 +1,31 @@
+@startuml UCD
+rectangle GoalFinderHub_Webapp {
+    (Übersicht der GoalFinder)
+    (Hinzufügen eines GoalFinders)
+    (Verwalten eines GoalFinders)
+    (Einstellungen des GoalFinders ändern)
+    (Software Update durchführen)
+    (Match verwalten)
+    (Spielmodus einstellen)
+    (Teams erstellen)
+    (Spieler zuweisen)    
+    (Match starten)
+    (Rangliste einsehen)
+    (Rangliste speichern)
+}
+
+:User: --> (Übersicht der GoalFinder)
+:User: --> (Hinzufügen eines GoalFinders)
+:User: --> (Verwalten eines GoalFinders)
+:User: --> (Match verwalten)
+
+(Verwalten eines GoalFinders) --> (Einstellungen des GoalFinders ändern)
+(Verwalten eines GoalFinders) --> (Software Update durchführen)
+
+(Match verwalten) --> (Spielmodus einstellen)
+(Match verwalten) --> (Teams erstellen)
+(Teams erstellen) --> (Spieler zuweisen)
+(Match verwalten) --> (Match starten)
+(Match starten) --> (Rangliste einsehen)
+(Rangliste einsehen) --> (Rangliste speichern)
+@enduml
