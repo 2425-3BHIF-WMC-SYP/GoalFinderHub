@@ -1,31 +1,42 @@
 @startuml UCD
+left to right direction
+
 rectangle GoalFinderHub_Webapp {
-    (Übersicht der GoalFinder)
-    (Hinzufügen eines GoalFinders)
-    (Verwalten eines GoalFinders)
-    (Einstellungen des GoalFinders ändern)
-    (Software Update durchführen)
-    (Match verwalten)
-    (Spielmodus einstellen)
-    (Teams erstellen)
-    (Spieler zuweisen)    
-    (Match starten)
-    (Rangliste einsehen)
-    (Rangliste speichern)
+    package "Geräteverwaltung" {
+        (Übersicht der GoalFinder)
+        (Hinzufügen eines GoalFinders)
+        (Einstellungen ändern)
+        (Software Update)
+    }
+    package "Spieleinstellungen" {
+        (Spielmodus einstellen)
+        (Teams erstellen)
+        (Spieler zuweisen)
+    }
+    package "Spielverwaltung" {
+        (Match starten)
+        (Rangliste einsehen)
+    }
+    package "Historie" {
+        (Historie aufrufen)
+        (Match löschen)
+        (Rangliste löschen)
+    }
 }
 
-:User: --> (Übersicht der GoalFinder)
-:User: --> (Hinzufügen eines GoalFinders)
-:User: --> (Verwalten eines GoalFinders)
-:User: --> (Match verwalten)
+:Admin: --> (Übersicht der GoalFinder)
+:Admin: --> (Hinzufügen eines GoalFinders)
+:Admin: --> (Einstellungen ändern)
+:Admin: --> (Software Update)
 
-(Verwalten eines GoalFinders) --> (Einstellungen des GoalFinders ändern)
-(Verwalten eines GoalFinders) --> (Software Update durchführen)
+:User: --> (Spielmodus einstellen)
+:User: --> (Teams erstellen)
+:User: --> (Match starten)
+:User: --> (Rangliste einsehen)
+:User: --> (Historie aufrufen)
 
-(Match verwalten) --> (Spielmodus einstellen)
-(Match verwalten) --> (Teams erstellen)
-(Teams erstellen) --> (Spieler zuweisen)
-(Match verwalten) --> (Match starten)
-(Match starten) --> (Rangliste einsehen)
-(Rangliste einsehen) --> (Rangliste speichern)
+
+(Teams erstellen) .> (Spieler zuweisen) : <<include>>
+(Historie aufrufen) .> (Match löschen) : <<extend>>
+(Historie aufrufen) .> (Rangliste löschen) : <<extend>>
 @enduml

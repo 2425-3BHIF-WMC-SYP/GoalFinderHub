@@ -2,35 +2,36 @@
 
 ## Inhaltsverzeichnis
 
-- [1. Ausgangslage](#1-ausgangslage)
-  - [1.1. Ist-Situation](#11-ist-situation)
-  - [1.2. Verbesserungspotenziale](#12-verbesserungspotenziale)
-- [2. Zielsetzung](#2-zielsetzung)
-- [3. Funktionale Anforderungen](#3-funktionale-anforderungen)
-  - [3.1. Use Case Überblick](#31-use-case-%C3%BCberblick)
-  - [3.2. Use Case A](#32-use-case-a)
-    - [3.2.1 GUI-Design](#321-gui-design)
-    - [3.2.2 Workflow](#322-workflow)
-  - [3.3 Use Case B](#33-use-case-b)
-    - [3.3.1 GUI Design](#331-gui-design)
-    - [3.3.2 Workflow](#332-workflow)
-  - [3.4. Use Case C](#34-use-case-a)
-    - [3.4.1 GUI-Design](#341-gui-design)
-    - [3.4.2 Workflow](#342-workflow)
-  - [3.5 Use Case D](#35-use-case-b)
-    - [3.5.1 GUI Design](#351-gui-design)
-    - [3.5.2 Workflow](#352-workflow)
-  
-- [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
-  - [`Usability`: Benutzbarkeitsanforderung](#usability-benutzbarkeitsanforderung)
-  - [`Efficiency`: Effizienzanforderung](#efficiency-effizienzanforderung)
-  - [`Maintenance`: Wartbarkeits- und Portierbarkeitsanforderung](#maintenance-wartbarkeits--und-portierbarkeitsanforderung)
-  - [`Security`: Sicherheitsanforderung](#security-sicherheitsanforderung)
-  - [`Legal`: Gesetzliche Anforderung](#legal-gesetzliche-anforderung)
-- [5. Mengengerüst](#5-mengenger%C3%BCst)
-- [6. Systemarchitektur](#6-systemarchitektur)
-  - [6.1 Deployment-Diagramm](#61-deployment-diagramm)
-  - [6.2 Datenmodell](#62-datenmodell)
+- [Pflichtenheft `GoalFinder Hub`](#pflichtenheft-goalfinder-hub)
+  - [Inhaltsverzeichnis](#inhaltsverzeichnis)
+  - [1. Ausgangslage](#1-ausgangslage)
+    - [1.1. Ist-Situation](#11-ist-situation)
+    - [1.2. Verbesserungspotenziale](#12-verbesserungspotenziale)
+  - [2. Zielsetzung](#2-zielsetzung)
+  - [3. Funktionale Anforderungen](#3-funktionale-anforderungen)
+    - [3.1. Use Case Überblick](#31-use-case-überblick)
+    - [3.2. Use Case A: Übersicht der Goalfinder](#32-use-case-a-übersicht-der-goalfinder)
+      - [3.2.1 GUI-Design](#321-gui-design)
+      - [3.2.2 Workflow](#322-workflow)
+    - [3.3 Use Case B: Hinzufügen eines Goalfinders](#33-use-case-b-hinzufügen-eines-goalfinders)
+      - [3.3.1 GUI Design](#331-gui-design)
+      - [3.3.2 Workflow](#332-workflow)
+    - [3.4 Use Case C: Verwalten eines Goalfinders](#34-use-case-c-verwalten-eines-goalfinders)
+      - [3.4.1 GUI Design](#341-gui-design)
+      - [3.4.2 Workflow](#342-workflow)
+    - [3.5 Use Case D: Match verwalten](#35-use-case-d-match-verwalten)
+      - [3.5.1 GUI Design](#351-gui-design)
+      - [3.5.2 Workflow](#352-workflow)
+  - [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
+    - [`Usability`: Benutzbarkeitsanforderung](#usability-benutzbarkeitsanforderung)
+    - [`Efficiency`: Effizienzanforderung](#efficiency-effizienzanforderung)
+    - [`Maintenance`: Wartbarkeits- und Portierbarkeitsanforderung](#maintenance-wartbarkeits--und-portierbarkeitsanforderung)
+    - [`Security`: Sicherheitsanforderung](#security-sicherheitsanforderung)
+    - [`Legal`: Gesetzliche Anforderung](#legal-gesetzliche-anforderung)
+  - [5. Mengengerüst](#5-mengengerüst)
+  - [6. Systemarchitektur](#6-systemarchitektur)
+    - [6.1 Deployment-Diagramm](#61-deployment-diagramm)
+    - [6.2 Datenmodell](#62-datenmodell)
 
 ## 1. Ausgangslage
 
@@ -92,6 +93,7 @@ Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität
 
 ### 3.1. Use Case Überblick
 <img src="img/UCD.png">
+
 <p> Auf diesem Diagramm sieht man den groben Featureset und, was der User auf der Webapp des GoalfinderHubs bedienen oder sehen kann. </p>
 
 ### 3.2. Use Case A: Übersicht der Goalfinder
