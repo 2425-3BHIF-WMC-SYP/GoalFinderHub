@@ -1,0 +1,28 @@
+@startuml
+
+node "Web-Client" as WebClient {
+    [Browser (Nutzer)]
+}
+
+node "GoalFinder Hub (Raspberry Pi)" as GoalfinderHub {
+    [Webanwendung]
+    [Express.js]
+    [WebSockets]
+}
+
+node "GoalFinder Gerät" as GoalfinderDevice {
+    [Sensoren]
+}
+
+node "Datenbank (SQL)" as Database {
+    [Konfigurationsdaten]
+    [Spielstände]
+    [Nutzerinformationen]
+}
+
+WebClient --> GoalfinderHub : HTTP (REST API)
+GoalfinderDevice --> GoalfinderHub : WebSockets / REST API
+GoalfinderHub --> Database : TCP/IP
+
+@enduml
+

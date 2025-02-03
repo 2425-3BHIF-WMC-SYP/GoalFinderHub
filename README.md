@@ -133,65 +133,85 @@ Erstmal wählt der User den Spielmodus aus. Kann dann 1-beliebig viele Teams ers
 
 ## 4. Nicht-funktionale Anforderungen
 
-Nicht-funktionale Anforderungen beschreiben Anforderungen an das System, die nicht-fachlicher Natur sind, jedoch entscheidend zur Anwendbarkeit des Systems beitragen. Sie definieren beispielsweise Qualitätsanforderungen, Sicherheitsanforderungen oder Performanceanforderungen.
-
-Nicht-funktionale Anforderungen definieren grundlegende Eigenschaften eines Systems, die im Architekturentwurf berücksichtigt werden müssen. Da diese Anforderungen auch die Entwicklungskosten beeinflussen (können), müssen sie messbar beschrieben werden.
-
-- FALSCH: Das System muss schnell sein.
-- RICHTIG: Daten müssen spätestens innerhalb von 500 ms zurückgegeben werden.
-
-Zur einfachen Strukturierung der Anforderungen werden diejenigen Anforderungen, die nicht eindeutig zu den funktionalen Anforderungen gehören, den nicht-funktionalen Anforderungen zugeordnet.
-
-Hier ein Überblick über mögliche nicht-funktionale Anforderungen:
-
 ### `Usability`: Benutzbarkeitsanforderung
+Die Website sollte mit einem Screenreader nutzbar sein.
 
-- Wie muss die Software beschaffen sein, damit die Zielgruppe gerne damit arbeitet?
-- Beispiel:
-  - Die Software soll dem Erscheinungsbild anderer Produkte des Herstellers entsprechen.
+Die Website sollte eine gute Struktur und Semantik aufweisen.
+
+Die Website sollte einen hohen Farbkontrast haben.
 
 ### `Efficiency`: Effizienzanforderung
+Der Server sollte auf Anfragen innerhalb von 500 ms antworten.
 
-- Hier geht es sowohl um Laufzeit- als auch um Speichereffizienz. Was wird unter dem sparsamen Einsatz dieser Ressourcen verstanden?
-- Beispiel:
-  - Die Berechnung darf nicht länger als 0,25 Sekunden dauern.
+Datenbankabfragen sollten nicht länger als 200 ms dauern.
+
+Das System sollte in der Lage sein, mehrere Goalfinder parallel zu verwalten.
 
 ### `Maintenance`: Wartbarkeits- und Portierbarkeitsanforderung
+Das System soll auf dem Raspberry Pi lauffähig sein.
 
-- Welcher Grad an Änderbarkeit wird gefordert? Hier werden, soweit wie möglich, kommende Anpassungen und Erweiterungen vorhergesehen.
-- Beispiel:
-  - Das Produkt soll später auch in englischer Sprache verfügbar sein.
+Die Anwendung soll über regelmäßige Software-Updates erweiterbar sein.
+
+Der Code soll so strukturiert sein, dass man ihn problemlos erweitern kann, also zB. dass man eine Datei hinzufügen kann
+und die Anwendung trotzdem normal läuft, ohne das man in den bestehenden Dateien etwas am Code ändern muss.
 
 ### `Security`: Sicherheitsanforderung
+Die Kommunikation zwischen Client und Server muss durch TLS verschlüsselt sein.
 
-- Zu den Sicherheitsanforderungen gehören die Aspekte Vertraulichkeit, Datenintegrität und Verfügbarkeit.
-  - Wie sehr müssen die Daten vor dem Zugriff durch Dritte geschützt werden?
-  - Ist es entscheidend, die Korrektheit der erfassten Daten und ihre Konsistenz zu gewährleisten?
-  - Dürfen Systemausfälle vorkommen?
-- Beispiel:
-  - Das System muss gewährleisten, dass Daten nie verändert werden können.
+Die gespeicherten Spieldaten müssen durch rollenbasierte Zugriffskontrollen geschützt sein.
+
+Das System muss Schutzmechanismen gegen Brute-Force- und SQL-Injection-Angriffe implementieren.
 
 ### `Legal`: Gesetzliche Anforderung
+Die Anwendung muss die Datenschutz-Grundverordnung (DSGVO) einhalten.
 
-- Welche Standards und Gesetze müssen beachtet werden?
-- Beispiel:
-  - Das Produkt muss die ISO 9000 Norm erfüllen.
+Alle gespeicherten personenbezogenen Daten müssen verschlüsselt gespeichert werden.
 
 ## 5. Mengengerüst
+Erwartete gleichzeitige Nutzer: 2–10
 
-Zur Abschätzung der aufkommenden Datenmengen und damit verbunden der notwendigen Infrastruktur, um die nötige Performance zu erzielen, ist ein Mengengerüst zu erstellen. Mögliche Fragestellungen:
+Durchschnittliche Anzahl der GoalFinder-Geräte pro Nutzer: 1–3
 
-- Wieviele User werden erwartet?
-- Wieviele Daten pro User werden erwartet?
-- Mit welcher Anfrage-Frequenz wird gerechnet?
+Durchschnittliche gespeicherte Spieldaten pro Match: 1–5 KB
+
+API-Aufrufe pro Minute: ca. 0–20
+
+Datenbankanfragen pro Sekunde: ca. 0–30
 
 ## 6. Systemarchitektur
 
 ### 6.1 Deployment-Diagramm
-- Auflistung der Softwarekomponenten in einem Verteilungsdiagramm (typisch: Client - Server - Datenbank).
-- Beispiel:
+Die Systemarchitektur basiert auf einem Client-Server-Modell mit einer zentralen Datenbank. Die Hauptkomponenten sind:
 
-<img src="./Architektur.jpg">
+## GoalFinder Hub (Raspberry Pi):
+
+Hostet die Webanwendung
+
+Kommuniziert mit den GoalFinder-Geräten
+
+Verwaltet Spieldaten
+
+## GoalFinder Geräte:
+
+Senden Echtzeitdaten an den Hub
+
+Empfangen Konfigurationsanweisungen
+
+## Datenbank:
+
+Speichert Konfigurationsdaten, Spielstände, Nutzerinformationen
+
+## Web-Client:
+
+Ermöglicht Nutzern die Verwaltung über eine Web-Oberfläche
+
+Kommunikationsschnittstellen:
+
+REST API für externe Anwendungen
+
+WebSockets für Echtzeitkommunikation
+
+<img src="./Architektur.png">
 
 ### 6.2 Datenmodell
 
