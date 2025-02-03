@@ -99,14 +99,11 @@ Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität
 ### 3.2. Use Case A: Übersicht der Goalfinder
 
 #### 3.2.1 GUI-Design
-<img src="img/a.png" width="700" height="400">
+<img src="img/Frame 2.png" width="700" height="400">
 
 #### 3.2.2 Workflow
 Hierfür wird man eine Sammlung an Goalfinders brauchen. Jeder Goalfinder muss aufgelistet werden, mit dem entsprechenden Status. Dazu wird man die Sammlung durchgehen müssen und auch schauen müssen, ob der Goalfinder ein- oder ausgeschaltet ist.
 ### 3.3 Use Case B: Hinzufügen eines Goalfinders
-
-#### 3.3.1 GUI Design
-<img src="img/b.png" width="700" height="400">
 
 #### 3.3.2 Workflow
 Hier braucht man erstmal ein Eingabefeld für den Namen und den Status, mit dem der Goalfinder initialisiert werden soll. Außerdem muss man überprüfen, ob der Name nicht leer ist und beim Status nur "online" oder "offline" (Groß- oder Kleinschreibung egal) eingegeben wird. Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Danach braucht man einen Button fürs Hinzufügen oder Abbrechen. Falls der User auf Hinzufügen klickt, soll der neue Goalfinder der Sammlung hinzugefügt werden. Falls der User auf Abbrechen klickt, sollen die Daten aus den Eingabefeldern gelöscht werden.
@@ -123,9 +120,7 @@ Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern,
 ### 3.5 Use Case D: Match verwalten
 
 #### 3.5.1 GUI Design
-<img src="img/d1.png" width="700" height="400">
-<img src="img/d2.png" width="700" height="300">
-<img src="img/d3.png" width="700" height="400">
+<img src="img/Games.png" width="700" height="400">
 
 #### 3.5.2 Workflow
 
