@@ -14,7 +14,6 @@
       - [3.2.1 GUI-Design](#321-gui-design)
       - [3.2.2 Workflow](#322-workflow)
     - [3.3 Use Case B: Hinzufügen eines Goalfinders](#33-use-case-b-hinzufügen-eines-goalfinders)
-      - [3.3.1 GUI Design](#331-gui-design)
       - [3.3.2 Workflow](#332-workflow)
     - [3.4 Use Case C: Verwalten eines Goalfinders](#34-use-case-c-verwalten-eines-goalfinders)
       - [3.4.1 GUI Design](#341-gui-design)
@@ -31,6 +30,10 @@
   - [5. Mengengerüst](#5-mengengerüst)
   - [6. Systemarchitektur](#6-systemarchitektur)
     - [6.1 Deployment-Diagramm](#61-deployment-diagramm)
+  - [GoalFinder Hub (Raspberry Pi):](#goalfinder-hub-raspberry-pi)
+  - [GoalFinder Geräte:](#goalfinder-geräte)
+  - [Datenbank:](#datenbank)
+  - [Web-Client:](#web-client)
     - [6.2 Datenmodell](#62-datenmodell)
 
 ## 1. Ausgangslage
@@ -210,4 +213,4 @@ WebSockets für Echtzeitkommunikation
 
 ### 6.2 Datenmodell
 
-- Wahlweise ER-Diagramm oder objekt-orientiertes Klassendiagramm
+![Goalfinder-Klassendiagramm](img/GoalFinder.png)

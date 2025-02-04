@@ -1,0 +1,57 @@
+@startuml GoalFinder
+
+class GoalFinder {
+    - id: int
+    - name: string
+    - status: string
+    - lautstaerke: int
+    - empfindlichkeit: int
+    + updateSettings(): void
+    + sendData(): void
+}
+
+class Spiel {
+    - id: int
+    - modus: string
+    - status: string
+    - teams: List<Team>
+    + start(): void
+    + beenden(): void
+    + speichereErgebnis(): void
+}
+
+class Team {
+    - id: int
+    - name: string
+    - spieler: List<Spieler>
+}
+
+class Spieler {
+    - id: int
+    - name: string
+    - treffer: int
+    - fehlversuche: int
+}
+
+class GoalFinderHub {
+    - goalfinders: List<GoalFinder>
+    - spiele: List<Spiel>
+    + addGoalFinder(): void
+    + configureGoalFinder(): void
+    + verwalteSpiel(): void
+    + erstelleRangliste(): void
+}
+
+class Datenbank {
+    + speichereGoalFinder(): void
+    + speichereSpiel(): void
+    + ladeDaten(): void
+}
+
+GoalFinderHub "1" -- "*" GoalFinder
+GoalFinderHub "1" -- "*" Spiel
+Spiel "*" -- "2..*" Team
+Team "1" -- "1..*" Spieler
+GoalFinderHub "1" -- "1" Datenbank
+
+@enduml
