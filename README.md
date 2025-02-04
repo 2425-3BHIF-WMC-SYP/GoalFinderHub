@@ -170,8 +170,6 @@ Erwartete gleichzeitige Nutzer: 2–10
 
 Durchschnittliche Anzahl der GoalFinder-Geräte pro Nutzer: 1–3
 
-Durchschnittliche gespeicherte Spieldaten pro Match: 1–5 KB
-
 API-Aufrufe pro Minute: ca. 0–20
 
 Datenbankanfragen pro Sekunde: ca. 0–30
