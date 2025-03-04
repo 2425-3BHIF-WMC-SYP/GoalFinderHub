@@ -10,15 +10,15 @@
   - [2. Zielsetzung](#2-zielsetzung)
   - [3. Funktionale Anforderungen](#3-funktionale-anforderungen)
     - [3.1. Use Case Überblick](#31-use-case-überblick)
-    - [3.2. Use Case A: Übersicht der Goalfinder](#32-use-case-a-übersicht-der-goalfinder)
+    - [3.2. Übersicht der Goalfinder](#32-übersicht-der-goalfinder)
       - [3.2.1 GUI-Design](#321-gui-design)
       - [3.2.2 Workflow](#322-workflow)
-    - [3.3 Use Case B: Hinzufügen eines Goalfinders](#33-use-case-b-hinzufügen-eines-goalfinders)
+    - [3.3 Hinzufügen eines Goalfinders](#33-hinzufügen-eines-goalfinders)
       - [3.3.2 Workflow](#332-workflow)
-    - [3.4 Use Case C: Verwalten eines Goalfinders](#34-use-case-c-verwalten-eines-goalfinders)
+    - [3.4 Verwalten eines Goalfinders](#34-verwalten-eines-goalfinders)
       - [3.4.1 GUI Design](#341-gui-design)
       - [3.4.2 Workflow](#342-workflow)
-    - [3.5 Use Case D: Match verwalten](#35-use-case-d-match-verwalten)
+    - [3.5 Match verwalten](#35-match-verwalten)
       - [3.5.1 GUI Design](#351-gui-design)
       - [3.5.2 Workflow](#352-workflow)
   - [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
@@ -99,19 +99,19 @@ Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität
 
 <p> Auf diesem Diagramm sieht man den groben Featureset und, was der User auf der Webapp des GoalfinderHubs bedienen oder sehen kann. </p>
 
-### 3.2. Use Case A: Übersicht der Goalfinder
+### 3.2. Übersicht der Goalfinder
 
 #### 3.2.1 GUI-Design
 <img src="img/Frame 2.png" width="700" height="400">
 
 #### 3.2.2 Workflow
 Hierfür wird man eine Sammlung an Goalfinders brauchen. Jeder Goalfinder muss aufgelistet werden, mit dem entsprechenden Status. Dazu wird man die Sammlung durchgehen müssen und auch schauen müssen, ob der Goalfinder ein- oder ausgeschaltet ist.
-### 3.3 Use Case B: Hinzufügen eines Goalfinders
+### 3.3 Hinzufügen eines Goalfinders
 
 #### 3.3.2 Workflow
 Hier braucht man erstmal ein Eingabefeld für den Namen und den Status, mit dem der Goalfinder initialisiert werden soll. Außerdem muss man überprüfen, ob der Name nicht leer ist und beim Status nur "online" oder "offline" (Groß- oder Kleinschreibung egal) eingegeben wird. Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Danach braucht man einen Button fürs Hinzufügen oder Abbrechen. Falls der User auf Hinzufügen klickt, soll der neue Goalfinder der Sammlung hinzugefügt werden. Falls der User auf Abbrechen klickt, sollen die Daten aus den Eingabefeldern gelöscht werden.
 
-### 3.4 Use Case C: Verwalten eines Goalfinders
+### 3.4 Verwalten eines Goalfinders
 
 #### 3.4.1 GUI Design
 <img src="img/c1.png" width="700" height="150">
@@ -120,7 +120,7 @@ Hier braucht man erstmal ein Eingabefeld für den Namen und den Status, mit dem 
 #### 3.4.2 Workflow
 Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern, wo der User selbst etwas eintippt, überprüft werden, ob die Werte zur jeweiligen Einstellung passen und nicht leer sind. Bei den Feldern, wo der User die Einstellung auswählen kann, muss überprüft werden, ob er eh etwas ausgewählt hat.Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Falls der User auf die Option "Software-Update durchführen" klickt, könnte man das mit einem SUOTA-Dienst lösen, der die Änderungen in den jeweiligen Dateien, die durch das Software-Update entstanden sind, in einem bin-Ordner sammelt und sie dann auf den ESP flasht. Um dann die Einstellungen zu übernehmen, braucht man einen Web-Server, um mit dem ESP zu kommunizieren.
 
-### 3.5 Use Case D: Match verwalten
+### 3.5 Match verwalten
 
 #### 3.5.1 GUI Design
 <img src="img/Games.png" width="700" height="400">
@@ -132,31 +132,21 @@ Erstmal wählt der User den Spielmodus aus. Kann dann 1-beliebig viele Teams ers
 ## 4. Nicht-funktionale Anforderungen
 
 ### `Usability`: Benutzbarkeitsanforderung
-Die Website sollte mit einem Screenreader nutzbar sein.
+Die Website sollte mit einem Screenreader nutzbar sein, dafür benötigt man eine gute Struktur und Semantik also z.B nicht für 
+alles einen ``<div>`` Tag verwenden. 
 
-Die Website sollte eine gute Struktur und Semantik aufweisen.
-
-Die Website sollte einen hohen Farbkontrast haben.
-
-### `Efficiency`: Effizienzanforderung
-Der Server sollte auf Anfragen innerhalb von 500 ms antworten.
-
-Datenbankabfragen sollten nicht länger als 200 ms dauern.
-
-Das System sollte in der Lage sein, mehrere Goalfinder parallel zu verwalten.
+Die Website sollte einen hohen Farbkontrast haben und eher nicht dunkle Farben enthalten, sondern eher hellere Farben,
+die herausstechen.
 
 ### `Maintenance`: Wartbarkeits- und Portierbarkeitsanforderung
 Das System soll auf dem Raspberry Pi lauffähig sein.
-
-Die Anwendung soll über regelmäßige Software-Updates erweiterbar sein.
-
 Der Code soll so strukturiert sein, dass man ihn problemlos erweitern kann, also zB. dass man eine Datei hinzufügen kann
 und die Anwendung trotzdem normal läuft, ohne das man in den bestehenden Dateien etwas am Code ändern muss.
 
 ### `Security`: Sicherheitsanforderung
 Die Kommunikation zwischen Client und Server muss durch TLS verschlüsselt sein.
 
-Die gespeicherten Spieldaten müssen durch rollenbasierte Zugriffskontrollen geschützt sein.
+Die gespeicherten Spieldaten sollten durch rollenbasierte Zugriffskontrollen geschützt sein.
 
 Das System muss Schutzmechanismen gegen Brute-Force- und SQL-Injection-Angriffe implementieren.
 
@@ -166,11 +156,7 @@ Die Anwendung muss die Datenschutz-Grundverordnung (DSGVO) einhalten.
 Alle gespeicherten personenbezogenen Daten müssen verschlüsselt gespeichert werden.
 
 ## 5. Mengengerüst
-Erwartete gleichzeitige Nutzer: 2–10
-
 Durchschnittliche Anzahl der GoalFinder-Geräte pro Nutzer: 1–3
-
-Durchschnittliche gespeicherte Spieldaten pro Match: 1–5 KB
 
 API-Aufrufe pro Minute: ca. 0–20
 
