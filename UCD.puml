@@ -7,35 +7,35 @@ rectangle GoalFinderHub_Webapp {
         (Hinzufügen eines GoalFinders)
         (Löschen eines GoalFinders)
         (Einstellungen eines Goalfinders ändern)
-        (Software Update)
+        (Goalfinder Software updaten SWUOTA)
     }
     package "Spielverwaltung" {
         (Spielmodus einstellen)
         (Teams zuweisen)
         (Match starten)
     }
-    package "Teamsverwaltung" {
-        (Teams erstellen)
-        (Spieler zuweisen)
-    }
     package "Historie" {
         (Rangliste einsehen)
         (Rangliste bearbeiten)
     }
+    package "Teamsverwaltung" {
+        (Teams erstellen)
+        (Spieler zuweisen)
+    }
 }
 
-:Admin: --> (Übersicht der GoalFinder)
-:Admin: --> (Hinzufügen eines GoalFinders)
-:Admin: --> (Löschen eines GoalFinders)
-:Admin: --> (Einstellungen eines Goalfinders ändern)
-:Admin: --> (Software Update)
+:GoalFinder Verwalter: --> (Übersicht der GoalFinder)
+:GoalFinder Verwalter: --> (Hinzufügen eines GoalFinders)
+:GoalFinder Verwalter: --> (Löschen eines GoalFinders)
+:GoalFinder Verwalter: --> (Einstellungen eines Goalfinders ändern)
+:GoalFinder Verwalter: --> (Goalfinder Software updaten SWUOTA)
 
-:User: --> (Spielmodus einstellen)
-:User: --> (Teams erstellen)
-:User: --> (Teams zuweisen)
-:User: --> (Match starten)
-:User: --> (Rangliste einsehen)
-:User: --> (Rangliste bearbeiten)
+:GoalFinder Benutzer: --> (Spielmodus einstellen)
+:GoalFinder Benutzer: --> (Teams erstellen)
+:GoalFinder Benutzer: --> (Teams zuweisen)
+:GoalFinder Benutzer: --> (Match starten)
+:GoalFinder Benutzer: --> (Rangliste einsehen)
+:GoalFinder Verwalter: --> (Rangliste bearbeiten)
 
 
 (Teams erstellen) .> (Spieler zuweisen) : <<include>>
