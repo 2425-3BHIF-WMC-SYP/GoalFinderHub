@@ -5,38 +5,38 @@ rectangle GoalFinderHub_Webapp {
     package "Geräteverwaltung" {
         (Übersicht der GoalFinder)
         (Hinzufügen eines GoalFinders)
-        (Einstellungen ändern)
+        (Löschen eines GoalFinders)
+        (Einstellungen eines Goalfinders ändern)
         (Software Update)
     }
-    package "Spieleinstellungen" {
+    package "Spielverwaltung" {
         (Spielmodus einstellen)
+        (Teams zuweisen)
+        (Match starten)
+    }
+    package "Teamsverwaltung" {
         (Teams erstellen)
         (Spieler zuweisen)
     }
-    package "Spielverwaltung" {
-        (Match starten)
-        (Rangliste einsehen)
-    }
     package "Historie" {
-        (Historie aufrufen)
-        (Match löschen)
-        (Rangliste löschen)
+        (Rangliste einsehen)
+        (Rangliste bearbeiten)
     }
 }
 
 :Admin: --> (Übersicht der GoalFinder)
 :Admin: --> (Hinzufügen eines GoalFinders)
-:Admin: --> (Einstellungen ändern)
+:Admin: --> (Löschen eines GoalFinders)
+:Admin: --> (Einstellungen eines Goalfinders ändern)
 :Admin: --> (Software Update)
 
 :User: --> (Spielmodus einstellen)
 :User: --> (Teams erstellen)
+:User: --> (Teams zuweisen)
 :User: --> (Match starten)
 :User: --> (Rangliste einsehen)
-:User: --> (Historie aufrufen)
+:User: --> (Rangliste bearbeiten)
 
 
 (Teams erstellen) .> (Spieler zuweisen) : <<include>>
-(Historie aufrufen) .> (Match löschen) : <<extend>>
-(Historie aufrufen) .> (Rangliste löschen) : <<extend>>
 @enduml
