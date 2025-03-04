@@ -193,10 +193,9 @@ Kommunikationsschnittstellen:
 
 REST API für externe Anwendungen
 
-WebSockets für Echtzeitkommunikation
 
-<img src="./Architektur.png">
+<img src="img/architektur.png">
 
 ### 6.2 Datenmodell
 
-![Goalfinder-Klassendiagramm](img/GoalFinder.png)
+![Goalfinder-Klassendiagramm](img/Datenmodell.png)
