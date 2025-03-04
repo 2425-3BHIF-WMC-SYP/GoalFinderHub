@@ -22,7 +22,7 @@ database "Datenbank (SQL)" as Database {
 
 WebClient --> GoalfinderHub : HTTP (REST API)
 GoalfinderDevice --> GoalfinderHub : REST API
-GoalfinderHub --> Database : SQLite
+GoalfinderHub --> Database : SQLite, REST API
 
 @enduml
 
