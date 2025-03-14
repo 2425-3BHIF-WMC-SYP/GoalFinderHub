@@ -10,7 +10,6 @@ rectangle GoalFinderHub_Webapp {
         (Goalfinder Software updaten SWUOTA)
     }
     package "Spielverwaltung" {
-        (Spielmodus einstellen)
         (Teams zuweisen)
         (Match starten)
     }
@@ -30,7 +29,6 @@ rectangle GoalFinderHub_Webapp {
 :GoalFinder Verwalter: --> (Einstellungen eines Goalfinders ändern)
 :GoalFinder Verwalter: --> (Goalfinder Software updaten SWUOTA)
 
-:GoalFinder Benutzer: --> (Spielmodus einstellen)
 :GoalFinder Benutzer: --> (Teams erstellen)
 :GoalFinder Benutzer: --> (Teams zuweisen)
 :GoalFinder Benutzer: --> (Match starten)
