@@ -49,11 +49,11 @@ wo die SpielerInnen nacheinander den Ball werfen und versuchen einen Korb zu erz
 
 Dabei benötigen die sehbehinderten SpielerInnen eine akustische Unterstützung zur Ortung des Korbes und eine Rückmeldung, wenn der Korb getroffen wird. Diese Aufgaben erfüllt meistens eine Person.
 
-![Aktuelle Situation](img/current_situation.png)
+![Aktuelle Situation](docs/img/current_situation.png)
 
 Um den sehbehinderten Spielern mehr Freiheit z.B. neue Spielmodi zusätzlich zum Wurfspiel, eine verbesserte Ortung (akustisch und visuell) und bessere Rückmeldung zu ermöglichen, wurde ein Gerät entwickelt, das alle zuvor genannten Funktionen erfüllen soll - der **GoalFinder**.
 
-<img src="img/goalfinder_live.jpg" alt="GoalFinder" width="400">
+<img src="docs/img/goalfinder_live.jpg" alt="GoalFinder" width="400">
 
 GoalFinder umfasst derzeit folgendes Feature-Set:
 - Ein LED-Streifen zur visuellen Ortung & ständige akustische Hinweise (Metronomsound) zur akustischen Ortung des Korbs 
@@ -95,14 +95,14 @@ Der GoalFinder Hub basiert auf einem Raspberry Pi und bietet die Funktionalität
   - Daten der Spiele, wie Endergebnis und Teams in einer Datenbank speichern
 
 ### 3.1. Use Case Überblick
-<img src="img/UCD.png">
+<img src="docs/img/UCD.png" alt="ucd">
 
 <p> Auf diesem Diagramm sieht man den groben Featureset und, was der User auf der Webapp des GoalfinderHubs bedienen oder sehen kann. </p>
 
 ### 3.2. Übersicht der Goalfinder
 
 #### 3.2.1 GUI-Design
-<img src="img/Frame 2.png" width="700" height="400">
+<img src="docs/img/Devices.png" alt="devices">
 
 #### 3.2.2 Workflow
 Hierfür wird man eine Sammlung an Goalfinders brauchen. Jeder Goalfinder muss aufgelistet werden, mit dem entsprechenden Status. Dazu wird man die Sammlung durchgehen müssen und auch schauen müssen, ob der Goalfinder ein- oder ausgeschaltet ist.
@@ -114,8 +114,7 @@ Hier braucht man erstmal ein Eingabefeld für den Namen und den Status, mit dem 
 ### 3.4 Verwalten eines Goalfinders
 
 #### 3.4.1 GUI Design
-<img src="img/c1.png" width="700" height="150">
-<img src="img/c2.png" width="600" height="150">
+<img src="docs/img/Devices-Configure-Goalfinder.png" alt="devices">
 
 #### 3.4.2 Workflow
 Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern, wo der User selbst etwas eintippt, überprüft werden, ob die Werte zur jeweiligen Einstellung passen und nicht leer sind. Bei den Feldern, wo der User die Einstellung auswählen kann, muss überprüft werden, ob er eh etwas ausgewählt hat.Falls ein Fehler auftritt, muss der User darüber informiert werden, das Feld auszubessern. Falls der User auf die Option "Software-Update durchführen" klickt, könnte man das mit einem SUOTA-Dienst lösen, der die Änderungen in den jeweiligen Dateien, die durch das Software-Update entstanden sind, in einem bin-Ordner sammelt und sie dann auf den ESP flasht. Um dann die Einstellungen zu übernehmen, braucht man einen Web-Server, um mit dem ESP zu kommunizieren.
@@ -123,7 +122,9 @@ Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern,
 ### 3.5 Match verwalten
 
 #### 3.5.1 GUI Design
-<img src="img/Games.png" width="700" height="400">
+<img src="docs/img/Games-Without-current-game.png" alt="game without current game">
+<img src="docs/img/Games-With-current-game.png" alt="game without current game">
+<img src="docs/img/Games-Create-Game.png" alt="game without current game">
 
 #### 3.5.2 Workflow
 
@@ -194,8 +195,8 @@ Kommunikationsschnittstellen:
 REST API für externe Anwendungen
 
 
-<img src="img/architektur.png">
+<img src="docs/img/architektur.png">
 
 ### 6.2 Datenmodell
 
-![Goalfinder-Klassendiagramm](img/Datenmodell.png)
+![Goalfinder-Klassendiagramm](docs/img/Datenmodell.png)
