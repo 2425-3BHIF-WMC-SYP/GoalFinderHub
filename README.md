@@ -20,10 +20,12 @@
       - [3.4.2 Workflow](#342-workflow)
     - [3.5 Match verwalten](#35-match-verwalten)
       - [3.5.1 GUI Design](#351-gui-design)
+        - [Games without current game](#games-without-current-game)
+        - [Create new game](#create-new-game)
+        - [Games with current game](#games-with-current-game)
       - [3.5.2 Workflow](#352-workflow)
   - [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
     - [`Usability`: Benutzbarkeitsanforderung](#usability-benutzbarkeitsanforderung)
-    - [`Efficiency`: Effizienzanforderung](#efficiency-effizienzanforderung)
     - [`Maintenance`: Wartbarkeits- und Portierbarkeitsanforderung](#maintenance-wartbarkeits--und-portierbarkeitsanforderung)
     - [`Security`: Sicherheitsanforderung](#security-sicherheitsanforderung)
     - [`Legal`: Gesetzliche Anforderung](#legal-gesetzliche-anforderung)
@@ -122,9 +124,15 @@ Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern,
 ### 3.5 Match verwalten
 
 #### 3.5.1 GUI Design
+
+##### Games without current game
 <img src="docs/img/Games-Without-current-game.png" alt="game without current game">
-<img src="docs/img/Games-With-current-game.png" alt="game without current game">
+
+##### Create new game
 <img src="docs/img/Games-Create-Game.png" alt="game without current game">
+
+##### Games with current game
+<img src="docs/img/Games-With-current-game.png" alt="game without current game">
 
 #### 3.5.2 Workflow
 
