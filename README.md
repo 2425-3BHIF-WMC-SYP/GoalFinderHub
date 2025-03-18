@@ -23,6 +23,8 @@
         - [Games without current game](#games-without-current-game)
         - [Create new game](#create-new-game)
         - [Games with current game](#games-with-current-game)
+    - [3.6 Teams verwalten](#36-teams-verwalten)
+      - [3.5.2 GUI Design](#352-gui-design)
       - [3.5.2 Workflow](#352-workflow)
   - [4. Nicht-funktionale Anforderungen](#4-nicht-funktionale-anforderungen)
     - [`Usability`: Benutzbarkeitsanforderung](#usability-benutzbarkeitsanforderung)
@@ -127,24 +129,34 @@ Wenn der User auf Einstellungen übernehmen klickt, muss erstmal in den Feldern,
 
 ##### Games without current game
 <img src="docs/img/Games-Without-current-game.png" alt="game without current game">
-<img src="docs/img/Games-With-current-game.png" alt="game without current game">
-<img src="docs/img/Games - Create Game.png" alt="game without current game">
 
 ##### Create new game
-<img src="docs/img/Games-Create-Game.png" alt="game without current game">
+<img src="docs/img/Games - Create Game.png" alt="create game">
 
 ##### Games with current game
-<img src="docs/img/Games-With-current-game.png" alt="game without current game">
+<img src="docs/img/Games-With-current-game.png" alt="game with current game">
+
+### 3.6 Teams verwalten
+
+#### 3.5.2 GUI Design
+
+Create Team
+
+<img src="docs/img/Frame 4.png" alt="create team">
+
+Team zum editieren auswählen
+
+<img src="docs/img/Frame 7.png" alt="team to edit">
+
+Team editiren (Spieler zuweisen)
+
+<img src="docs/img/Frame 5.png" alt="edit">
+
+
 
 #### 3.5.2 Workflow
 
 Erstmal wählt der User den Spielmodus aus. Kann dann 1-beliebig viele Teams erstellen und in diese Teams 1-beliebig viele Spieler hinzufügen. Dabei muss überprüft werden,ob der User einen Modus ausgewählt hat, mindestens ein Team erstellt hat und jedem Team mindestens einen Sieler hinzugefügt hat. Außerdem muss man darauf achten, dass der User die Team- und Spielernamen nicht leer ausfüllt. Falls ein Fehler auftritt, soll der User darüber informiert werden, diesen zu korriegieren. Wenn dann alles passt und der User bereit ist, kann er das Match starten, mithilfe des "Match starten" Buttons. Nachdem soll sich eine Seite öffnen, wo alle laufenden Matches angezeigt werden. Dies könnte man mithilfe von Klassen abbilden. Falls der User dann das jeweilige Match beenden will, kann er auf den "Match beenden" Button klicken. Danach soll sich wieder eine neue Seite öffnen, wo dann die Rangliste des jeweiligen Spiels angezeigt wird. Die Rangliste bildet sich im Körbezähler-Modus aus der Differenz der Treffer und Fehltreffer, im Team vs Team Modus aus Treffern. Falls der User möchte, kann er die Rangliste speichern.
-
-<img src="docs/img/Frame 2.png" alt="game without current game">
-<img src="docs/img/Frame 4.png" alt="game without current game">
-<img src="docs/img/Frame 5.png" alt="game without current game">
-<img src="docs/img/Frame 7.png" alt="game without current game">
-
 
 ## 4. Nicht-funktionale Anforderungen
 
