@@ -1,4 +1,4 @@
-create table GAMES
+create table if not exists GAMES
 (
     Id             INTEGER
         constraint GAMES_pk
@@ -20,7 +20,7 @@ create table GAMES
             references GOALFINDERS
 );
 
-create table GOALFINDERS
+create table if not exists GOALFINDERS
 (
     MacAddress TEXT not null
         constraint GOALFINDERS_pk
@@ -28,7 +28,7 @@ create table GOALFINDERS
     Name       TEXT not null
 );
 
-create table LEADERBOARDS
+create table if not exists LEADERBOARDS
 (
     Id    INTEGER not null
         constraint LEADERBOARD_pk
@@ -38,7 +38,7 @@ create table LEADERBOARDS
     Teams INT     not null
 );
 
-create table LEADERBOARDS_TEAMS
+create table if not exists LEADERBOARDS_TEAMS
 (
     Id            INTEGER
         constraint LEADERBOARDS_TEAMS_pk
@@ -51,7 +51,7 @@ create table LEADERBOARDS_TEAMS
             references TEAMS
 );
 
-create table PLAYERS
+create table if not exists PLAYERS
 (
     Id   INTEGER
         constraint PLAYERS_pk
@@ -59,7 +59,7 @@ create table PLAYERS
     Name TEXT
 );
 
-create table TEAMS
+create table if not exists TEAMS
 (
     Id      INTEGER not null
         constraint TEAMS_pk
@@ -70,7 +70,7 @@ create table TEAMS
     Players INTEGER not null
 );
 
-create table TEAMS_PLAYERS
+create table if not exists TEAMS_PLAYERS
 (
     Id       INTEGER not null
         constraint TEAMS_PLAYERS_pk

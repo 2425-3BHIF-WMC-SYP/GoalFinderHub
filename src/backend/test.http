@@ -1,0 +1,2 @@
+### Test get all devices (Goalfinders)
+GET http://localhost:3000/api/devices

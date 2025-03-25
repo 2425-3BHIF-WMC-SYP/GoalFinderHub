@@ -38,26 +38,6 @@ export class DB {
         } catch (error) {
             throw new Error(`Error creating tables: ${error}`);
         }
-        /*await connection.run(
-            `create table if not exists Car (
-                licensePlate text not null, 
-                model text not null, 
-                owner text not null,
-                constraint PK_Car primary key (licensePlate)
-                ) strict`
-        );
-        await connection.run(
-            `create table if not exists ParkingSpot (
-                floor integer not null, 
-                number integer not null, 
-                car text null,
-                constraint PK_ParkingSpot primary key (floor, number),
-                constraint FK_ParkingSpot_Car foreign key (car) references Car(licensePlate) 
-                    on delete set null
-                ) strict`
-        );*/
-
-        //TODO
     }
 }
 

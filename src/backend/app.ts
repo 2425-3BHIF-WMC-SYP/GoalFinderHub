@@ -7,6 +7,9 @@ import express from "express";
 import cors from "cors";
 import { Database } from "sqlite";
 import { DB } from "./database/data";
+import {devicesRouter} from "./routers/devices-router";
+
+const API_URL = "/api"
 
 // create express application
 const app = express();
@@ -16,6 +19,7 @@ app.use(cors());
 app.use(express.json());    // parse JSON data and place result in req.body
 
 // mount router(s)
+app.use(`${API_URL}/devices`, devicesRouter);
 // TODO
 
 // ensure database is created and populated
