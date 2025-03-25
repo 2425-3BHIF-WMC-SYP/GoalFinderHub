@@ -2,6 +2,7 @@
     "name": "backend",
     "version": "1.0.0",
     "main": "app.ts",
+    "type": "module",
     "scripts": {
       "start": "tsx ./app.ts",
       "dev": "tsx  watch ./app.ts --include ."
