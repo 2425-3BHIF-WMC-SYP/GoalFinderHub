@@ -6,7 +6,6 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 
-import { Button } from '@/components/ui/button'
 import AccountButton from "@/components/AccountButton.vue";
 </script>
 

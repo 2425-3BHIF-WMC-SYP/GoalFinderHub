@@ -1,9 +1,15 @@
+@font-face {
+  font-family: Inter;
+  src: url('@/assets/Inter.ttf');
+}
+
 body {
   min-height: 100vh;
   transition:
     color 0.5s,
     background-color 0.5s;
   line-height: 1.5;
+  font-weight: normal;
   font-family:
     Inter,
     -apple-system,
