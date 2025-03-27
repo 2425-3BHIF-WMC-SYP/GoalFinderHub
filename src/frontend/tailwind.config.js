@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import * as tailwindAnimate from 'tailwindcss-animate'
+
 module.exports = {
   darkMode: ['class'],
   content: ['./index.html', './src/**/*.{ts,js,vue}'],

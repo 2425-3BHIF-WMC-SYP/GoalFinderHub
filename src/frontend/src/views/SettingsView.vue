@@ -1,11 +1,12 @@
 <script setup lang="ts">
+
 import Page from "@/components/Page.vue";
 </script>
 
 <template>
   <main>
-    <Page title="Home" description="Home page">
-      <p>Hello Home</p>
+    <Page title="Settings" description="Configure the settings of the GoalFinder Hub.">
+      <p>Hello Settings!</p>
     </Page>
   </main>
 </template>

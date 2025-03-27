@@ -1,11 +1,12 @@
 <script setup lang="ts">
+
 import Page from "@/components/Page.vue";
 </script>
 
 <template>
   <main>
-    <Page title="Home" description="Home page">
-      <p>Hello Home</p>
+    <Page title="Games" description="See information about your games.">
+      <p>Hello Games!</p>
     </Page>
   </main>
 </template>

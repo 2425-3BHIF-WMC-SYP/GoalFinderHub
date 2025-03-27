@@ -1,11 +1,12 @@
 <script setup lang="ts">
+
 import Page from "@/components/Page.vue";
 </script>
 
 <template>
   <main>
-    <Page title="Home" description="Home page">
-      <p>Hello Home</p>
+    <Page title="Devices" description="Overview of all GoalFinders.">
+      <p>Hello Devices!</p>
     </Page>
   </main>
 </template>

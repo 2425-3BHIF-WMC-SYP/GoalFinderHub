@@ -5,6 +5,7 @@ import {readFile} from "node:fs/promises";
 sqlite3.verbose();
 
 export const dbFileName = 'goalfinderhub.db';
+const dbSchemaFileName = 'schema.sql';
 
 export class DB {
     public static async createDBConnection(): Promise<Database> {
@@ -33,7 +34,7 @@ export class DB {
 
     private static async ensureTablesCreated(connection: Database): Promise<void> {
         try {
-            const schemaFile: string = await readFile("./database/schema.sql", "utf-8");
+            const schemaFile: string = await readFile(`./database/${dbSchemaFileName}`, "utf-8");
             await connection.exec(schemaFile);
         } catch (error) {
             throw new Error(`Error creating tables: ${error}`);
