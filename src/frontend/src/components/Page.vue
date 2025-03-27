@@ -27,7 +27,7 @@ const props = defineProps<{
 }
 
 #card {
-  min-height: 85vh;
+  min-height: 90vh;
 }
 
 #title {

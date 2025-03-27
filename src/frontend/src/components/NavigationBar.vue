@@ -6,7 +6,23 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 
-import AccountButton from "@/components/AccountButton.vue";
+import AccountButton from '@/components/AccountButton.vue'
+
+/*import { useColorMode } from '@vueuse/core'
+
+import { Label } from '@/components/ui/label'
+import { Toggle } from '@/components/ui/toggle'
+
+const colorMode = useColorMode({ disableTransition: false })
+
+function onThemeSwitchBtnClick() {
+  if(colorMode.value === 'dark') {
+    colorMode.value = 'light'
+  }
+  else {
+    colorMode.value = 'dark'
+  }
+}*/
 </script>
 
 <template>
@@ -15,22 +31,20 @@ import AccountButton from "@/components/AccountButton.vue";
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <RouterLink to="/">
-            GoalFinder Hub
-          </RouterLink>
+          <RouterLink to="/"> GoalFinder Hub </RouterLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <RouterLink to="/games" :class="navigationMenuTriggerStyle()">
+          <RouterLink class="font-normal" to="/games" :class="navigationMenuTriggerStyle()">
             Games
           </RouterLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <RouterLink to="/devices" :class="navigationMenuTriggerStyle()">
+          <RouterLink class="font-normal" to="/devices" :class="navigationMenuTriggerStyle()">
             Devices
           </RouterLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <RouterLink to="/settings" :class="navigationMenuTriggerStyle()">
+          <RouterLink class="font-normal" to="/settings" :class="navigationMenuTriggerStyle()">
             Settings
           </RouterLink>
         </NavigationMenuItem>
@@ -38,7 +52,10 @@ import AccountButton from "@/components/AccountButton.vue";
     </NavigationMenu>
 
     <!-- Right Side: Button -->
-    <div class="ml-auto">
+    <div class="ml-auto flex center gap-2">
+      <!--<Toggle variant="outline" @click="onThemeSwitchBtnClick">
+        <Label>Dark</Label>
+      </Toggle>-->
       <AccountButton variant="outline">Sign In</AccountButton>
     </div>
   </div>
