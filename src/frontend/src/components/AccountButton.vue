@@ -11,22 +11,24 @@ import {
 </script>
 
 <template>
-  <DropdownMenu>
-    <DropdownMenuTrigger>
-      <Button variant="outline">
-        <Avatar id="avatar-icon">
-          <AvatarImage src="" alt="@unovue" />
-          <AvatarFallback>NK</AvatarFallback>
-        </Avatar>
-        <Label>Nico Kaleshkov</Label>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-      <DropdownMenuSeparator/>
-      <DropdownMenuItem>Log Out</DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
+  <div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Button variant="outline">
+          <Avatar id="avatar-icon">
+            <AvatarImage src="" alt="@unovue" />
+            <AvatarFallback>NK</AvatarFallback>
+          </Avatar>
+          <Label>Nico Kaleshkov</Label>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator/>
+        <DropdownMenuItem>Log Out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  </div>
 </template>
 
 <style scoped>

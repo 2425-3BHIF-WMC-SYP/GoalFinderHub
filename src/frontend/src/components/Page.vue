@@ -22,9 +22,6 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-#page {
-  margin: 1rem auto;
-}
 
 #card {
   min-height: 90vh;
@@ -34,7 +31,11 @@ const props = defineProps<{
   font-size: 1.5rem;
 }
 
-@media (min-width: 768px) {
+#page {
+  margin: 1rem 1rem;
+}
+
+/*@media (min-width: 768px) {
   #page {
     width: 750px;
   }
@@ -48,5 +49,5 @@ const props = defineProps<{
   #page {
     width: 1200px;
   }
-}
+}*/
 </style>

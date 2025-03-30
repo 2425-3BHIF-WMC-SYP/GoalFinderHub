@@ -4,8 +4,8 @@ import Page from "@/components/Page.vue";
 
 <template>
   <main>
-    <Page title="Home" description="Home page">
-      <p>Hello Home</p>
+    <Page title="Dashboard" description="Dashboard TODO">
+      <p>Hello Dashboard!</p>
     </Page>
   </main>
 </template>
