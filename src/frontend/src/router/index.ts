@@ -28,6 +28,13 @@ const router = createRouter({
       name: 'settings',
       component: () => import("@/views/SettingsView.vue"),
     },
+
+    {
+      path: '/createGame',
+      name: 'createGame',
+      component: () => import("@/views/StartGame.vue"),
+    },
+
     {
       path: '/about',
       name: 'about',

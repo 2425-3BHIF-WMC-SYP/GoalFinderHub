@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import NavigationBar from '@/components/NavigationBar.vue'
 import {useColorMode} from "@vueuse/core";
 
-const colorMode = useColorMode({ disableTransition: false })
+//const colorMode = useColorMode({ disableTransition: false })
 </script>
 
 <template>
