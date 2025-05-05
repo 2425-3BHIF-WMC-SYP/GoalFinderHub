@@ -11,8 +11,8 @@ const props = defineProps<{
   <div id="page">
     <Card id="card">
       <CardHeader>
-        <CardTitle id="title">{{title}}</CardTitle>
-        <CardDescription>{{description}}</CardDescription>
+        <CardTitle id="title">{{props.title}}</CardTitle>
+        <CardDescription>{{props.description}}</CardDescription>
       </CardHeader>
       <CardContent>
         <slot/>
