@@ -76,8 +76,8 @@ const cancel = () => {
       <div v-if="error" class="text-red-500">{{ error }}</div>
 
       <div class="flex gap-4">
-        <Button variant="default" @click="addGoalFinder">Hinzufügen</Button>
-        <Button variant="secondary" @click="cancel">Abbrechen</Button>
+        <Button variant="default" @click="addGoalFinder">Add</Button>
+        <Button variant="secondary" @click="cancel">Cancel</Button>
       </div>
     </div>
   </Page>
