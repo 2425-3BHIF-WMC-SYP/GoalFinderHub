@@ -2,7 +2,7 @@ import express from "express";
 import {User} from "../database/model";
 import {DB} from "../database/data";
 import {StatusCodes} from "http-status-codes";
-import {UsersRepository} from "../database/users-repository";
+import {UsersRepository} from "../repos/users-repository";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {getSecretKey} from "../middleware/auth-handlers";

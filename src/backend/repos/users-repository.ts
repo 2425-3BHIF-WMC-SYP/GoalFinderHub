@@ -1,5 +1,5 @@
 import {Database} from "sqlite";
-import {User} from "./model";
+import {User} from "../database/model";
 
 export class UsersRepository {
     public static async GetUser(db: Database, username: string): Promise<User | undefined> {

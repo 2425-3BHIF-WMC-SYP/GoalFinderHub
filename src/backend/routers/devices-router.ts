@@ -1,6 +1,6 @@
 import express from "express";
 import {DB} from "../database/data";
-import {DevicesRepository} from "../database/devices-repository";
+import {DevicesRepository} from "../repos/devices-repository";
 import {StatusCodes} from "http-status-codes";
 
 export const devicesRouter = express.Router();

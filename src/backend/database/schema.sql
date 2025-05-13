@@ -1,95 +1,92 @@
 create table if not exists GAMES
 (
-    Id             INTEGER
-        constraint GAMES_pk
+    id               INTEGER
+        constraint gamesPk
             primary key,
-    Date           TEXT,
-    HomeTeamScore  INTEGER,
-    AwayTeamScore  INTEGER,
-    HomeTeam       INTEGER
-        constraint GAMES_TEAMS_Id_fk
+    date             TEXT,
+    homeTeamScore    INTEGER,
+    awayTeamScore    INTEGER,
+    homeTeamId       INTEGER
+        constraint gamesTeamsIdFk
             references TEAMS,
-    AwayTeam       INTEGER
-        constraint GAMES_TEAMS_Id_fk_2
+    awayTeamId       INTEGER
+        constraint gamesTeamsIdFk2
             references TEAMS,
-    HomeGoalfinder TEXT not null
-        constraint GAMES_GOALFINDERS_MacAddress_fk
+    homeGoalfinderId TEXT not null
+        constraint gamesGoalfindersMacAddressFk
             references GOALFINDERS,
-    AwayGoalfinder TEXT not null
-        constraint GAMES_GOALFINDERS_MacAddress_fk_2
+    awayGoalfinderId TEXT not null
+        constraint gamesGoalfindersMacAddressFk2
             references GOALFINDERS
 );
 
 create table if not exists GOALFINDERS
 (
-    MacAddress TEXT not null
-        constraint GOALFINDERS_pk
+    macAddress TEXT not null
+        constraint goalfindersPk
             primary key,
-    Name       TEXT not null
+    name       TEXT not null
 );
 
 create table if not exists LEADERBOARDS
 (
-    Id    INTEGER not null
-        constraint LEADERBOARD_pk
+    id    INTEGER not null
+        constraint leaderboardPk
             primary key autoincrement
-        constraint LEADERBOARDS_LEADERBOARDS_TEAMS_LeaderBoardId_fk
-            references LEADERBOARDS_TEAMS (LeaderBoardId),
-    Teams INT     not null
+        constraint leaderboardsLeaderboardsTeamsLeaderBoardIdFk
+            references LEADERBOARDS_TEAMS (leaderBoardId),
+    teams INT     not null
 );
 
 create table if not exists LEADERBOARDS_TEAMS
 (
-    Id            INTEGER
-        constraint LEADERBOARDS_TEAMS_pk
+    id            INTEGER
+        constraint leaderboardsTeamsPk
             primary key,
-    LeaderBoardId INTEGER not null
-        constraint LEADERBOARDS_TEAMS_LEADERBOARDS_Id_fk
+    leaderBoardId INTEGER not null
+        constraint leaderboardsTeamsLeaderboardsIdFk
             references LEADERBOARDS,
-    TeamId        integer not null
-        constraint LEADERBOARDS_TEAMS_TEAMS_Id_fk
+    teamId        INTEGER not null
+        constraint leaderboardsTeamsTeamsIdFk
             references TEAMS
 );
 
 create table if not exists PLAYERS
 (
-    Id   INTEGER
-        constraint PLAYERS_pk
+    id   INTEGER
+        constraint playersPk
             primary key autoincrement,
-    Name TEXT
+    name TEXT
 );
 
 create table if not exists TEAMS
 (
-    Id      INTEGER not null
-        constraint TEAMS_pk
-            primary key autoincrement
-        constraint TEAMS_TEAMS_PLAYERS_TeamId_fk
-            references TEAMS_PLAYERS (TeamId),
-    Name    INTEGER not null,
-    Players INTEGER not null
+    id   INTEGER not null
+        constraint teamsPk
+            primary key autoincrement,
+    name INTEGER not null
 );
 
 create table if not exists TEAMS_PLAYERS
 (
-    Id       INTEGER not null
-        constraint TEAMS_PLAYERS_pk
+    id       INTEGER not null
+        constraint teamsPlayersPk
             primary key autoincrement,
-    TeamId   INTEGER
-        constraint TEAMS_PLAYERS_TEAMS_Id_fk
+    teamId   INTEGER
+        constraint teamsPlayersTeamsIdFk
             references TEAMS,
-    PlayerId INTEGER
-        constraint TEAMS_PLAYERS_PLAYERS_Id_fk
+    playerId INTEGER
+        constraint teamsPlayersPlayersIdFk
             references PLAYERS
 );
 
 create table if not exists USERS
 (
     username  TEXT    not null
-        constraint USERS_pk
+        constraint usersPk
             primary key,
     password  TEXT    not null,
     firstName TEXT    not null,
     lastName  TEXT    not null,
     isAdmin   INTEGER not null check ( isAdmin in (0, 1))
-)
+);
