@@ -50,7 +50,8 @@ authRouter.post("/login", async (req, res) => {
             }
         }
     } catch (err) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+        console.log(err)
+        res.status(StatusCodes.BAD_REQUEST).send(err);
     } finally {
         await db.close();
     }

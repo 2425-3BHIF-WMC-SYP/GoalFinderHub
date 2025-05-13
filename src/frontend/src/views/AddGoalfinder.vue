@@ -4,44 +4,49 @@ import { useRouter } from 'vue-router'
 import Page from '@/components/Page.vue'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { goalfinders } from '@/stores/goalfinderStore'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 const name = ref('')
-const state = ref('')
+const macAddress = ref('')
 const error = ref('')
 const router = useRouter()
 
-const addGoalFinder = () => {
+const addGoalFinder = async () => {
   if (!name.value.trim()) {
     error.value = 'Name darf nicht leer sein.'
     return
   }
 
-  const status = state.value.trim().toLowerCase()
-  if (status !== 'on' && status !== 'off') {
-    error.value = 'Status muss "On" oder "Off" sein.'
+  if (!macAddress.value) {
+    error.value = 'Bitte MAC-Adresse auswählen.'
     return
   }
 
-  goalfinders.value.push({
-    id: Date.now(),
-    name: name.value.trim(),
-    state: status.charAt(0).toUpperCase() + status.slice(1) as 'On' | 'Off',
-  })
+  try {
+    const response = await fetch('http://localhost:3000/api/devices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        macAddress: macAddress.value,
+        name: name.value.trim()
+      }),
+    })
 
-  router.push('/devices')
+    if (!response.ok) {
+      const msg = await response.text()
+      throw new Error(msg)
+    }
+
+    await router.push('/devices')
+  } catch (err) {
+    console.error("Fehler beim Hinzufügen:", err)
+    error.value = String(err)
+  }
 }
 
 const cancel = () => {
   name.value = ''
-  state.value = ''
+  macAddress.value = ''
   error.value = ''
   router.push('/')
 }
@@ -56,19 +61,16 @@ const cancel = () => {
       </div>
 
       <div>
-        <label>Status ("On" oder "Off")</label>
-        <Input v-model="state" placeholder="Status" />
-      </div>
-
-      <div>
         <label>MAC Address</label>
-        <Select>
+        <Select v-model="macAddress">
           <SelectTrigger>
             <SelectValue placeholder="Select MAC" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="mac3">CC:DD:EE:FF:00:11</SelectItem>
-            <SelectItem value="mac4">22:33:44:55:66:77</SelectItem>
+            <SelectItem value="CC:DD:EE:FF:00:11">CC:DD:EE:FF:00:11</SelectItem>
+            <SelectItem value="22:33:44:55:66:77">22:33:44:55:66:77</SelectItem>
+            <SelectItem value="AA:BB:CC:DD:EE:FF">AA:BB:CC:DD:EE:FF</SelectItem>
+            <SelectItem value="11:22:33:44:55:66">11:22:33:44:55:66</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -84,10 +86,8 @@ const cancel = () => {
 </template>
 
 <style scoped>
-
 #addDevice {
   margin-left: 13rem;
   margin-top: 1rem;
 }
-
 </style>

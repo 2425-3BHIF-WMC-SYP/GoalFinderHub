@@ -1,2 +1,23 @@
 ### Test get all devices (Goalfinders)
 GET http://localhost:3000/api/devices
+
+###
+POST http://localhost:3000/api/devices
+Content-Type: application/json
+
+{
+  "macAddress": "AA:BB:CC:DD:EE:FF",
+  "name": "Testgerät"
+}
+
+###
+PUT http://localhost:3000/api/devices/AA:BB:CC:DD:EE:FF
+Content-Type: application/json
+
+{
+"name": "Neues Gerät"
+}
+
+###
+DELETE http://localhost:3000/api/devices/22:33:44:55:66:77
+

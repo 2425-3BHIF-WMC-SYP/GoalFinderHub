@@ -7,44 +7,91 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from '@/components/ui/slider';
 import { Input } from "@/components/ui/input";
 import { useRouter } from "vue-router";
-import { ref } from 'vue';
-import { goalfinders } from "@/stores/goalfinderStore";
+import { onMounted, ref } from 'vue';
+
+interface Goalfinder {
+  MacAddress: string;
+  Name: string;
+  State?: string;
+  Volume?: number;
+  LedMode?: string;
+}
 
 const router = useRouter();
+const goalfinders = ref<Goalfinder[]>([]);
+const loading = ref(true);
 
+// Dialog state
 const isDialogOpen = ref(false);
-const currentGoalfinder = ref('');
-const currentState = ref('');
-const currentId = ref(0);
+const currentGoalfinder = ref<Goalfinder>({
+  MacAddress: '',
+  Name: '',
+  State: 'Off',
+  Volume: 50,
+  LedMode: 'Normal'
+});
 const currentVolume = ref([50]);
 const currentLedMode = ref('Normal');
 
-const openEditDialog = (goalfinder: { id: number; name: string; state: string; volume: number; ledMode: string }) => {
-  currentId.value = goalfinder.id;
-  currentGoalfinder.value = goalfinder.name;
-  currentState.value = goalfinder.state;
-  currentVolume.value = [goalfinder.volume ?? 50];
-  currentLedMode.value = goalfinder.ledMode ?? "Normal";
+const fetchDevices = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/devices');
+    if (!response.ok) {
+      throw new Error('Error fetching devices');
+    }
+    const data = await response.json();
+    goalfinders.value = data;
+  } catch (error) {
+    console.error("Error fetching devices:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const deleteGoalfinder = async (macAddress: string) => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/devices/${macAddress}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Error deleting device');
+    await fetchDevices();
+  } catch (error) {
+    console.error("Error deleting device:", error);
+  }
+};
+const openEditDialog = (goalfinder: Goalfinder) => {
+  currentGoalfinder.value = {
+    ...goalfinder,
+    State: goalfinder.State || 'Off',
+    Volume: goalfinder.Volume || 50,
+    LedMode: goalfinder.LedMode || 'Normal'
+  };
+  currentVolume.value = [currentGoalfinder.value.Volume || 50];
+  currentLedMode.value = currentGoalfinder.value.LedMode || 'Normal';
   isDialogOpen.value = true;
 };
 
-const deleteGoalfinder = (id: number) => {
-  goalfinders.value = goalfinders.value.filter(g => g.id !== id);
+
+const saveChanges = async () => {
+  try {
+    const response = await fetch(`http://localhost:3000/api/devices/${currentGoalfinder.value.MacAddress}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: currentGoalfinder.value.Name,
+      })
+    });
+
+    if (!response.ok) throw new Error('Error updating device');
+    await fetchDevices();
+    isDialogOpen.value = false;
+  } catch (error) {
+    console.error("Error updating device:", error);
+  }
 };
 
-const saveChanges = () => {
-  const index = goalfinders.value.findIndex(g => g.id === currentId.value);
-  if (index !== -1) {
-    goalfinders.value[index] = {
-      ...goalfinders.value[index],
-      name: currentGoalfinder.value,
-      state: currentState.value,
-      volume: currentVolume.value[0],
-      ledMode: currentLedMode.value
-    };
-  }
-  isDialogOpen.value = false;
-};
+
+onMounted(fetchDevices);
 </script>
 
 <template>
@@ -53,19 +100,18 @@ const saveChanges = () => {
       <Button @click="router.push('/addDevice')" variant="outline" size="sm">Add Goalfinder</Button>
     </div>
 
-    <div v-if="goalfinders.length === 0" class="text-muted-foreground">No Goalfinder added yet.</div>
+    <div v-if="loading" class="text-muted-foreground">Loading devices...</div>
+    <div v-else-if="goalfinders.length === 0" class="text-muted-foreground">No Goalfinder added yet.</div>
 
     <div class="goalfinder-grid">
-      <Card v-for="goalfinder in goalfinders" :key="goalfinder.id" class="goalfinder-card">
+      <Card v-for="goalfinder in goalfinders" :key="goalfinder.MacAddress" class="goalfinder-card">
         <CardContent class="card-content">
-          <h3 class="card-title">{{ goalfinder.name }}</h3>
-          <div class="state-row">
-            <span class="state-label">Current State: </span>
-            <Button class="state-value">{{ goalfinder.state }}</Button>
-          </div>
+          <h3 class="card-title">{{ goalfinder.Name }}</h3>
+          <p class="card-mac">{{ goalfinder.MacAddress }}</p>
+
           <div class="card-footer">
             <div class="action-row">
-              <Button variant="link" size="sm" class="delete-btn" @click="deleteGoalfinder(goalfinder.id)">Delete</Button>
+              <Button variant="link" size="sm" class="delete-btn" @click="deleteGoalfinder(goalfinder.MacAddress)">Delete</Button>
               <Button variant="link" size="sm" class="edit-btn" @click="openEditDialog(goalfinder)">Edit</Button>
             </div>
           </div>
@@ -76,22 +122,14 @@ const saveChanges = () => {
     <Dialog v-model:open="isDialogOpen">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit {{ currentGoalfinder }}</DialogTitle>
+          <DialogTitle>Edit {{ currentGoalfinder.Name }}</DialogTitle>
           <DialogDescription>Make changes to your Goalfinder here.</DialogDescription>
         </DialogHeader>
 
         <div class="edit-form">
           <div class="form-section">
             <h4>Name</h4>
-            <Input v-model="currentGoalfinder" placeholder="GoalFinder Name" />
-          </div>
-
-          <div class="form-section">
-            <h4>Current State</h4>
-            <div class="state-toggle">
-              <Button :variant="currentState === 'On' ? 'default' : 'outline'" size="sm" @click="currentState = 'On'">On</Button>
-              <Button :variant="currentState === 'Off' ? 'default' : 'outline'" size="sm" @click="currentState = 'Off'">Off</Button>
-            </div>
+            <Input v-model="currentGoalfinder.Name" placeholder="GoalFinder Name" />
           </div>
 
           <div class="form-section">
@@ -102,8 +140,8 @@ const saveChanges = () => {
             </div>
           </div>
 
-          <div class="led-mode">
-            <h5>LED Modus</h5>
+          <div class="form-section">
+            <h4>LED Modus</h4>
             <Select v-model="currentLedMode">
               <SelectTrigger>
                 <SelectValue placeholder="Select Mode" />
@@ -148,10 +186,8 @@ const saveChanges = () => {
 .goalfinder-card {
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
-  box-shadow: none;
   display: flex;
   flex-direction: column;
-  height: 100%;
   min-height: 200px;
 }
 
@@ -166,28 +202,15 @@ const saveChanges = () => {
   text-align: center;
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: #1e293b;
 }
 
-.state-row {
-  margin-bottom: 0.5rem;
+.card-mac {
+  text-align: center;
   font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-}
-
-.state-label {
-  color: #64748b;
-}
-
-.state-value {
-  color: white;
-  background-color: black;
-  padding: 0.1rem 1rem;
-  margin-left: 0.5rem;
-  border: none;
-  cursor: default;
+  color: #475569;
+  margin-bottom: auto;
 }
 
 .card-footer {
@@ -206,16 +229,14 @@ const saveChanges = () => {
   border: 1px solid lightgray;
   color: black;
   padding: 0.5rem 1rem;
-  height: auto;
   background-color: white;
 }
 
 .edit-btn {
   border: 1px solid lightgray;
   color: black;
+  padding: 0.5rem 1rem;
   background-color: lightgray;
-  padding: 0.5rem 1.5rem;
-  height: auto;
 }
 
 .edit-form {
@@ -232,29 +253,6 @@ const saveChanges = () => {
 }
 
 .form-section h4 {
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.state-toggle {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.volume-control {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.led-mode {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.led-mode h5 {
   font-size: 0.875rem;
   font-weight: 500;
   margin: 0;
