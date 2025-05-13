@@ -56,7 +56,7 @@ const cancel = () => {
       </div>
 
       <div>
-        <label>Status ("On" or "Off")</label>
+        <label>State ("On" or "Off")</label>
         <Input v-model="state" pl aceholder="Status" />
       </div>
 
