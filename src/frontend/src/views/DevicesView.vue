@@ -95,7 +95,7 @@ const saveChanges = () => {
           </div>
 
           <div class="form-section">
-            <h4>Lautstärke</h4>
+            <h4>Volume</h4>
             <div class="volume-control">
               <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
               <span>{{ currentVolume[0] }}%</span>
@@ -103,7 +103,7 @@ const saveChanges = () => {
           </div>
 
           <div class="led-mode">
-            <h5>LED Modus</h5>
+            <h5>LED Mode</h5>
             <Select v-model="currentLedMode">
               <SelectTrigger>
                 <SelectValue placeholder="Select Mode" />

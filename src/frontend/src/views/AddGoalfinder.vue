@@ -20,13 +20,13 @@ const router = useRouter()
 
 const addGoalFinder = () => {
   if (!name.value.trim()) {
-    error.value = 'Name darf nicht leer sein.'
+    error.value = 'Name cant be empty.'
     return
   }
 
   const status = state.value.trim().toLowerCase()
   if (status !== 'on' && status !== 'off') {
-    error.value = 'Status muss "On" oder "Off" sein.'
+    error.value = 'State needs to be "On" or "Off"'
     return
   }
 
@@ -56,8 +56,8 @@ const cancel = () => {
       </div>
 
       <div>
-        <label>Status ("On" oder "Off")</label>
-        <Input v-model="state" placeholder="Status" />
+        <label>State ("On" or "Off")</label>
+        <Input v-model="state" pl aceholder="Status" />
       </div>
 
       <div>
