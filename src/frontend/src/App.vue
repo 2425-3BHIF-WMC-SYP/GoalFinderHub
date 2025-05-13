@@ -11,11 +11,13 @@ const user = useUserStore();
 <template>
   <header>
     <NavigationBar v-if="user.isAuthenticated"/>
-    <h1 v-else>GoalFinder Hub</h1>
+    <h1 id="title" v-else>GoalFinder Hub</h1>
   </header>
   <RouterView class="responsive-container" />
 </template>
 
 <style scoped>
-
+  #title {
+    margin: 0.5rem;
+  }
 </style>

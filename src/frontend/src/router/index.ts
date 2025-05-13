@@ -26,6 +26,7 @@ const router = createRouter({
       path: '/teams',
       name: 'teams',
       component: () => import("@/views/TeamsView.vue"),
+      meta: { requiresAuth: true }
     },
     {
       path: '/devices',
@@ -37,6 +38,7 @@ const router = createRouter({
       path: '/addDevice',
       name: 'addDevice',
       component: () => import("@/views/AddGoalfinder.vue"),
+      meta: { requiresAuth: true }
     },
     {
       path: '/settings',
@@ -49,6 +51,7 @@ const router = createRouter({
       path: '/createGame',
       name: 'createGame',
       component: () => import("@/views/StartGame.vue"),
+      meta: { requiresAuth: true }
     },
 
     {
