@@ -1,3 +1,11 @@
+export interface User {
+    username: string;
+    password: string
+    firstName: string;
+    lastName: string;
+    isAdmin: boolean;
+}
+
 export interface Player {
     id: number;
     name: string;

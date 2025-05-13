@@ -8,23 +8,29 @@ import cors from "cors";
 import { Database } from "sqlite";
 import { DB } from "./database/data";
 import {devicesRouter} from "./routers/devices-router";
+import {ensureSampleDataInserted} from "./database/data-seeding";
+import {authRouter} from "./routers/auth-router";
+import dotenv from "dotenv";
 
 const API_URL = "/api"
 
 // create express application
 const app = express();
 
+dotenv.config();
+
 // mount middleware
 app.use(cors());
 app.use(express.json());    // parse JSON data and place result in req.body
 
 // mount router(s)
+app.use(`${API_URL}/auth`, authRouter);
 app.use(`${API_URL}/devices`, devicesRouter);
 // TODO
 
 // ensure database is created and populated
 const db: Database = await DB.createDBConnection();
-//TODO await ensureSampleDataInserted(db);
+await ensureSampleDataInserted(db);
 await db.close();
 
 // start http server

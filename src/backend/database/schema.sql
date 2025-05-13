@@ -82,3 +82,14 @@ create table if not exists TEAMS_PLAYERS
         constraint TEAMS_PLAYERS_PLAYERS_Id_fk
             references PLAYERS
 );
+
+create table if not exists USERS
+(
+    username  TEXT    not null
+        constraint USERS_pk
+            primary key,
+    password  TEXT    not null,
+    firstName TEXT    not null,
+    lastName  TEXT    not null,
+    isAdmin   INTEGER not null check ( isAdmin in (0, 1))
+)
