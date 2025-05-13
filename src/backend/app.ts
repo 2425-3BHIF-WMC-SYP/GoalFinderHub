@@ -11,6 +11,7 @@ import {devicesRouter} from "./routers/devices-router";
 import {ensureSampleDataInserted} from "./database/data-seeding";
 import {authRouter} from "./routers/auth-router";
 import dotenv from "dotenv";
+import {teamsRouter} from "./routers/teams-router";
 
 const API_URL = "/api"
 
@@ -26,6 +27,7 @@ app.use(express.json());    // parse JSON data and place result in req.body
 // mount router(s)
 app.use(`${API_URL}/auth`, authRouter);
 app.use(`${API_URL}/devices`, devicesRouter);
+app.use(`${API_URL}/teams`, teamsRouter);
 // TODO
 
 // ensure database is created and populated

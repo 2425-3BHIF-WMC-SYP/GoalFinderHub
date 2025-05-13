@@ -11,15 +11,22 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import Popup from "@/components/Popup.vue";
+import {fetchRestEndpoint} from "@/fetch-rest-endpoint.ts";
+
+interface Team {
+  id: number;
+  name: string;
+}
 
 const name = ref('');
+const teams = ref<Team[]>([]);
 const player = ref('');
 const players = ref<string[]>([]);
 const successMessage = ref('');
 const showPopup = ref(false)
 
 const addPlayer = () => {
-  const trimmed = player.value.trim();
+  const trimmed = player.value;
   if (trimmed) {
     players.value.push(trimmed);
     player.value = '';
@@ -30,7 +37,7 @@ const removePlayer = (index: number) => {
   players.value.splice(index, 1);
 };
 
-const createTeam = () => {
+const createTeam = async () => {
   if (!name.value || players.value.length === 0) {
     successMessage.value = '';
     return;
@@ -41,22 +48,51 @@ const createTeam = () => {
     players: players.value,
   });
 
+  const team = {
+    name: name.value,
+    players: players.value
+  };
+
+  const response = await fetchRestEndpoint('http://localhost:3000/api/teams', "POST", team);
+
+  if(team !== undefined) {
+    successMessage.value = '✅ Erfolgreich Team erstellt!';
+    setTimeout(() => {
+      successMessage.value = '';
+    }, 3000);
+  }
+  else {
+    successMessage.value = 'Nicht Erfolgreich!';
+    setTimeout(() => {
+      successMessage.value = '';
+    }, 3000);
+  }
+
   name.value = '';
   player.value = '';
   players.value = [];
-
-  successMessage.value = '✅ Erfolgreich Team erstellt!';
-  setTimeout(() => {
-    successMessage.value = '';
-  }, 3000);
 };
 
-const editTeams = () => {
+const editTeams = async () => {
   showPopup.value = true;
+  await getAllTeams();
 }
 
 const apply = () => {
   showPopup.value = false;
+}
+
+const getAllTeams = async () => {
+  const response = await fetch('http://localhost:3000/api/teams', {
+    method: 'GET'
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    teams.value = data;
+  } else {
+    console.error('Fehler beim Laden der Teams:', response.statusText);
+  }
 }
 
 </script>
@@ -116,9 +152,13 @@ const apply = () => {
               <SelectValue placeholder="Select Team" />
             </SelectTrigger>
             <SelectContent class="z-[10001]">
-              <SelectItem value="a">Team A</SelectItem>
-              <SelectItem value="b">Team B</SelectItem>
-              <SelectItem value="c">Team C</SelectItem>
+              <SelectItem
+                v-for="team in teams"
+                :key="team.id"
+                :value="team.name"
+              >
+                {{ team.name }}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>

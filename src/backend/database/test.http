@@ -1,0 +1,16 @@
+POST http://localhost:3000/api/teams
+Content-Type: application/json
+
+{
+  "teamName": "Alpha",
+  "players": [
+    { "name": "Alex Coroi" },
+    { "name": "Filip" }
+  ]
+}
+
+###
+GET http://localhost:3000/api/teams
+
+###
+GET http://localhost:3000/api/teams/3
