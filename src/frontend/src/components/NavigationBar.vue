@@ -50,11 +50,11 @@ import {
               Devices
             </RouterLink>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          <!--<NavigationMenuItem>
             <RouterLink class="font-normal" to="/settings" :class="navigationMenuTriggerStyle()">
               Settings
             </RouterLink>
-          </NavigationMenuItem>
+          </NavigationMenuItem>-->
         </NavigationMenuList>
       </NavigationMenu>
 
@@ -86,11 +86,11 @@ import {
                   <RouterLink class="font-normal" to="/devices"> Devices</RouterLink>
                 </DrawerClose>
               </div>
-              <div class="text-center">
+              <!--<div class="text-center">
                 <DrawerClose>
                   <RouterLink class="font-normal" to="/settings"> Settings</RouterLink>
                 </DrawerClose>
-              </div>
+              </div>-->
             </div>
             <DrawerFooter></DrawerFooter>
           </DrawerContent>
