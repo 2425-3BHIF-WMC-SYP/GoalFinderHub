@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavigationBar from '@/components/NavigationBar.vue'
-import {useColorMode} from "@vueuse/core";
 import {useUserStore} from "@/stores/user-store.ts";
 
 //const colorMode = useColorMode({ disableTransition: false })

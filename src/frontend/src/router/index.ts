@@ -66,7 +66,7 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   const user = useUserStore();
 
   if(user.isAuthenticated && to.name === 'login') {

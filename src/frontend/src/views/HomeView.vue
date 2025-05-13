@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Page from "@/components/Page.vue";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 </script>
 
 <template>
