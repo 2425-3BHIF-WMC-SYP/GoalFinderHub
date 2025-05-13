@@ -41,6 +41,11 @@ import {
             </RouterLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
+            <RouterLink class="font-normal" to="/teams" :class="navigationMenuTriggerStyle()">
+              Teams
+            </RouterLink>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
             <RouterLink class="font-normal" to="/devices" :class="navigationMenuTriggerStyle()">
               Devices
             </RouterLink>
