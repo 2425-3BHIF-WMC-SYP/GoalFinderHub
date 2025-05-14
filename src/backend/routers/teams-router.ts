@@ -11,7 +11,7 @@ teamsRouter.get("/", async (req, res) => {
 
     try {
         const teams = await TeamsRepository.getAllTeams(db);
-        res.send("Ok");
+        res.status(StatusCodes.OK).send(teams);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     } finally {
@@ -25,6 +25,19 @@ teamsRouter.get("/:teamId", async (req, res) => {
     try {
         const players: (Player | undefined)[] = await TeamsRepository.getAllPlayersByTeam(db, parseInt(req.params.teamId));
         res.status(200).send(players);
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
+    } finally {
+        await db.close();
+    }
+});
+
+teamsRouter.delete("/:teamId", async (req, res) => {
+    const db = await DB.createDBConnection();
+
+    try {
+        await TeamsRepository.deleteTeam(db, parseInt(req.params.teamId));
+        res.status(200).send("ok");
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     } finally {

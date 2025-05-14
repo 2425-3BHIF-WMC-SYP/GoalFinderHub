@@ -12,16 +12,16 @@ export class TeamsRepository {
         return teams;
     }
 
-    public static async getAllPlayersByTeam(db: Database, teamId: Number): Promise<(Player | undefined)[]> {
+    public static async getAllPlayersByTeam(db: Database, teamId: Number | undefined): Promise<(Player | undefined)[]> {
         const getStmt = await db.prepare("select playerId from TEAMS_PLAYERS where teamId = ?1");
         let players : (Player | undefined) [] = [];
         let playerIds;
 
         try {
-
             await getStmt.bind({
                 1: teamId
             });
+
             playerIds = await getStmt.all();
         }
         catch (error){
@@ -116,6 +116,63 @@ export class TeamsRepository {
         }
         finally {
             await stmt.finalize();
+        }
+    }
+
+    public static async deletePlayers(db: Database, players: (Player | undefined)[]): Promise<void> {
+        const playerStmt = await db.prepare("delete from PLAYERS where id = ?1");
+
+        try {
+            for(const player of players) {
+                await playerStmt.bind({
+                    1: player?.id
+                });
+
+                await playerStmt.run();
+                await playerStmt.reset();
+            }
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await playerStmt.finalize();
+        }
+    }
+
+    public static async deleteTeam(db: Database, teamId: Number | undefined): Promise<void> {
+        const teamPlayerStmt = await db.prepare("delete from TEAMS_PLAYERS where teamId = ?1");
+        const players: (Player | undefined)[] = await this.getAllPlayersByTeam(db, teamId);
+
+        try {
+            await teamPlayerStmt.bind({
+                1: teamId
+            });
+            await teamPlayerStmt.run();
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await teamPlayerStmt.finalize();
+        }
+
+
+        await this.deletePlayers(db, players);
+
+        const teamsStmt = await db.prepare("delete from TEAMS where id = ?1");
+
+        try {
+            await teamsStmt.bind({
+                1: teamId
+            });
+            await teamsStmt.run();
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await teamsStmt.finalize();
         }
     }
 }

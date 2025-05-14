@@ -2,7 +2,7 @@
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import {
   Select,
   SelectContent,
@@ -11,22 +11,25 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import Popup from "@/components/Popup.vue";
-import {fetchRestEndpoint} from "@/fetch-rest-endpoint.ts";
+import { fetchRestEndpoint } from "@/fetch-rest-endpoint.ts";
+import { useRouter } from "vue-router";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Team {
   id: number;
   name: string;
 }
 
+const router = useRouter();
 const name = ref('');
 const teams = ref<Team[]>([]);
 const player = ref('');
 const players = ref<string[]>([]);
 const successMessage = ref('');
-const showPopup = ref(false)
+const createPopup = ref(false);
 
 const addPlayer = () => {
-  const trimmed = player.value;
+  const trimmed = player.value.trim();
   if (trimmed) {
     players.value.push(trimmed);
     player.value = '';
@@ -43,11 +46,6 @@ const createTeam = async () => {
     return;
   }
 
-  console.log('Team erstellt:', {
-    name: name.value,
-    players: players.value,
-  });
-
   const team = {
     name: name.value,
     players: players.value
@@ -55,14 +53,17 @@ const createTeam = async () => {
 
   const response = await fetchRestEndpoint('http://localhost:3000/api/teams', "POST", team);
 
-  if(team !== undefined) {
-    successMessage.value = '✅ Erfolgreich Team erstellt!';
+  if (response) {
+    successMessage.value = '✅ Team created successfully!';
     setTimeout(() => {
       successMessage.value = '';
-    }, 3000);
-  }
-  else {
-    successMessage.value = 'Nicht Erfolgreich!';
+      createPopup.value = false;
+      router.push('/teams');
+      getAllTeams();
+    }, 2000);
+  } else {
+    successMessage.value = '❌ Failed to create team.';
+    router.push('/teams');
     setTimeout(() => {
       successMessage.value = '';
     }, 3000);
@@ -73,142 +74,165 @@ const createTeam = async () => {
   players.value = [];
 };
 
-const editTeams = async () => {
-  showPopup.value = true;
-  await getAllTeams();
-}
-
-const apply = () => {
-  showPopup.value = false;
-}
-
 const getAllTeams = async () => {
-  const response = await fetch('http://localhost:3000/api/teams', {
-    method: 'GET'
-  });
+  const data = await fetchRestEndpoint('http://localhost:3000/api/teams', 'GET');
 
-  if (response.ok) {
-    const data = await response.json();
+  if (data !== undefined) {
     teams.value = data;
   } else {
-    console.error('Fehler beim Laden der Teams:', response.statusText);
+    console.error('Error loading teams');
   }
-}
+};
 
+const openCreatePopup = () => {
+  createPopup.value = true;
+};
+
+const closeCreatePopup = () => {
+  createPopup.value = false;
+};
+
+onMounted(() => {
+  getAllTeams();
+});
 </script>
 
 <template>
   <main>
-    <Page title="Team Config." description="Team Configurations.">
-      <Button @click="editTeams()" id="edit-teams-btn">Edit Teams</Button>
+    <Page title="Team Configuration" description="Manage your teams.">
+      <div class="text-right mb-4">
+        <Button @click="openCreatePopup" id="new-team-btn">New Team</Button>
+      </div>
 
-      <div class="space-y-8 bg-white p-8 rounded-2xl shadow-lg max-w-2xl mx-auto text-base">
-        <div v-if="successMessage" class="text-green-600 font-medium text-center">
+      <div v-if="teams.length === 0" class="text-center text-gray-500 italic text-sm">
+        No teams added
+      </div>
+
+      <div v-else class="space-y-2">
+        <Card v-for="team in teams" :key="team.id" class="small-card compact-card">
+          <CardContent class="card-row compact-row">
+            <div class="game-info text-sm">
+              <div class="teams"><strong>{{ team.name }}</strong></div>
+            </div>
+            <div class="button-group">
+              <Button id="delete-btn" size="sm">Delete</Button>
+              <Button id="edit-btn" size="sm">Edit</Button>
+              <Button id="players-btn" size="sm">Players</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Popup v-if="createPopup">
+        <h2 class="text-lg font-semibold mb-4">Create Team</h2>
+
+        <div v-if="successMessage" class="text-green-600 font-medium text-center mb-4">
           {{ successMessage }}
         </div>
 
-        <div class="space-y-1">
-          <label>Team Name</label>
-          <Input v-model="name" placeholder="Enter your team name"/>
-        </div>
-
-        <div class="space-y-1">
-          <label>Add Player</label>
-          <div class="flex gap-4">
-            <Input v-model="player" placeholder="Player name"/>
-            <Button @click="addPlayer">Add</Button>
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-1">Team Name</label>
+            <Input v-model="name" placeholder="Enter your team name" />
           </div>
-        </div>
 
-        <div class="space-y-1">
-          <label>Players</label>
-          <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
-            <div
-              v-for="(p, index) in players"
-              :key="index"
-              class="flex justify-between items-center border-b pb-1"
-            >
-              <label>{{ p }}</label>
-              <Button variant="destructive" size="sm" @click="removePlayer(index)">Delete</Button>
+          <div>
+            <label class="block mb-1">Add Player</label>
+            <div class="flex gap-4">
+              <Input v-model="player" placeholder="Player name" class="flex-1" />
+              <Button @click="addPlayer">Add</Button>
             </div>
-            <div v-if="players.length === 0" class="text-sm text-gray-500 italic">No players added</div>
           </div>
-        </div>
 
-        <div class="pt-6 text-right">
-          <Button @click="createTeam">
-            Create Team
-          </Button>
-        </div>
-      </div>
-
-      <Popup v-if="showPopup">
-        <h2 class="text-lg font-semibold mb-4">Edit Team</h2>
-
-        <div class="mb-4">
-          <label class="block mb-1">Team</label>
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Team" />
-            </SelectTrigger>
-            <SelectContent class="z-[10001]">
-              <SelectItem
-                v-for="team in teams"
-                :key="team.id"
-                :value="team.name"
+          <div>
+            <label class="block mb-1">Players</label>
+            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
+              <div
+                v-for="(p, index) in players"
+                :key="index"
+                class="flex justify-between items-center border-b pb-1"
               >
-                {{ team.name }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div class="mb-4">
-          <label class="block mb-1">Neuer Name</label>
-          <Input v-model="name" placeholder="Neuer Name." />
-        </div>
-
-        <div class="mb-4">
-          <label class="block mb-1">Add Player</label>
-
-          <div class="flex gap-4">
-            <Input v-model="player" placeholder="Player name" class="h-10 text-base flex-1" />
-            <Button class="h-10 px-6" @click="addPlayer">Add</Button>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <label class="block mb-1">Players</label>
-
-          <div class="space-y-2 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
-            <div
-              v-for="(p, index) in players"
-              :key="index"
-              class="flex justify-between items-center border-b pb-1"
-            >
-              <span>{{ p }}</span>
-              <Button variant="destructive" size="sm" @click="removePlayer(index)">Delete</Button>
+                <span>{{ p }}</span>
+                <Button variant="destructive" size="sm" @click="removePlayer(index)">Delete</Button>
+              </div>
+              <div v-if="players.length === 0" class="text-sm text-gray-500 italic">No players added</div>
             </div>
-            <div v-if="players.length === 0" class="text-sm text-gray-500 italic">No players added</div>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-4">
+            <Button variant="outline" @click="closeCreatePopup">Cancel</Button>
+            <Button @click="createTeam">Create</Button>
           </div>
         </div>
-
-        <div class="mt-6 flex justify-end gap-4">
-          <Button variant="outline" @click="() => showPopup = false">Cancel</Button>
-          <Button @click="apply()">Apply</Button>
-        </div>
-
       </Popup>
     </Page>
   </main>
 </template>
 
 <style scoped>
-
-#edit-teams-btn {
+#new-team-btn {
   margin-left: auto;
   display: block;
-  margin-top: -5rem;
-  margin-bottom: 3rem;
+}
+
+.small-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.compact-card {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.card-row,
+.compact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  gap: 0.5rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* Button Hover Styles */
+#delete-btn {
+  background-color: #ef4444;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+#delete-btn:hover {
+  background-color: #dc2626;
+}
+
+#edit-btn {
+  background-color: #e5e7eb;
+  color: #1f2937;
+  transition: background-color 0.2s ease;
+}
+
+#edit-btn:hover {
+  background-color: #d1d5db;
+}
+
+#players-btn {
+  background-color: #3b82f6;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+#players-btn:hover {
+  background-color: #2563eb;
+}
+
+.teams {
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 </style>
