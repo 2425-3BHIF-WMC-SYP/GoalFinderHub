@@ -3,6 +3,7 @@ import {Device, Game, Player, Team, User} from "./model";
 
 import bcrypt from "bcrypt";
 import {DevicesRepository} from "../repos/devices-repository";
+import {readFile} from "node:fs/promises";
 
 const saltRounds = 8;
 
@@ -49,18 +50,14 @@ export const games: Game[] = [{
     homeTeamScore: 3,
     awayTeamScore: 2,
     homeTeamId: 1,
-    awayTeamId: 2,
-    homeGoalfinderId: "00:1A:7D:DA:71:13",
-    awayGoalfinderId: "00:1A:7D:DA:71:14",
+    awayTeamId: 2
 }, {
     id: 2,
     date: new Date("2025-05-12T16:30:00Z"),
     homeTeamScore: 1,
     awayTeamScore: 1,
     homeTeamId: 2,
-    awayTeamId: 1,
-    homeGoalfinderId: "00:1A:7D:DA:71:14",
-    awayGoalfinderId: "00:1A:7D:DA:71:13",
+    awayTeamId: 1
 },];
 
 export async function ensureSampleDataInserted(db: Database) {

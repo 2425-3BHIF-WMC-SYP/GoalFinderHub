@@ -10,10 +10,10 @@ import { useRouter } from "vue-router";
 import { onMounted, ref } from 'vue';
 
 interface Goalfinder {
-  MacAddress: string;
-  Name: string;
-  Volume?: number;
-  LedMode?: string;
+  macAddress: string;
+  name: string;
+  volume?: number;
+  ledMode?: string;
 }
 
 const router = useRouter();
@@ -23,10 +23,10 @@ const loading = ref(true);
 // Dialog state
 const isDialogOpen = ref(false);
 const currentGoalfinder = ref<Goalfinder>({
-  MacAddress: '',
-  Name: '',
-  Volume: 50,
-  LedMode: 'Normal'
+  macAddress: '',
+  name: '',
+  volume: 50,
+  ledMode: 'Normal'
 });
 const currentVolume = ref([50]);
 const currentLedMode = ref('Normal');
@@ -60,22 +60,22 @@ const deleteGoalfinder = async (macAddress: string) => {
 const openEditDialog = (goalfinder: Goalfinder) => {
   currentGoalfinder.value = {
     ...goalfinder,
-    Volume: goalfinder.Volume || 50,
-    LedMode: goalfinder.LedMode || 'Normal'
+    volume: goalfinder.volume || 50,
+    ledMode: goalfinder.ledMode || 'Normal'
   };
-  currentVolume.value = [currentGoalfinder.value.Volume || 50];
-  currentLedMode.value = currentGoalfinder.value.LedMode || 'Normal';
+  currentVolume.value = [currentGoalfinder.value.volume || 50];
+  currentLedMode.value = currentGoalfinder.value.ledMode || 'Normal';
   isDialogOpen.value = true;
 };
 
 
 const saveChanges = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/api/devices/${currentGoalfinder.value.MacAddress}`, {
+    const response = await fetch(`http://localhost:3000/api/devices/${currentGoalfinder.value.macAddress}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: currentGoalfinder.value.Name,
+        name: currentGoalfinder.value.name,
       })
     });
 

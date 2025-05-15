@@ -6,12 +6,12 @@ create table if not exists GAMES
     date             TEXT,
     homeTeamScore    INTEGER,
     awayTeamScore    INTEGER,
-    homeTeamId       INTEGER
-        constraint gamesTeamsIdFk
-            references TEAMS,
+    homeTeamId       INTEGER,
+        -- constraint gamesTeamsIdFk
+           -- references TEAMS,
     awayTeamId       INTEGER
-        constraint gamesTeamsIdFk2
-            references TEAMS
+        -- constraint gamesTeamsIdFk2
+           -- references TEAMS
 );
 
 create table if not exists GOALFINDERS
@@ -20,29 +20,6 @@ create table if not exists GOALFINDERS
         constraint goalfindersPk
             primary key,
     name       TEXT not null
-);
-
-create table if not exists LEADERBOARDS
-(
-    id    INTEGER not null
-        constraint leaderboardPk
-            primary key autoincrement
-        constraint leaderboardsLeaderboardsTeamsLeaderBoardIdFk
-            references LEADERBOARDS_TEAMS (leaderBoardId),
-    teams INT     not null
-);
-
-create table if not exists LEADERBOARDS_TEAMS
-(
-    id            INTEGER
-        constraint leaderboardsTeamsPk
-            primary key,
-    leaderBoardId INTEGER not null
-        constraint leaderboardsTeamsLeaderboardsIdFk
-            references LEADERBOARDS,
-    teamId        INTEGER not null
-        constraint leaderboardsTeamsTeamsIdFk
-            references TEAMS
 );
 
 create table if not exists PLAYERS
@@ -55,7 +32,7 @@ create table if not exists PLAYERS
 
 create table if not exists TEAMS
 (
-    id   INTEGER not null
+    id   INTEGER
         constraint teamsPk
             primary key autoincrement,
     name INTEGER not null
