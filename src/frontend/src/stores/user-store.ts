@@ -7,7 +7,10 @@ export const useUserStore = defineStore("user", () => {
   const firstName = ref("");
   const lastName = ref("");
 
-  const isAuthenticated = computed(() => accessToken.value !== null);
+  const isAdmin = ref(false);
+
+  //const isAuthenticated = computed(() => accessToken.value !== null);
+  const isAuthenticated = computed(() => true);
   const name = computed(() => `${firstName.value} ${lastName.value}`);
   const initials = computed(() => `${firstName.value.charAt(0)}${lastName.value.charAt(0)}`);
 
@@ -31,6 +34,7 @@ export const useUserStore = defineStore("user", () => {
 
   return {
     isAuthenticated,
+    isAdmin,
     setAccessToken,
     setFirstName,
     setLastName,

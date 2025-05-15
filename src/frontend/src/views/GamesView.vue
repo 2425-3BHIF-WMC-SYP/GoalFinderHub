@@ -144,10 +144,10 @@ const router = useRouter();
 
 .vertical-scroll {
   max-height: 20rem;
-  overflow-y: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.3rem;
 }
 
 .small-card {
@@ -192,7 +192,7 @@ const router = useRouter();
 }
 
 .details strong {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
 }
 
 .date, .duration {

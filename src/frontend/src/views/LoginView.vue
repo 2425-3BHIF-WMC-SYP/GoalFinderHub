@@ -22,7 +22,7 @@ const formSchema = toTypedSchema(
 );
 
 const form = useForm({
-  validationSchema: formSchema,
+  //validationSchema: formSchema,
 });
 
 const userStore = useUserStore();
@@ -49,6 +49,9 @@ const onSubmit = form.handleSubmit(async (values) => {
       userStore.setAccessToken(jwt);
       userStore.setFirstName(data.user.firstName);
       userStore.setLastName(data.user.lastName);
+      userStore.isAdmin = data.user.isAdmin;
+
+      //data.user.isAdmin
 
       //sessionStorage.setItem('jwt', jwt);
       //sessionStorage.setItem('username', user.username);
@@ -88,7 +91,7 @@ const onSubmit = form.handleSubmit(async (values) => {
             </FormItem>
           </FormField>
           <div class="flex flex-row items-center space-x-2 mt-5">
-            <Button class="" type="submit">Sign In</Button>
+            <Button type="submit">Sign In</Button>
             <img v-if="userStore.isAuthenticated" src="/icons/favicon.svg" alt="spinner"
                  style="width: 2rem; height: 2rem"
                  class="h-4 w-4 animate-spin"/>

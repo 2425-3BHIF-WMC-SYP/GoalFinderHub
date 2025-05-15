@@ -50,11 +50,11 @@ import {
               Devices
             </RouterLink>
           </NavigationMenuItem>
-          <!--<NavigationMenuItem>
+          <NavigationMenuItem>
             <RouterLink class="font-normal" to="/settings" :class="navigationMenuTriggerStyle()">
               Settings
             </RouterLink>
-          </NavigationMenuItem>-->
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
 
@@ -96,7 +96,7 @@ import {
           </DrawerContent>
         </Drawer>
 
-        <AccountButton class="desktop-menu" />
+        <!--<AccountButton class="desktop-menu" />-->
       </div>
     </div>
   </div>
