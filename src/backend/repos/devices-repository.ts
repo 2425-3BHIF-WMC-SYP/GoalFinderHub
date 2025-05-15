@@ -9,6 +9,14 @@ export class DevicesRepository {
         return devices;
     }
 
+    public static async getDeviceByMacAddress(db: Database, macAddress: string): Promise<Device | undefined> {
+        const stmt = await db.prepare("SELECT * FROM GOALFINDERS WHERE MacAddress = ?1");
+        await stmt.bind(macAddress);
+        const device: Device | undefined = await stmt.get();
+        await stmt.finalize();
+        return device;
+    }
+
     public static async addDevice(device: Device, db: Database): Promise<Device> {
         try {
             const stmt = await db.prepare("INSERT INTO GOALFINDERS (MacAddress, NAME) VALUES (?1, ?2)");
@@ -56,7 +64,6 @@ export class DevicesRepository {
             throw error;
         }
     }
-
 
     public static async deviceExists(macAddress: string, db: Database): Promise<boolean> {
         try {
