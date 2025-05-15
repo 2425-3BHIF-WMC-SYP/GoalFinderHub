@@ -60,6 +60,15 @@ export const games: Game[] = [{
     awayTeamId: 1
 },];
 
+export async function dropTables(connection: Database): Promise<void> {
+    try {
+        const dropSchemaFile: string = await readFile(`./database/drop.sql`, "utf-8");
+        await connection.exec(dropSchemaFile);
+    } catch (error) {
+        throw new Error(`Error dropping tables: ${error}`);
+    }
+}
+
 export async function ensureSampleDataInserted(db: Database) {
     try {
         await insertUsers(db);
@@ -74,10 +83,10 @@ export async function ensureSampleDataInserted(db: Database) {
 }
 
 async function insertUsers(db: Database) {
-    const stmt = await db.prepare("INSERT INTO users (firstName, lastName, username, password, isAdmin) VALUES (?, ?, ?, ?, ?);");
+    const stmt = await db.prepare("insert into users (firstName, lastName, username, password, isAdmin) values (?, ?, ?, ?, ?);");
 
     for (const user of users) {
-        const existingUser = await db.get("SELECT * FROM users WHERE username = ?", user.username);
+        const existingUser = await db.get("select * from users where username = ?", user.username);
 
         if (existingUser === undefined) {
             await stmt.bind(user.firstName, user.lastName, user.username, user.password, user.isAdmin);
@@ -91,7 +100,7 @@ async function insertUsers(db: Database) {
 }
 
 async function insertGoalfinders(db: Database) {
-    const stmt = await db.prepare("INSERT INTO GOALFINDERS (MacAddress, Name) VALUES (?, ?);");
+    const stmt = await db.prepare("insert into GOALFINDERS (MacAddress, Name) values (?, ?);");
 
     for (const goalfinder of goalfinders) {
 
@@ -108,10 +117,10 @@ async function insertGoalfinders(db: Database) {
 }
 
 async function insertPlayers(db: Database) {
-    const stmt = await db.prepare("INSERT INTO players (name) VALUES (?);");
+    const stmt = await db.prepare("insert into players (name) values (?);");
 
     for (const player of players) {
-        const existingPlayer = await db.get("SELECT * FROM players WHERE name = ?", player.name);
+        const existingPlayer = await db.get("select * from players where name = ?", player.name);
 
         if (existingPlayer === undefined) {
             await stmt.bind(player.name);
@@ -125,10 +134,10 @@ async function insertPlayers(db: Database) {
 }
 
 async function insertTeams(db: Database) {
-    const stmt = await db.prepare("INSERT INTO TEAMS (name) VALUES (?);");
+    const stmt = await db.prepare("insert into TEAMS (name) values (?);");
 
     for (const team of teams) {
-        const existingTeam = await db.get("SELECT * FROM TEAMS WHERE name = ?", team.name);
+        const existingTeam = await db.get("select * from TEAMS where name = ?", team.name);
 
         if (existingTeam === undefined) {
             await stmt.bind(team.name);
@@ -142,10 +151,10 @@ async function insertTeams(db: Database) {
 }
 
 async function insertTeamPlayers(db: Database) {
-    const stmt = await db.prepare("INSERT INTO TEAMS_PLAYERS (teamId, playerId) VALUES (?, ?);");
+    const stmt = await db.prepare("insert into TEAMS_PLAYERS (teamId, playerId) values (?, ?);");
 
     for (const teamPlayer of teamsPlayers) {
-        const existingTeamPlayer = await db.get("SELECT * FROM TEAMS_PLAYERS WHERE teamId = ? AND playerId = ?", teamPlayer.teamId, teamPlayer.playerId);
+        const existingTeamPlayer = await db.get("select * from TEAMS_PLAYERS where teamId = ? and playerId = ?", teamPlayer.teamId, teamPlayer.playerId);
 
         if (existingTeamPlayer === undefined) {
             await stmt.bind(teamPlayer.teamId, teamPlayer.playerId);
@@ -159,10 +168,10 @@ async function insertTeamPlayers(db: Database) {
 }
 
 async function insertGames(db: Database) {
-    const stmt = await db.prepare("INSERT INTO games (date, homeTeamScore, awayTeamScore, homeTeamId, awayTeamId) VALUES (?, ?, ?, ?, ?);");
+    const stmt = await db.prepare("insert into games (date, homeTeamScore, awayTeamScore, homeTeamId, awayTeamId) values (?, ?, ?, ?, ?);");
 
     for (const game of games) {
-        const existingGame = await db.get("SELECT * FROM games WHERE id = ?", game.id);
+        const existingGame = await db.get("select * from games where id = ?", game.id);
 
         if (existingGame === undefined) {
             await stmt.bind(game.date.toISOString(), game.homeTeamScore, game.awayTeamScore, game.homeTeamId, game.awayTeamId);

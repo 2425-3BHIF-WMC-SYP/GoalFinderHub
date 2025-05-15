@@ -5,10 +5,10 @@
 // import modules
 import express from "express";
 import cors from "cors";
-import { Database } from "sqlite";
-import { DB } from "./database/data";
+import {Database} from "sqlite";
+import {DB} from "./database/data";
 import {devicesRouter} from "./routers/devices-router";
-import {ensureSampleDataInserted} from "./database/data-seeding";
+import {dropTables, ensureSampleDataInserted} from "./database/data-seeding";
 import {authRouter} from "./routers/auth-router";
 import dotenv from "dotenv";
 import {teamsRouter} from "./routers/teams-router";
@@ -32,7 +32,9 @@ app.use(`${API_URL}/teams`, teamsRouter);
 
 // ensure database is created and populated
 const db: Database = await DB.createDBConnection();
-await ensureSampleDataInserted(db);
+await dropTables(db); //Only for testing
+await DB.ensureTablesCreated(db); //moved from DB class for testing
+await ensureSampleDataInserted(db); //Only for testing
 await db.close();
 
 // start http server

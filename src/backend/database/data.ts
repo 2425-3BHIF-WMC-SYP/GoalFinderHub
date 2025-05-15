@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3'
 import {open, Database} from "sqlite";
 import {readFile} from "node:fs/promises";
+import {dropTables} from "./data-seeding";
 
 sqlite3.verbose();
 
@@ -14,8 +15,6 @@ export class DB {
             driver: sqlite3.Database
         });
         await db.run('PRAGMA foreign_keys = ON');
-
-        await DB.ensureTablesCreated(db);
 
         return db;
     }
@@ -32,7 +31,7 @@ export class DB {
         await connection.run('rollback;');
     }
 
-    private static async ensureTablesCreated(connection: Database): Promise<void> {
+    public static async ensureTablesCreated(connection: Database): Promise<void> {
         try {
             const schemaFile: string = await readFile(`./database/${dbSchemaFileName}`, "utf-8");
             await connection.exec(schemaFile);
