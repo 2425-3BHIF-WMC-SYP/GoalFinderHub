@@ -19,5 +19,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/api/devices/22:33:44:55:66:77
+DELETE http://localhost:3000/api/devices/00:1A:7D:DA:71:13
 

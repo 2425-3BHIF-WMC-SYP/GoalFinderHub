@@ -113,20 +113,7 @@ async function insertUsers(db: Database) {
 }
 
 async function insertGoalfinders(db: Database) {
-    const stmt = await db.prepare("INSERT INTO GOALFINDERS (MacAddress, Name) VALUES (?, ?);");
 
-    for (const goalfinder of goalfinders) {
-        const existingDevice = await DevicesRepository.getDeviceByMacAddress(db, goalfinder.macAddress);
-
-        if (existingDevice === undefined) {
-            await stmt.bind(goalfinder.macAddress, goalfinder.name);
-            await stmt.run();
-        }
-
-        await stmt.reset();
-    }
-
-    await stmt.finalize();
 }
 
 async function insertPlayers(db: Database) {
