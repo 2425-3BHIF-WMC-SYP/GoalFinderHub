@@ -11,13 +11,7 @@ create table if not exists GAMES
             references TEAMS,
     awayTeamId       INTEGER
         constraint gamesTeamsIdFk2
-            references TEAMS,
-    homeGoalfinderId TEXT not null
-        constraint gamesGoalfindersMacAddressFk
-            references GOALFINDERS,
-    awayGoalfinderId TEXT not null
-        constraint gamesGoalfindersMacAddressFk2
-            references GOALFINDERS
+            references TEAMS
 );
 
 create table if not exists GOALFINDERS

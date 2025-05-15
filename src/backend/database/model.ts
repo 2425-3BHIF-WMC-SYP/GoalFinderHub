@@ -28,8 +28,6 @@ export interface Game {
     awayTeamScore: number;
     homeTeamId: number;
     awayTeamId: number;
-    homeGoalfinderId: string;
-    awayGoalfinderId: string;
 }
 
 enum LedMode {

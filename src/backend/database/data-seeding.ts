@@ -6,81 +6,62 @@ import {DevicesRepository} from "../repos/devices-repository";
 
 const saltRounds = 8;
 
-export const users: User[] = [
-    {
-        firstName: "System",
-        lastName: "Admin",
-        isAdmin: true,
-        username: "admin",
-        password: bcrypt.hashSync("pw4admin", saltRounds),
-    },
-    {
-        firstName: "John",
-        lastName: "Doe",
-        isAdmin: false,
-        username: "john-doe",
-        password: bcrypt.hashSync("pw4user", saltRounds),
-    },
-];
+export const users: User[] = [{
+    firstName: "System",
+    lastName: "Admin",
+    isAdmin: true,
+    username: "admin",
+    password: bcrypt.hashSync("pw4admin", saltRounds),
+}, {
+    firstName: "John",
+    lastName: "Doe",
+    isAdmin: false,
+    username: "john-doe",
+    password: bcrypt.hashSync("pw4user", saltRounds),
+},];
 
-export const goalfinders: Device[] = [
-    {
-        macAddress: "00:1A:7D:DA:71:13",
-        name: "GoalFinder Alpha",
-    },
-    {
-        macAddress: "00:1A:7D:DA:71:14",
-        name: "GoalFinder Beta",
-    },
-];
+export const goalfinders: Device[] = [{
+    macAddress: "00:1A:7D:DA:71:13", name: "GoalFinder Alpha",
+}, {
+    macAddress: "00:1A:7D:DA:71:14", name: "GoalFinder Beta",
+},];
 
-export const players: Player[] = [
-    { id: 1, name: "Alice Anderson" },
-    { id: 2, name: "Bob Brown" },
-    { id: 3, name: "Charlie Clark" },
-    { id: 4, name: "Dana Davis" },
-];
+export const players: Player[] = [{id: 1, name: "Alice Anderson"}, {id: 2, name: "Bob Brown"}, {
+    id: 3,
+    name: "Charlie Clark"
+}, {id: 4, name: "Dana Davis"},];
 
-export const teams: Team[] = [
-    {
-        id: 1,
-        name: "Red Hawks"
-    },
-    {
-        id: 2,
-        name: "Blue Bears"
-    },
-];
+export const teams: Team[] = [{
+    id: 1, name: "Red Hawks"
+}, {
+    id: 2, name: "Blue Bears"
+},];
 
-export const teamsPlayers = [
-    { id: 1, teamId: 1, playerId: 1 },
-    { id: 2, teamId: 1, playerId: 2 },
-    { id: 3, teamId: 2, playerId: 3 },
-    { id: 4, teamId: 2, playerId: 4 },
-];
+export const teamsPlayers = [{id: 1, teamId: 1, playerId: 1}, {id: 2, teamId: 1, playerId: 2}, {
+    id: 3,
+    teamId: 2,
+    playerId: 3
+}, {id: 4, teamId: 2, playerId: 4},];
 
-export const games: Game[] = [
-    {
-        id: 1,
-        date: new Date("2025-05-10T14:00:00Z"),
-        homeTeamScore: 3,
-        awayTeamScore: 2,
-        homeTeamId: 1,
-        awayTeamId: 2,
-        homeGoalfinderId: "00:1A:7D:DA:71:13",
-        awayGoalfinderId: "00:1A:7D:DA:71:14",
-    },
-    {
-        id: 2,
-        date: new Date("2025-05-12T16:30:00Z"),
-        homeTeamScore: 1,
-        awayTeamScore: 1,
-        homeTeamId: 2,
-        awayTeamId: 1,
-        homeGoalfinderId: "00:1A:7D:DA:71:14",
-        awayGoalfinderId: "00:1A:7D:DA:71:13",
-    },
-];
+export const games: Game[] = [{
+    id: 1,
+    date: new Date("2025-05-10T14:00:00Z"),
+    homeTeamScore: 3,
+    awayTeamScore: 2,
+    homeTeamId: 1,
+    awayTeamId: 2,
+    homeGoalfinderId: "00:1A:7D:DA:71:13",
+    awayGoalfinderId: "00:1A:7D:DA:71:14",
+}, {
+    id: 2,
+    date: new Date("2025-05-12T16:30:00Z"),
+    homeTeamScore: 1,
+    awayTeamScore: 1,
+    homeTeamId: 2,
+    awayTeamId: 1,
+    homeGoalfinderId: "00:1A:7D:DA:71:14",
+    awayGoalfinderId: "00:1A:7D:DA:71:13",
+},];
 
 export async function ensureSampleDataInserted(db: Database) {
     try {
@@ -113,7 +94,20 @@ async function insertUsers(db: Database) {
 }
 
 async function insertGoalfinders(db: Database) {
+    const stmt = await db.prepare("INSERT INTO GOALFINDERS (MacAddress, Name) VALUES (?, ?);");
 
+    for (const goalfinder of goalfinders) {
+
+        const existingDevice = await DevicesRepository.getDeviceByMacAddress(db, goalfinder.macAddress);
+
+        if (existingDevice === undefined) {
+            await stmt.bind(goalfinder.macAddress, goalfinder.name);
+            await stmt.run();
+        }
+        await stmt.reset();
+    }
+
+    await stmt.finalize();
 }
 
 async function insertPlayers(db: Database) {
@@ -168,13 +162,13 @@ async function insertTeamPlayers(db: Database) {
 }
 
 async function insertGames(db: Database) {
-    const stmt = await db.prepare("INSERT INTO games (date, homeTeamScore, awayTeamScore, homeTeamId, awayTeamId, homeGoalfinderId, awayGoalfinderId) VALUES (?, ?, ?, ?, ?, ?, ?);");
+    const stmt = await db.prepare("INSERT INTO games (date, homeTeamScore, awayTeamScore, homeTeamId, awayTeamId) VALUES (?, ?, ?, ?, ?);");
 
     for (const game of games) {
         const existingGame = await db.get("SELECT * FROM games WHERE id = ?", game.id);
 
         if (existingGame === undefined) {
-            await stmt.bind(game.date.toISOString(), game.homeTeamScore, game.awayTeamScore, game.homeTeamId, game.awayTeamId, game.homeGoalfinderId, game.awayGoalfinderId);
+            await stmt.bind(game.date.toISOString(), game.homeTeamScore, game.awayTeamScore, game.homeTeamId, game.awayTeamId);
             await stmt.run();
         }
 
