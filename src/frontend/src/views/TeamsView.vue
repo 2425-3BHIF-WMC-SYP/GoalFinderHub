@@ -97,9 +97,8 @@ onMounted(() => {
 });
 
 const deleteTeam = async (teamId: number) => {
-  await fetchRestEndpoint(`http://localhost:3000/api/teams/${teamId}`, 'DELETE');
   teams.value = teams.value.filter(team => team.id !== teamId);
-  router.push('/teams');
+  await fetchRestEndpoint(`http://localhost:3000/api/teams/${teamId}`, 'DELETE');
 };
 
 const showPlayersPopup = ref(false);
