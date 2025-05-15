@@ -127,8 +127,33 @@ const editedPlayer = ref('');
 const editedPlayers = ref<string[]>([]);
 
 const openEditPopup = async (team: Team) => {
-
   editPopup.value = true;
+  editedTeamId.value = team.id;
+};
+
+const saveEditedTeam = async () => {
+  editPopup.value = false;
+
+  if(editedName.value !== '') {
+    //Update Name
+    await fetchRestEndpoint(`http://localhost:3000/api/teams/${editedTeamId.value}/${editedName.value}`, 'PUT');
+    await getAllTeams();
+  }
+
+  if(editedPlayers.value.length !== 0) {
+    for(let i = 0; i < editedPlayers.value.length; i++) {
+      //Put one player
+      await fetchRestEndpoint(`http://localhost:3000/api/teams/${editedTeamId.value}`, 'PUT', { name: editedPlayers.value[i] });
+    }
+    await getAllTeams();
+  }
+
+  editedName.value = '';
+  editedPlayer.value = '';
+  editedPlayers.value = [];
+  editedTeamId.value = null;
+
+
 };
 
 const closeEditPopup = () => {
@@ -137,6 +162,10 @@ const closeEditPopup = () => {
   editedPlayer.value = '';
   editedPlayers.value = [];
   editedTeamId.value = null;
+};
+
+const addEditedPlayer = (editedPlayer: string) => {
+  editedPlayers.value.push(editedPlayer);
 };
 </script>
 
@@ -246,28 +275,13 @@ const closeEditPopup = () => {
             <label class="block mb-1">Add Player</label>
             <div class="flex gap-4">
               <Input v-model="editedPlayer" placeholder="Player name" class="flex-1" />
-              <Button >Add</Button>
-            </div>
-          </div>
-
-          <div>
-            <label class="block mb-1">Players</label>
-            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
-              <div
-                v-for="(p, index) in editedPlayers"
-                :key="index"
-                class="flex justify-between items-center border-b pb-1"
-              >
-                <span>{{ p }}</span>
-                <Button variant="destructive" size="sm">Delete</Button>
-              </div>
-              <div v-if="editedPlayers.length === 0" class="text-sm text-gray-500 italic">No players added</div>
+              <Button @click="addEditedPlayer(editedPlayer)">Add</Button>
             </div>
           </div>
 
           <div class="mt-6 flex justify-end gap-4">
             <Button variant="outline" @click="closeEditPopup">Cancel</Button>
-            <Button >Save</Button>
+            <Button @click="saveEditedTeam">Save</Button>
           </div>
         </div>
       </Popup>
