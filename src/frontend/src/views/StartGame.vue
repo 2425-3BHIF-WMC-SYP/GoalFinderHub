@@ -22,7 +22,7 @@ const handleStartGame = () => {
       <div class="team-container">
         <Card class="team-card">
           <CardHeader>
-            <CardTitle class="team-title">Team 1</CardTitle>
+            <CardTitle class="team-title">Hometeam</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="dropdown-group">
@@ -37,14 +37,14 @@ const handleStartGame = () => {
                 </SelectContent>
               </Select>
 
-              <label>MAC Address</label>
+              <label>Goalfinder</label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select MAC" />
+                  <SelectValue placeholder="Select Goalfinder" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="mac1">00:11:22:33:44:55</SelectItem>
-                  <SelectItem value="mac2">66:77:88:99:AA:BB</SelectItem>
+                  <SelectItem value="mac1">Goalfinder 1</SelectItem>
+                  <SelectItem value="mac2">Goalfinder 2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -53,7 +53,7 @@ const handleStartGame = () => {
 
         <Card class="team-card">
           <CardHeader>
-            <CardTitle class="team-title">Team 2</CardTitle>
+            <CardTitle class="team-title">Awayteam</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="dropdown-group">
@@ -68,14 +68,14 @@ const handleStartGame = () => {
                 </SelectContent>
               </Select>
 
-              <label>MAC Address</label>
+              <label>Goalfinder</label>
               <Select>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select MAC" />
+                  <SelectValue placeholder="Select Goalfinder" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="mac3">CC:DD:EE:FF:00:11</SelectItem>
-                  <SelectItem value="mac4">22:33:44:55:66:77</SelectItem>
+                  <SelectItem value="mac3">Goalfinder 3</SelectItem>
+                  <SelectItem value="mac4">Goalfinder 4</SelectItem>
                 </SelectContent>
               </Select>
             </div>
