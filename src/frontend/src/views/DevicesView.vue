@@ -12,7 +12,6 @@ import { onMounted, ref } from 'vue';
 interface Goalfinder {
   MacAddress: string;
   Name: string;
-  State?: string;
   Volume?: number;
   LedMode?: string;
 }
@@ -26,7 +25,6 @@ const isDialogOpen = ref(false);
 const currentGoalfinder = ref<Goalfinder>({
   MacAddress: '',
   Name: '',
-  State: 'Off',
   Volume: 50,
   LedMode: 'Normal'
 });
@@ -62,7 +60,6 @@ const deleteGoalfinder = async (macAddress: string) => {
 const openEditDialog = (goalfinder: Goalfinder) => {
   currentGoalfinder.value = {
     ...goalfinder,
-    State: goalfinder.State || 'Off',
     Volume: goalfinder.Volume || 50,
     LedMode: goalfinder.LedMode || 'Normal'
   };
@@ -104,14 +101,14 @@ onMounted(fetchDevices);
     <div v-else-if="goalfinders.length === 0" class="text-muted-foreground">No Goalfinder added yet.</div>
 
     <div class="goalfinder-grid">
-      <Card v-for="goalfinder in goalfinders" :key="goalfinder.MacAddress" class="goalfinder-card">
+      <Card v-for="goalfinder in goalfinders" :key="goalfinder.macAddress" class="goalfinder-card">
         <CardContent class="card-content">
-          <h3 class="card-title">{{ goalfinder.Name }}</h3>
-          <p class="card-mac">{{ goalfinder.MacAddress }}</p>
+          <h3 class="card-title">{{ goalfinder.name }}</h3>
+          <p class="card-mac">{{ goalfinder.macAddress }}</p>
 
           <div class="card-footer">
             <div class="action-row">
-              <Button variant="link" size="sm" class="delete-btn" @click="deleteGoalfinder(goalfinder.MacAddress)">Delete</Button>
+              <Button variant="link" size="sm" class="delete-btn" @click="deleteGoalfinder(goalfinder.macAddress)">Delete</Button>
               <Button variant="link" size="sm" class="edit-btn" @click="openEditDialog(goalfinder)">Edit</Button>
             </div>
           </div>
@@ -122,14 +119,14 @@ onMounted(fetchDevices);
     <Dialog v-model:open="isDialogOpen">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit {{ currentGoalfinder.Name }}</DialogTitle>
+          <DialogTitle>Edit {{ currentGoalfinder.name }}</DialogTitle>
           <DialogDescription>Make changes to your Goalfinder here.</DialogDescription>
         </DialogHeader>
 
         <div class="edit-form">
           <div class="form-section">
             <h4>Name</h4>
-            <Input v-model="currentGoalfinder.Name" placeholder="GoalFinder Name" />
+            <Input v-model="currentGoalfinder.name" placeholder="GoalFinder Name" />
           </div>
 
           <div class="form-section">

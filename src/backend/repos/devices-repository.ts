@@ -36,7 +36,8 @@ export class DevicesRepository {
 
     public static async deleteDevice(macAddress: string, db: Database): Promise<string> {
         try {
-            const stmt = await db.prepare("DELETE FROM GOALFINDERS WHERE MacAddress = ?1");
+            console.log(macAddress);
+            const stmt = await db.prepare("DELETE FROM GOALFINDERS WHERE macAddress = ?1");
             await stmt.bind(macAddress);
             const result = await stmt.run();
             await stmt.finalize();
