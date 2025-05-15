@@ -2,12 +2,21 @@ POST http://localhost:3000/api/teams
 Content-Type: application/json
 
 {
-  "teamName": "Alpha",
+  "name": "Alpha",
   "players": [
-    { "name": "Alex Coroi" },
-    { "name": "Filip" }
+    "Alex Coroi" ,
+    "Filip"
   ]
 }
+
+###
+PUT http://localhost:3000/api/teams/3
+Content-Type: application/json
+
+{
+    "name": "Benji Stoic"
+}
+
 
 ###
 GET http://localhost:3000/api/teams
@@ -16,4 +25,10 @@ GET http://localhost:3000/api/teams
 GET http://localhost:3000/api/teams/3
 
 ###
-DELETE http://localhost:3000/api/teams/3
+DELETE http://localhost:3000/api/teams/1
+
+###
+DELETE http://localhost:3000/api/teams/3/8
+
+###
+PUT http://localhost:3000/api/teams/3/Delta

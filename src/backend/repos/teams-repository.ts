@@ -98,6 +98,46 @@ export class TeamsRepository {
         return ids;
     }
 
+    public static async insertPlayer(db: Database, name: String, teamId: Number | undefined): Promise<void> {
+        const stmt = await db.prepare("insert into PLAYERS (name) values (?1)");
+        let id;
+        try {
+            await stmt.bind({
+                1: name
+            });
+
+            const result = await stmt.run();
+            id = result.lastID;
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await stmt.finalize();
+        }
+
+        await this.insertPlayerTeams(db, id, teamId);
+    }
+
+    public static async insertPlayerTeams(db: Database, playerId: Number | undefined, teamId: Number | undefined): Promise<void> {
+        const stmt = await db.prepare("insert into TEAMS_PLAYERS (teamId, playerID) values (?1, ?2)");
+
+        try {
+            await stmt.bind({
+                1: teamId,
+                2: playerId
+            });
+
+            await stmt.run();
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await stmt.finalize();
+        }
+    }
+
     public static async insertTeamPlayers(db: Database, teamId: Number | undefined, playersIds: (Number | undefined)[] ): Promise<void> {
         const stmt = await db.prepare("insert into TEAMS_PLAYERS (TeamId, PlayerId) values(?1, ?2)");
         try {
@@ -141,14 +181,18 @@ export class TeamsRepository {
     }
 
     public static async deleteTeam(db: Database, teamId: Number | undefined): Promise<void> {
-        const teamPlayerStmt = await db.prepare("delete from TEAMS_PLAYERS where teamId = ?1");
+        const teamPlayerStmt = await db.prepare("delete from TEAMS_PLAYERS where playerId = ?1");
         const players: (Player | undefined)[] = await this.getAllPlayersByTeam(db, teamId);
 
         try {
-            await teamPlayerStmt.bind({
-                1: teamId
-            });
-            await teamPlayerStmt.run();
+            for(const player of players) {
+                await teamPlayerStmt.bind({
+                    1: player?.id
+                });
+
+                await teamPlayerStmt.run();
+                await teamPlayerStmt.reset();
+            }
         }
         catch (error) {
             throw error;
@@ -173,6 +217,38 @@ export class TeamsRepository {
         }
         finally {
             await teamsStmt.finalize();
+        }
+    }
+
+    public static async deletePlayer(db: Database, playerId: Number): Promise<void> {
+        const getStmt  = await db.prepare("delete from TEAMS_PLAYERS where playerId = ?1");
+        try {
+            await getStmt.bind({
+                1: playerId
+            });
+
+            await getStmt.run();
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await getStmt.finalize();
+        }
+
+        const playerStmt = await db.prepare("delete from PLAYERS where id = ?1");
+        try {
+            await playerStmt.bind({
+                1: playerId
+            });
+
+            await playerStmt.run();
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            await playerStmt.finalize();
         }
     }
 }

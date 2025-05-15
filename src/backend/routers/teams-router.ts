@@ -19,6 +19,7 @@ teamsRouter.get("/", async (req, res) => {
     }
 });
 
+//Get Players By Team
 teamsRouter.get("/:teamId", async (req, res) => {
     const db = await DB.createDBConnection();
 
@@ -32,6 +33,7 @@ teamsRouter.get("/:teamId", async (req, res) => {
     }
 });
 
+//Delete all Team and Player
 teamsRouter.delete("/:teamId", async (req, res) => {
     const db = await DB.createDBConnection();
 
@@ -45,6 +47,56 @@ teamsRouter.delete("/:teamId", async (req, res) => {
     }
 });
 
+//Delete one Player Only
+teamsRouter.delete("/:teamId/:playerId", async (req, res) => {
+    const db = await DB.createDBConnection();
+    try {
+        await TeamsRepository.deletePlayer(db, parseInt(req.params.playerId));
+        res.status(200).send("ok");
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
+    } finally {
+        await db.close();
+    }
+});
+
+//PUT one Player
+teamsRouter.put("/:teamId", async (req, res) => {
+    const db = await DB.createDBConnection();
+    const playerName : String = req.body.name;
+
+    try {
+        await TeamsRepository.insertPlayer(db, playerName, parseInt(req.params.teamId));
+        res.status(StatusCodes.OK).send("ok");
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
+    } finally {
+        await db.close();
+    }
+});
+
+//Update Name
+teamsRouter.put("/:teamId/:name", async (req, res) => {
+    const db = await DB.createDBConnection();
+
+    try {
+        const stmt = await db.prepare("Update TEAMS set name = ?1 where id = ?2");
+        await stmt.bind({
+            1: req.params.name,
+            2: req.params.teamId
+        });
+
+        await stmt.run();
+        await stmt.finalize();
+        res.status(StatusCodes.OK).send("ok");
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
+    } finally {
+        await db.close();
+    }
+});
+
+//Post Team and Players
 teamsRouter.post("/", async (req, res) => {
     const db = await DB.createDBConnection();
     const name: string = req.body.name;

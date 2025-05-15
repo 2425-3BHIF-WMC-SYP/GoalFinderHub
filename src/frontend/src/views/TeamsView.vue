@@ -95,6 +95,50 @@ const closeCreatePopup = () => {
 onMounted(() => {
   getAllTeams();
 });
+
+const deleteTeam = async (teamId: number) => {
+  await fetchRestEndpoint(`http://localhost:3000/api/teams/${teamId}`, 'DELETE');
+  teams.value = teams.value.filter(team => team.id !== teamId);
+  router.push('/teams');
+};
+
+const showPlayersPopup = ref(false);
+const selectedPlayers = ref<string[]>([]);
+const selectedTeamName = ref('');
+
+const openPlayersPopup = async (team: Team) => {
+  const data = await fetchRestEndpoint(`http://localhost:3000/api/teams/${team.id}`, 'GET');
+  if (data !== undefined) {
+    selectedPlayers.value = data.map((p: any) => p.name); // vorausgesetzt Backend liefert Players mit name-Feld
+    selectedTeamName.value = team.name;
+    showPlayersPopup.value = true;
+  } else {
+    console.error("Could not fetch players");
+  }
+};
+
+const closePlayersPopup = () => {
+  showPlayersPopup.value = false;
+};
+
+const editPopup = ref(false);
+const editedTeamId = ref<number | null>(null);
+const editedName = ref('');
+const editedPlayer = ref('');
+const editedPlayers = ref<string[]>([]);
+
+const openEditPopup = async (team: Team) => {
+
+  editPopup.value = true;
+};
+
+const closeEditPopup = () => {
+  editPopup.value = false;
+  editedName.value = '';
+  editedPlayer.value = '';
+  editedPlayers.value = [];
+  editedTeamId.value = null;
+};
 </script>
 
 <template>
@@ -115,13 +159,37 @@ onMounted(() => {
               <div class="teams"><strong>{{ team.name }}</strong></div>
             </div>
             <div class="button-group">
-              <Button id="delete-btn" size="sm">Delete</Button>
-              <Button id="edit-btn" size="sm">Edit</Button>
-              <Button id="players-btn" size="sm">Players</Button>
+              <Button id="delete-btn" size="sm" @click="deleteTeam(team.id)">Delete</Button>
+              <Button id="edit-btn" size="sm" @click="openEditPopup(team)">Edit</Button>
+              <Button id="players-btn" size="sm" @click="openPlayersPopup(team)">Players</Button>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <Popup v-if="showPlayersPopup">
+        <h2 class="text-lg font-semibold mb-4">Players in "{{ selectedTeamName }}"</h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-1">Players</label>
+            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
+              <div
+                v-for="(p, index) in selectedPlayers"
+                :key="index"
+                class="flex justify-between items-center border-b pb-1"
+              >
+                <span>{{ p }}</span>
+              </div>
+              <div v-if="selectedPlayers.length === 0" class="text-sm text-gray-500 italic">No players available</div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-4">
+            <Button variant="outline" @click="closePlayersPopup">Close</Button>
+          </div>
+        </div>
+      </Popup>
 
       <Popup v-if="createPopup">
         <h2 class="text-lg font-semibold mb-4">Create Team</h2>
@@ -162,6 +230,45 @@ onMounted(() => {
           <div class="mt-6 flex justify-end gap-4">
             <Button variant="outline" @click="closeCreatePopup">Cancel</Button>
             <Button @click="createTeam">Create</Button>
+          </div>
+        </div>
+      </Popup>
+
+      <Popup v-if="editPopup">
+        <h2 class="text-lg font-semibold mb-4">Edit Team</h2>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-1">Team Name</label>
+            <Input v-model="editedName" placeholder="Edit team name" />
+          </div>
+
+          <div>
+            <label class="block mb-1">Add Player</label>
+            <div class="flex gap-4">
+              <Input v-model="editedPlayer" placeholder="Player name" class="flex-1" />
+              <Button >Add</Button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block mb-1">Players</label>
+            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
+              <div
+                v-for="(p, index) in editedPlayers"
+                :key="index"
+                class="flex justify-between items-center border-b pb-1"
+              >
+                <span>{{ p }}</span>
+                <Button variant="destructive" size="sm">Delete</Button>
+              </div>
+              <div v-if="editedPlayers.length === 0" class="text-sm text-gray-500 italic">No players added</div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-4">
+            <Button variant="outline" @click="closeEditPopup">Cancel</Button>
+            <Button >Save</Button>
           </div>
         </div>
       </Popup>
