@@ -12,11 +12,14 @@ import {dropTables, ensureSampleDataInserted} from "./database/data-seeding";
 import {authRouter} from "./routers/auth-router";
 import dotenv from "dotenv";
 import {teamsRouter} from "./routers/teams-router";
+import {initLeaderboardRouter} from "./routers/leaderboard-router";
 
 const API_URL = "/api"
 
 // create express application
 const app = express();
+const db: Database = await DB.createDBConnection();
+const leaderboardRouter = initLeaderboardRouter(db);
 
 dotenv.config();
 
@@ -28,10 +31,10 @@ app.use(express.json());    // parse JSON data and place result in req.body
 app.use(`${API_URL}/auth`, authRouter);
 app.use(`${API_URL}/devices`, devicesRouter);
 app.use(`${API_URL}/teams`, teamsRouter);
+app.use(`${API_URL}/leaderboard`, leaderboardRouter);
 // TODO
 
 // ensure database is created and populated
-const db: Database = await DB.createDBConnection();
 await dropTables(db); //Only for testing
 await DB.ensureTablesCreated(db); //moved from DB class for testing
 await ensureSampleDataInserted(db); //Only for testing

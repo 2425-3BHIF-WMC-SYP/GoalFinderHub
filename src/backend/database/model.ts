@@ -21,6 +21,16 @@ export interface Device {
     name: string;
 }
 
+export interface TeamStanding {
+    teamId: number;
+    teamName: string;
+    points: number;
+    wins: number;
+    draws: number;
+    losses: number;
+    goalsFor: number;
+    goalsAgainst: number;
+}
 export interface Game {
     id: number;
     date: Date;
