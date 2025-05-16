@@ -1,0 +1,13 @@
+services:
+  backend:
+    restart: on-failure
+    build: ./backend
+    hostname: backend
+    ports:
+      - '3000:3000'
+  frontend:
+    restart: on-failure
+    build: ./frontend
+    hostname: frontend
+    ports:
+      - '80:80'
