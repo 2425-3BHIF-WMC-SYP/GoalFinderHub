@@ -1,94 +1,107 @@
 <script setup lang="ts">
-import Page from "@/components/Page.vue";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from '@/components/ui/slider';
-import { Input } from "@/components/ui/input";
-import { useRouter } from "vue-router";
-import { onMounted, ref } from 'vue';
+import Page from '@/components/Page.vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Input } from '@/components/ui/input'
+import { useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 
 interface Goalfinder {
-  macAddress: string;
-  name: string;
-  volume?: number;
-  ledMode?: string;
+  macAddress: string
+  name: string
+  volume?: number
+  ledMode?: string
 }
 
-const router = useRouter();
-const goalfinders = ref<Goalfinder[]>([]);
-const loading = ref(true);
+const router = useRouter()
+const goalfinders = ref<Goalfinder[]>([])
+const loading = ref(true)
 
 // Dialog state
-const isDialogOpen = ref(false);
+const isDialogOpen = ref(false)
 const currentGoalfinder = ref<Goalfinder>({
   macAddress: '',
   name: '',
   volume: 50,
-  ledMode: 'Normal'
-});
-const currentVolume = ref([50]);
-const currentLedMode = ref('Normal');
+  ledMode: 'Normal',
+})
+const currentVolume = ref([50])
+const currentLedMode = ref('Normal')
 
 const fetchDevices = async () => {
   try {
-    const response = await fetch('http://localhost:3000/api/devices');
-    if (!response.ok) {
-      throw new Error('Error fetching devices');
-    }
-    const data = await response.json();
-    goalfinders.value = data;
+    goalfinders.value = await fetchRestEndpoint('/devices', 'GET')
   } catch (error) {
-    console.error("Error fetching devices:", error);
+    console.error('Error fetching devices:', error)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const deleteGoalfinder = async (macAddress: string) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/devices/${macAddress}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) throw new Error('Error deleting device');
-    await fetchDevices();
+    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE')
+    await fetchDevices()
   } catch (error) {
-    console.error("Error deleting device:", error);
+    console.error('Error deleting device:', error)
   }
-};
+}
 const openEditDialog = (goalfinder: Goalfinder) => {
   currentGoalfinder.value = {
     ...goalfinder,
     volume: goalfinder.volume || 50,
-    ledMode: goalfinder.ledMode || 'Normal'
-  };
-  currentVolume.value = [currentGoalfinder.value.volume || 50];
-  currentLedMode.value = currentGoalfinder.value.ledMode || 'Normal';
-  isDialogOpen.value = true;
-};
-
+    ledMode: goalfinder.ledMode || 'Normal',
+  }
+  currentVolume.value = [currentGoalfinder.value.volume || 50]
+  currentLedMode.value = currentGoalfinder.value.ledMode || 'Normal'
+  isDialogOpen.value = true
+}
 
 const saveChanges = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/api/devices/${currentGoalfinder.value.macAddress}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    /*const response = await fetch(
+      `http://localhost:3000/api/devices/${currentGoalfinder.value.macAddress}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: currentGoalfinder.value.name,
+        }),
+      },
+    )*/
+
+    const response = await fetchRestEndpoint(
+      `/devices/${currentGoalfinder.value.macAddress}`,
+      'PUT',
+      {
         name: currentGoalfinder.value.name,
-      })
-    });
+      },
+    )
 
-    if (!response.ok) throw new Error('Error updating device');
-    await fetchDevices();
-    isDialogOpen.value = false;
+    await fetchDevices()
+    isDialogOpen.value = false
   } catch (error) {
-    console.error("Error updating device:", error);
+    console.error('Error updating device:', error)
   }
-};
+}
 
-
-onMounted(fetchDevices);
+onMounted(fetchDevices)
 </script>
 
 <template>
@@ -98,7 +111,9 @@ onMounted(fetchDevices);
     </div>
 
     <div v-if="loading" class="text-muted-foreground">Loading devices...</div>
-    <div v-else-if="goalfinders.length === 0" class="text-muted-foreground">No Goalfinder added yet.</div>
+    <div v-else-if="goalfinders.length === 0" class="text-muted-foreground">
+      No Goalfinder added yet.
+    </div>
 
     <div class="goalfinder-grid">
       <Card v-for="goalfinder in goalfinders" :key="goalfinder.macAddress" class="goalfinder-card">
@@ -108,8 +123,16 @@ onMounted(fetchDevices);
 
           <div class="card-footer">
             <div class="action-row">
-              <Button variant="link" size="sm" class="delete-btn" @click="deleteGoalfinder(goalfinder.macAddress)">Delete</Button>
-              <Button variant="link" size="sm" class="edit-btn" @click="openEditDialog(goalfinder)">Edit</Button>
+              <Button
+                variant="link"
+                size="sm"
+                class="delete-btn"
+                @click="deleteGoalfinder(goalfinder.macAddress)"
+                >Delete
+              </Button>
+              <Button variant="link" size="sm" class="edit-btn" @click="openEditDialog(goalfinder)"
+                >Edit
+              </Button>
             </div>
           </div>
         </CardContent>

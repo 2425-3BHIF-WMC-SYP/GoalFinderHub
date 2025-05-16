@@ -5,6 +5,7 @@ import Page from '@/components/Page.vue'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 
 const name = ref('')
 const macAddress = ref('')
@@ -23,19 +24,18 @@ const addGoalFinder = async () => {
   }
 
   try {
-    const response = await fetch('http://localhost:3000/api/devices', {
+
+
+    /*const response = await fetch('http://localhost:3000/api/devices', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         macAddress: macAddress.value,
         name: name.value.trim()
       }),
-    })
+    })*/
 
-    if (!response.ok) {
-      const msg = await response.text()
-      throw new Error(msg)
-    }
+    const response = await fetchRestEndpoint("/devices", "POST", {macAddress: macAddress.value, name: name.value.trim()});
 
     await router.push('/devices')
   } catch (err) {

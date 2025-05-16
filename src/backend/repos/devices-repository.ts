@@ -34,7 +34,7 @@ export class DevicesRepository {
         return device;
     }
 
-    public static async deleteDevice(macAddress: string, db: Database): Promise<string> {
+    public static async deleteDevice(macAddress: string, db: Database): Promise<void> {
         try {
             console.log(macAddress);
             const stmt = await db.prepare("DELETE FROM GOALFINDERS WHERE macAddress = ?1");
@@ -45,8 +45,6 @@ export class DevicesRepository {
             console.error("Error deleting device:", error);
             throw error;
         }
-
-        return macAddress;
     }
 
     public static async updateDevice(oldMacAddress: string, db: Database, name: string): Promise<void> {

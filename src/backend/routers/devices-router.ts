@@ -24,22 +24,20 @@ devicesRouter.post("/", async (req, res) => {
     const db = await DB.createDBConnection();
 
     try {
-        if(await DevicesRepository.deviceExists(req.body.macAddress as string, db)) {
-           throw new Error("Device already exists");
+        if (await DevicesRepository.deviceExists(req.body.macAddress as string, db)) {
+            throw new Error("Device already exists");
         }
 
-        let device : Device = {
+        let device: Device = {
             macAddress: req.body.macAddress as string,
             name: req.body.name as string,
         };
         device = await DevicesRepository.addDevice(device, db);
 
         res.send(device);
-    }
-    catch (error) {
+    } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).send(`Bad request: ${error}`);
-    }
-    finally {
+    } finally {
         await db.close();
     }
 });
@@ -49,9 +47,9 @@ devicesRouter.delete("/:macAddress", async (req, res) => {
 
     try {
         let macAddress = req.params.macAddress as string;
-        macAddress = await DevicesRepository.deleteDevice(macAddress, db);
+        await DevicesRepository.deleteDevice(macAddress, db);
 
-        res.status(StatusCodes.OK).send(`Device with macAdress: ${macAddress} is deleted`);
+        res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).send(`Bad request: ${error}`);
     } finally {
@@ -63,22 +61,25 @@ devicesRouter.delete("/:macAddress", async (req, res) => {
 devicesRouter.put('/:macAddress', async (req, res) => {
     const db = await DB.createDBConnection();
     const oldMacAddress = req.params.macAddress;
-    const { name } = req.body;
+    const {name} = req.body;
 
     if (!name) {
-        return res.status(400).json({ error: 'Name must be provided.' });
+        //Name must be provided
+        res.status(StatusCodes.BAD_REQUEST).send("Name must be provided");
+        return;
     }
 
     try {
         if (!await DevicesRepository.deviceExists(oldMacAddress, db)) {
-            return res.status(404).json({ error: 'Device not found.' });
+            res.status(StatusCodes.BAD_REQUEST).send('Device not found.');
+            return;
         }
 
         await DevicesRepository.updateDevice(oldMacAddress, db, name);
-        return res.status(200).json({ message: 'Device updated successfully.' });
+        res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (error) {
         console.error('Update failed:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     } finally {
         await db.close();
     }

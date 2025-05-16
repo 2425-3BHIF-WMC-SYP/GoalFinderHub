@@ -28,7 +28,7 @@ const form = useForm({
 const userStore = useUserStore();
 
 const onSubmit = form.handleSubmit(async (values) => {
-  const user: UserCredentials = values;
+  const user: UserCredentials = {username: values.username, password: values.password};
 
   try {
     const response = await fetch('http://localhost:3000/api/auth/login', {

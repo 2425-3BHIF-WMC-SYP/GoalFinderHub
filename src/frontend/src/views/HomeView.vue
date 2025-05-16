@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Page from "@/components/Page.vue";
 import { ref, onMounted } from 'vue';
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 
 interface TeamStanding {
   teamId: number;
@@ -14,13 +15,7 @@ const error = ref<string | null>(null);
 
 async function fetchLeaderboard() {
   try {
-    const response = await fetch('http://localhost:3000/api/leaderboard');
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data: TeamStanding[] = await response.json();
+    const data: TeamStanding[] = await fetchRestEndpoint("/leaderboard", "GET");
 
     topPlayers.value = data.map(team => ({
       name: team.teamName,

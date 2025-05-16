@@ -51,7 +51,7 @@ const createTeam = async () => {
     players: players.value
   };
 
-  const response = await fetchRestEndpoint('http://localhost:3000/api/teams', "POST", team);
+  const response = await fetchRestEndpoint('/teams', "POST", team);
 
   if (response) {
     successMessage.value = '✅ Team created successfully!';
@@ -75,7 +75,7 @@ const createTeam = async () => {
 };
 
 const getAllTeams = async () => {
-  const data = await fetchRestEndpoint('http://localhost:3000/api/teams', 'GET');
+  const data = await fetchRestEndpoint('/teams', 'GET');
 
   if (data !== undefined) {
     teams.value = data;
@@ -98,7 +98,7 @@ onMounted(() => {
 
 const deleteTeam = async (teamId: number) => {
   teams.value = teams.value.filter(team => team.id !== teamId);
-  await fetchRestEndpoint(`http://localhost:3000/api/teams/${teamId}`, 'DELETE');
+  await fetchRestEndpoint(`/teams/${teamId}`, 'DELETE');
 };
 
 const showPlayersPopup = ref(false);
@@ -106,7 +106,7 @@ const selectedPlayers = ref<string[]>([]);
 const selectedTeamName = ref('');
 
 const openPlayersPopup = async (team: Team) => {
-  const data = await fetchRestEndpoint(`http://localhost:3000/api/teams/${team.id}`, 'GET');
+  const data = await fetchRestEndpoint(`/teams/${team.id}`, 'GET');
   if (data !== undefined) {
     selectedPlayers.value = data.map((p: any) => p.name); // vorausgesetzt Backend liefert Players mit name-Feld
     selectedTeamName.value = team.name;
@@ -136,14 +136,14 @@ const saveEditedTeam = async () => {
 
   if(editedName.value !== '') {
     //Update Name
-    await fetchRestEndpoint(`http://localhost:3000/api/teams/${editedTeamId.value}/${editedName.value}`, 'PUT');
+    await fetchRestEndpoint(`/teams/${editedTeamId.value}/${editedName.value}`, 'PUT');
     await getAllTeams();
   }
 
   if(editedPlayers.value.length !== 0) {
     for(let i = 0; i < editedPlayers.value.length; i++) {
       //Put one player
-      await fetchRestEndpoint(`http://localhost:3000/api/teams/${editedTeamId.value}`, 'PUT', { name: editedPlayers.value[i] });
+      await fetchRestEndpoint(`/teams/${editedTeamId.value}`, 'PUT', { name: editedPlayers.value[i] });
     }
     await getAllTeams();
   }
