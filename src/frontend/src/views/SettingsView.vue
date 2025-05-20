@@ -9,29 +9,30 @@ const ipAddress = ref("192.168.0.101");
 const version = ref(vueVersion);
 
 const handleRestart = () => {
-  alert("System wird neu gestartet...");
+  alert("System is restarting...");
 };
 
 const handleUpdate = () => {
-  alert("Update wird durchgeführt...");
+  alert("Performing system update...");
 };
 </script>
+
 <template>
   <main>
-    <Page title="Settings" description="Konfiguriere die Einstellungen des Systems.">
+    <Page title="Settings" description="Configure system settings.">
       <div class="space-y-8 mt-6">
 
         <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Systeminformationen</h2>
-          <p><strong>MAC-Adresse:</strong> {{ macAddress }}</p>
-          <p><strong>IP-Adresse:</strong> {{ ipAddress }}</p>
-          <p><strong>Version:</strong> {{ version }}</p>
+          <h2 class="text-lg font-semibold">System Information</h2>
+          <p><strong>MAC Address:</strong> {{ macAddress }}</p>
+          <p><strong>IP Address:</strong> {{ ipAddress }}</p>
+          <p><strong>Vue Version:</strong> {{ version }}</p>
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Aktionen</h2>
+          <h2 class="text-lg font-semibold">Actions</h2>
           <div class="flex gap-4">
-            <Button @click="handleRestart" variant="outline">Neustart</Button>
+            <Button @click="handleRestart" variant="outline">Restart</Button>
             <Button @click="handleUpdate">Update</Button>
           </div>
         </section>
