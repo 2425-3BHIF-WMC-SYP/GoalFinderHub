@@ -4,7 +4,7 @@ function getApiUrl(): string {
   if (import.meta.env.DEV) {
     apiUrl = 'http://localhost:3000/api'
   } else {
-    apiUrl = 'http://goalfinderhub:3000/api'
+    apiUrl = 'http://goalfinderhub.local:3000/api'
   }
 
   return apiUrl
