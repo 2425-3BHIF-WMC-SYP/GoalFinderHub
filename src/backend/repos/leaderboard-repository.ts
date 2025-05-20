@@ -1,10 +1,8 @@
-import { Database } from "sqlite";
 import { TeamStanding } from "../database/model";
+import {Database} from "sqlite";
 
 export class LeaderboardRepository {
-    constructor(private db: Database) {}
-
-    public async getLeaderboard(): Promise<TeamStanding[]> {
+    public static async getLeaderboard(db: Database): Promise<TeamStanding[]> {
         const query = `
             WITH game_results AS (
                 SELECT
@@ -72,6 +70,6 @@ export class LeaderboardRepository {
             ORDER BY points DESC, goalDifference DESC, goalsFor DESC
         `;
 
-        return this.db.all<TeamStanding[]>(query);
+        return db.all<TeamStanding[]>(query);
     }
 }
