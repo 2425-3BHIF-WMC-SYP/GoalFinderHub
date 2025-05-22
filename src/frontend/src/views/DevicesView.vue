@@ -95,7 +95,7 @@ const saveChanges = async () => {
   }
 }
 
-onMounted(fetchDevices)
+onMounted(async () => await fetchDevices());
 </script>
 
 <template>

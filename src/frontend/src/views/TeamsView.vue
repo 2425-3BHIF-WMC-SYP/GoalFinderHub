@@ -36,6 +36,7 @@ const createTeam = async () => {
   }
 
   const team: Team = {
+    id: -1,
     name: name.value,
     players: players.value,
   }
@@ -81,8 +82,8 @@ const closeCreatePopup = () => {
   createPopup.value = false
 }
 
-onMounted(() => {
-  getAllTeams()
+onMounted(async () => {
+  await getAllTeams()
 })
 
 const deleteTeam = async (teamId: number) => {

@@ -1,7 +1,4 @@
 import {Database} from "sqlite";
-import {Device, Game, Player, Team, User} from "./model";
-
-import bcrypt from "bcrypt";
 import {DevicesRepository} from "../repos/devices-repository";
 import {readFile} from "node:fs/promises";
 import {games, goalfinders, players, teams, teamsPlayers, users} from "./sample-data";

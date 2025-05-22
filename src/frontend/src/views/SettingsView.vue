@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from 'vue'
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
+import type { Settings } from '@/model/model.ts'
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 
 const macAddress = ref("");
 const ipAddress = ref("");
