@@ -3,13 +3,6 @@ import Page from '@/components/Page.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ref, onMounted } from 'vue'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import Popup from '@/components/Popup.vue'
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 import { useRouter } from 'vue-router'

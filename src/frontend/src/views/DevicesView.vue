@@ -50,7 +50,7 @@ const fetchDevices = async () => {
 
 const deleteDevice = async (macAddress: string) => {
   try {
-    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE')
+    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE');
     await fetchDevices()
   } catch (error) {
     console.error('Error deleting device:', error)
@@ -235,20 +235,6 @@ onMounted(fetchDevices)
 .action-row {
   display: flex;
   gap: 0.5rem;
-}
-
-.delete-btn {
-  border: 1px solid lightgray;
-  color: black;
-  padding: 0.5rem 1rem;
-  background-color: white;
-}
-
-.edit-btn {
-  border: 1px solid lightgray;
-  color: black;
-  padding: 0.5rem 1rem;
-  background-color: lightgray;
 }
 
 .edit-form {
