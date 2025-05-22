@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
 import { version as vueVersion } from "vue";
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
+import type { Settings } from '@/model/model.ts'
 
-const macAddress = ref("B8:27:EB:45:12:34");
-const ipAddress = ref("192.168.0.101");
+const macAddress = ref("");
+const ipAddress = ref("");
 const version = ref(vueVersion);
+
+const fetchSettings = async () => {
+  try {
+    const settings: Settings = await fetchRestEndpoint("/settings", "GET");
+
+    if (settings) {
+      macAddress.value = settings.macAddress.toUpperCase();
+      ipAddress.value = settings.ipAddress;
+    }
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
 
 const handleRestart = () => {
   alert("System is restarting...");
@@ -15,6 +31,10 @@ const handleRestart = () => {
 const handleUpdate = () => {
   alert("Performing system update...");
 };
+
+onMounted(async () => {
+  await fetchSettings();
+});
 </script>
 
 <template>
