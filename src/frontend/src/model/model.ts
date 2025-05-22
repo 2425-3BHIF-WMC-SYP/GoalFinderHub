@@ -18,3 +18,8 @@ export interface Team {
   name: string;
   players: string[];
 }
+
+export interface Settings {
+  macAddress: string;
+  ipAddress: string;
+}

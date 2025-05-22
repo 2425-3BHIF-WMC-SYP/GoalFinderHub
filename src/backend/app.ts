@@ -13,6 +13,7 @@ import {authRouter} from "./routers/auth-router";
 import dotenv from "dotenv";
 import {teamsRouter} from "./routers/teams-router";
 import {leaderboardRouter} from "./routers/leaderboard-router";
+import { settingsRouter } from "./routers/settings-router";
 
 const API_URL = "/api"
 
@@ -30,6 +31,7 @@ app.use(`${API_URL}/auth`, authRouter);
 app.use(`${API_URL}/devices`, devicesRouter);
 app.use(`${API_URL}/teams`, teamsRouter);
 app.use(`${API_URL}/leaderboard`, leaderboardRouter);
+app.use(`${API_URL}/settings`, settingsRouter);
 
 // ensure database is created and populated
 const db: Database = await DB.createDBConnection();
