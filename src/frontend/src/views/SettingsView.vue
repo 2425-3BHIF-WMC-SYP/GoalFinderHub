@@ -2,11 +2,10 @@
 import { ref } from "vue";
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
-import { version as vueVersion } from "vue";
 
 const macAddress = ref("B8:27:EB:45:12:34");
 const ipAddress = ref("192.168.0.101");
-const version = ref(vueVersion);
+const version = ref(import.meta.env.VITE_APP_VERSION);
 
 const handleRestart = () => {
   alert("System is restarting...");
@@ -26,7 +25,7 @@ const handleUpdate = () => {
           <h2 class="text-lg font-semibold">System Information</h2>
           <p><strong>MAC Address:</strong> {{ macAddress }}</p>
           <p><strong>IP Address:</strong> {{ ipAddress }}</p>
-          <p><strong>Vue Version:</strong> {{ version }}</p>
+          <p><strong>Version:</strong> {{ version }}</p>
         </section>
 
         <section class="space-y-2">

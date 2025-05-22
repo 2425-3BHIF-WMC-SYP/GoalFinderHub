@@ -1,4 +1,4 @@
-import { TeamStanding } from "../database/model";
+import {TeamStanding} from "../database/model";
 import {Database} from "sqlite";
 
 export class LeaderboardRepository {
@@ -70,6 +70,6 @@ export class LeaderboardRepository {
             ORDER BY points DESC, goalDifference DESC, goalsFor DESC
         `;
 
-        return db.all<TeamStanding[]>(query);
+        return await db.all<TeamStanding[]>(query);
     }
 }

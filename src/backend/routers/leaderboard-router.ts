@@ -9,7 +9,7 @@ leaderboardRouter.get("/", async (req, res) => {
     const db = await DB.createDBConnection();
 
     try {
-        const leaderboard = LeaderboardRepository.getLeaderboard(db);
+        const leaderboard = await LeaderboardRepository.getLeaderboard(db);
         res.status(StatusCodes.OK).send(leaderboard);
     } catch (error) {
         console.error(error);
