@@ -5,3 +5,8 @@ export interface User {
   lastName: string;
   isAdmin: boolean;
 }
+
+export interface Settings {
+  macAddress: string;
+  ipAddress: string;
+}
