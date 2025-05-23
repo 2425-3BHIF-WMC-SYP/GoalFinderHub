@@ -21,21 +21,15 @@ import { Input } from '@/components/ui/input'
 import { useRouter } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
-
-interface Goalfinder {
-  macAddress: string
-  name: string
-  volume?: number
-  ledMode?: string
-}
+import { type Device } from '@/model/model.ts'
 
 const router = useRouter()
-const goalfinders = ref<Goalfinder[]>([])
+const devices = ref<Device[]>([])
 const loading = ref(true)
 
 // Dialog state
 const isDialogOpen = ref(false)
-const currentGoalfinder = ref<Goalfinder>({
+const currentDevice = ref<Device>({
   macAddress: '',
   name: '',
   volume: 50,
@@ -46,7 +40,7 @@ const currentLedMode = ref('Normal')
 
 const fetchDevices = async () => {
   try {
-    goalfinders.value = await fetchRestEndpoint('/devices', 'GET')
+    devices.value = await fetchRestEndpoint('/devices', 'GET')
   } catch (error) {
     console.error('Error fetching devices:', error)
   } finally {
@@ -54,43 +48,43 @@ const fetchDevices = async () => {
   }
 }
 
-const deleteGoalfinder = async (macAddress: string) => {
+const deleteDevice = async (macAddress: string) => {
   try {
-    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE')
+    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE');
     await fetchDevices()
   } catch (error) {
     console.error('Error deleting device:', error)
   }
 }
-const openEditDialog = (goalfinder: Goalfinder) => {
-  currentGoalfinder.value = {
-    ...goalfinder,
-    volume: goalfinder.volume || 50,
-    ledMode: goalfinder.ledMode || 'Normal',
+const openEditDialog = (Device: Device) => {
+  currentDevice.value = {
+    ...Device,
+    volume: Device.volume || 50,
+    ledMode: Device.ledMode || 'Normal',
   }
-  currentVolume.value = [currentGoalfinder.value.volume || 50]
-  currentLedMode.value = currentGoalfinder.value.ledMode || 'Normal'
+  currentVolume.value = [currentDevice.value.volume || 50]
+  currentLedMode.value = currentDevice.value.ledMode || 'Normal'
   isDialogOpen.value = true
 }
 
 const saveChanges = async () => {
   try {
     /*const response = await fetch(
-      `http://localhost:3000/api/devices/${currentGoalfinder.value.macAddress}`,
+      `http://localhost:3000/api/devices/${currentDevice.value.macAddress}`,
       {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: currentGoalfinder.value.name,
+          name: currentDevice.value.name,
         }),
       },
     )*/
 
     const response = await fetchRestEndpoint(
-      `/devices/${currentGoalfinder.value.macAddress}`,
+      `/devices/${currentDevice.value.macAddress}`,
       'PUT',
       {
-        name: currentGoalfinder.value.name,
+        name: currentDevice.value.name,
       },
     )
 
@@ -101,88 +95,88 @@ const saveChanges = async () => {
   }
 }
 
-onMounted(fetchDevices)
+onMounted(async () => await fetchDevices());
 </script>
 
 <template>
-  <Page title="Overview" description="Overview of all GoalFinders." id="devices">
-    <div class="header-container">
-      <Button @click="router.push('/addDevice')" variant="outline" size="sm">Add Goalfinder</Button>
-    </div>
+  <main>
+    <Page title="Overview" description="Overview of all Devices.">
+      <div class="header-container">
+        <Button @click="router.push('/addDevice')">Add Device</Button>
+      </div>
 
-    <div v-if="loading" class="text-muted-foreground">Loading devices...</div>
-    <div v-else-if="goalfinders.length === 0" class="text-muted-foreground">
-      No Goalfinder added yet.
-    </div>
+      <div v-if="loading" class="text-muted-foreground">Loading devices...</div>
+      <div v-else-if="devices.length === 0" class="text-muted-foreground">
+        No Device added yet.
+      </div>
 
-    <div class="goalfinder-grid">
-      <Card v-for="goalfinder in goalfinders" :key="goalfinder.macAddress" class="goalfinder-card">
-        <CardContent class="card-content">
-          <h3 class="card-title">{{ goalfinder.name }}</h3>
-          <p class="card-mac">{{ goalfinder.macAddress }}</p>
+      <div class="devices-grid">
+        <Card v-for="device in devices" :key="device.macAddress" class="device-card">
+          <CardContent class="card-content">
+            <h3 class="card-title">{{ device.name }}</h3>
+            <p class="card-mac">{{ device.macAddress }}</p>
 
-          <div class="card-footer">
-            <div class="action-row">
-              <Button
-                variant="link"
-                size="sm"
-                class="delete-btn"
-                @click="deleteGoalfinder(goalfinder.macAddress)"
-                >Delete
-              </Button>
-              <Button variant="link" size="sm" class="edit-btn" @click="openEditDialog(goalfinder)"
+            <div class="card-footer">
+              <div class="action-row">
+                <Button @click="openEditDialog(device)"
                 >Edit
-              </Button>
+                </Button>
+                <Button
+                  variant="destructive"
+                  @click="deleteDevice(device.macAddress)"
+                >Delete
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Dialog v-model:open="isDialogOpen">
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit {{ currentDevice.name }}</DialogTitle>
+            <DialogDescription>Make changes to your Device here.</DialogDescription>
+          </DialogHeader>
+
+          <div class="edit-form">
+            <div class="form-section">
+              <h4>Name</h4>
+              <Input v-model="currentDevice.name" placeholder="Device Name" />
+            </div>
+
+            <div class="form-section">
+              <h4>Lautstärke</h4>
+              <div class="volume-control">
+                <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
+                <span>{{ currentVolume[0] }}%</span>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4>LED Modus</h4>
+              <Select v-model="currentLedMode">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Mode" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Blink">Blink</SelectItem>
+                  <SelectItem value="Flash">Flash</SelectItem>
+                  <SelectItem value="Normal">Normal</SelectItem>
+                  <SelectItem value="Off">Off</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
 
-    <Dialog v-model:open="isDialogOpen">
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit {{ currentGoalfinder.name }}</DialogTitle>
-          <DialogDescription>Make changes to your Goalfinder here.</DialogDescription>
-        </DialogHeader>
-
-        <div class="edit-form">
-          <div class="form-section">
-            <h4>Name</h4>
-            <Input v-model="currentGoalfinder.name" placeholder="GoalFinder Name" />
+          <div class="dialog-footer">
+            <Button variant="outline" @click="isDialogOpen = false">Cancel</Button>
+            <Button @click="saveChanges">Save changes</Button>
           </div>
-
-          <div class="form-section">
-            <h4>Lautstärke</h4>
-            <div class="volume-control">
-              <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
-              <span>{{ currentVolume[0] }}%</span>
-            </div>
-          </div>
-
-          <div class="form-section">
-            <h4>LED Modus</h4>
-            <Select v-model="currentLedMode">
-              <SelectTrigger>
-                <SelectValue placeholder="Select Mode" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Blink">Blink</SelectItem>
-                <SelectItem value="Flash">Flash</SelectItem>
-                <SelectItem value="Normal">Normal</SelectItem>
-                <SelectItem value="Off">Off</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div class="dialog-footer">
-          <Button variant="outline" @click="isDialogOpen = false">Cancel</Button>
-          <Button @click="saveChanges">Save changes</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  </Page>
+        </DialogContent>
+      </Dialog>
+    </Page>
+  </main>
 </template>
 
 <style scoped>
@@ -192,21 +186,19 @@ onMounted(fetchDevices)
   margin-bottom: 1.5rem;
 }
 
-#devices {
-  margin-left: 13rem;
-  margin-top: 1rem;
+.devices-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.goalfinder-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.goalfinder-card {
+.device-card {
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   display: flex;
+  flex-basis: 33%;
+  flex-grow: 1;
   flex-direction: column;
   min-height: 200px;
 }
@@ -243,20 +235,6 @@ onMounted(fetchDevices)
 .action-row {
   display: flex;
   gap: 0.5rem;
-}
-
-.delete-btn {
-  border: 1px solid lightgray;
-  color: black;
-  padding: 0.5rem 1rem;
-  background-color: white;
-}
-
-.edit-btn {
-  border: 1px solid lightgray;
-  color: black;
-  padding: 0.5rem 1rem;
-  background-color: lightgray;
 }
 
 .edit-form {

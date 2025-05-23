@@ -31,6 +31,7 @@ export interface TeamStanding {
     goalsFor: number;
     goalsAgainst: number;
 }
+
 export interface Game {
     id: number;
     date: Date;

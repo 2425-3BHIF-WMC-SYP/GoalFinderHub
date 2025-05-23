@@ -37,9 +37,6 @@ PUT http://localhost:3000/api/teams/3/Delta
 GET http://localhost:3000/api/leaderboard
 
 ###
-GET http://localhost:3000/api/games
-
-###
 POST http://localhost:3000/api/games
 Content-Type: application/json
 
@@ -52,3 +49,6 @@ Content-Type: application/json
     "awayTeamId": 4
   }
 }
+
+###
+GET http://localhost:3000/api/settings

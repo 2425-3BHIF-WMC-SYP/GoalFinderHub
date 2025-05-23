@@ -2,6 +2,7 @@
 import Page from "@/components/Page.vue";
 import { ref, onMounted } from 'vue';
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface TeamStanding {
   teamId: number;
@@ -16,6 +17,8 @@ const error = ref<string | null>(null);
 async function fetchLeaderboard() {
   try {
     const data: TeamStanding[] = await fetchRestEndpoint("/leaderboard", "GET");
+
+    console.log(data);
 
     topPlayers.value = data.map(team => ({
       name: team.teamName,
@@ -37,25 +40,33 @@ onMounted(() => {
 
 <template>
   <main>
-    <Page title="Leaderboard" description="Top teams.">
-      <div v-if="isLoading" class="loading-indicator">Loading leaderboard...</div>
-      <div v-else-if="error" class="error-message">{{ error }}</div>
-      <div v-else class="leaderboard-container">
-        <div class="leaderboard-header">
-          <span class="rank">Rank</span>
-          <span class="team-name">Team</span>
-          <span class="points">Points</span>
-        </div>
-        <ul class="leaderboard-list">
-          <li v-for="(player, index) in topPlayers" :key="player.name" class="leaderboard-item">
-            <span class="rank">{{ index + 1 }}.</span>
-            <span class="team-name">{{ player.name }}</span>
-            <span class="points" :class="{ 'negative': player.score < 0 }">
+    <Page title="Dashboard" description="Top teams.">
+      <Card>
+        <CardHeader>
+          <CardTitle>Leaderboard</CardTitle>
+          <CardDescription>Top 10 teams</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div v-if="isLoading" class="loading-indicator">Loading leaderboard...</div>
+          <div v-else-if="error" class="error-message">{{ error }}</div>
+          <div v-else class="leaderboard-container">
+            <div class="leaderboard-header">
+              <span class="rank">Rank</span>
+              <span class="team-name">Team</span>
+              <span class="points">Points</span>
+            </div>
+            <ul class="leaderboard-list">
+              <li v-for="(player, index) in topPlayers" :key="player.name" class="leaderboard-item">
+                <span class="rank">{{ index + 1 }}.</span>
+                <span class="team-name">{{ player.name }}</span>
+                <span class="points" :class="{ 'negative': player.score < 0 }">
               {{ player.score }} pts
             </span>
-          </li>
-        </ul>
-      </div>
+              </li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
     </Page>
   </main>
 </template>

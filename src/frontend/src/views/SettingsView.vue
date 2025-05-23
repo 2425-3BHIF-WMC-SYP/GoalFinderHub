@@ -1,12 +1,27 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from 'vue'
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
-import { version as vueVersion } from "vue";
+import type { Settings } from '@/model/model.ts'
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 
-const macAddress = ref("B8:27:EB:45:12:34");
-const ipAddress = ref("192.168.0.101");
-const version = ref(vueVersion);
+const macAddress = ref("");
+const ipAddress = ref("");
+const version = ref(import.meta.env.VITE_APP_VERSION);
+
+const fetchSettings = async () => {
+  try {
+    const settings: Settings = await fetchRestEndpoint("/settings", "GET");
+
+    if (settings) {
+      macAddress.value = settings.macAddress.toUpperCase();
+      ipAddress.value = settings.ipAddress;
+    }
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
 
 const handleRestart = () => {
   alert("System is restarting...");
@@ -15,6 +30,10 @@ const handleRestart = () => {
 const handleUpdate = () => {
   alert("Performing system update...");
 };
+
+onMounted(async () => {
+  await fetchSettings();
+});
 </script>
 
 <template>
@@ -26,7 +45,7 @@ const handleUpdate = () => {
           <h2 class="text-lg font-semibold">System Information</h2>
           <p><strong>MAC Address:</strong> {{ macAddress }}</p>
           <p><strong>IP Address:</strong> {{ ipAddress }}</p>
-          <p><strong>Vue Version:</strong> {{ version }}</p>
+          <p><strong>Version:</strong> {{ version }}</p>
         </section>
 
         <section class="space-y-2">

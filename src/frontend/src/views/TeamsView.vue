@@ -1,172 +1,162 @@
 <script setup lang="ts">
-import Page from "@/components/Page.vue";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ref, onMounted } from "vue";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import Popup from "@/components/Popup.vue";
-import { fetchRestEndpoint } from "@/fetch-rest-endpoint.ts";
-import { useRouter } from "vue-router";
-import { Card, CardContent } from "@/components/ui/card";
+import Page from '@/components/Page.vue'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ref, onMounted } from 'vue'
+import Popup from '@/components/Popup.vue'
+import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
+import { useRouter } from 'vue-router'
+import { Card, CardContent } from '@/components/ui/card'
+import type { Team } from '@/model/model.ts'
 
-interface Team {
-  id: number;
-  name: string;
-}
-
-const router = useRouter();
-const name = ref('');
-const teams = ref<Team[]>([]);
-const player = ref('');
-const players = ref<string[]>([]);
-const successMessage = ref('');
-const createPopup = ref(false);
+const router = useRouter()
+const name = ref('')
+const teams = ref<Team[]>([])
+const player = ref('')
+const players = ref<string[]>([])
+const successMessage = ref('')
+const createPopup = ref(false)
 
 const addPlayer = () => {
-  const trimmed = player.value.trim();
+  const trimmed = player.value.trim()
   if (trimmed) {
-    players.value.push(trimmed);
-    player.value = '';
+    players.value.push(trimmed)
+    player.value = ''
   }
-};
+}
 
 const removePlayer = (index: number) => {
-  players.value.splice(index, 1);
-};
+  players.value.splice(index, 1)
+}
 
 const createTeam = async () => {
   if (!name.value || players.value.length === 0) {
-    successMessage.value = '';
-    return;
+    successMessage.value = ''
+    return
   }
 
-  const team = {
+  const team: Team = {
+    id: -1,
     name: name.value,
-    players: players.value
-  };
-
-  const response = await fetchRestEndpoint('/teams', "POST", team);
-
-  if (response) {
-    successMessage.value = '✅ Team created successfully!';
-    setTimeout(() => {
-      successMessage.value = '';
-      createPopup.value = false;
-      router.push('/teams');
-      getAllTeams();
-    }, 2000);
-  } else {
-    successMessage.value = '❌ Failed to create team.';
-    router.push('/teams');
-    setTimeout(() => {
-      successMessage.value = '';
-    }, 3000);
+    players: players.value,
   }
 
-  name.value = '';
-  player.value = '';
-  players.value = [];
-};
+  const createdTeam = await fetchRestEndpoint('/teams', 'POST', team)
 
-const getAllTeams = async () => {
-  const data = await fetchRestEndpoint('/teams', 'GET');
+  if (createdTeam) {
+    successMessage.value = '✅ Team created successfully!'
+    setTimeout(async () => {
+      successMessage.value = ''
+      createPopup.value = false
+      await router.push('/teams')
+      await getAllTeams()
+    }, 2000)
+  } else {
+    successMessage.value = '❌ Failed to create team.'
+    await router.push('/teams')
+    setTimeout(() => {
+      successMessage.value = ''
+    }, 3000)
+  }
+
+  name.value = ''
+  player.value = ''
+  players.value = []
+}
+
+const getAllTeams = async() => {
+  const data = await fetchRestEndpoint('/teams', 'GET')
 
   if (data !== undefined) {
-    teams.value = data;
+    teams.value = data
   } else {
-    console.error('Error loading teams');
+    console.error('Error loading teams')
   }
-};
+}
 
 const openCreatePopup = () => {
-  createPopup.value = true;
-};
+  createPopup.value = true
+}
 
 const closeCreatePopup = () => {
-  createPopup.value = false;
-};
+  createPopup.value = false
+}
 
-onMounted(() => {
-  getAllTeams();
-});
+onMounted(async () => {
+  await getAllTeams()
+})
 
 const deleteTeam = async (teamId: number) => {
-  teams.value = teams.value.filter(team => team.id !== teamId);
-  await fetchRestEndpoint(`/teams/${teamId}`, 'DELETE');
-};
+  teams.value = teams.value.filter((team) => team.id !== teamId)
+  await fetchRestEndpoint(`/teams/${teamId}`, 'DELETE')
+}
 
-const showPlayersPopup = ref(false);
-const selectedPlayers = ref<string[]>([]);
-const selectedTeamName = ref('');
+const showPlayersPopup = ref(false)
+const selectedPlayers = ref<string[]>([])
+const selectedTeamName = ref('')
 
 const openPlayersPopup = async (team: Team) => {
-  const data = await fetchRestEndpoint(`/teams/${team.id}`, 'GET');
+  const data = await fetchRestEndpoint(`/teams/${team.id}`, 'GET')
   if (data !== undefined) {
-    selectedPlayers.value = data.map((p: any) => p.name); // vorausgesetzt Backend liefert Players mit name-Feld
-    selectedTeamName.value = team.name;
-    showPlayersPopup.value = true;
+    selectedPlayers.value = data.map((p: any) => p.name) // vorausgesetzt Backend liefert Players mit name-Feld
+    selectedTeamName.value = team.name
+    showPlayersPopup.value = true
   } else {
-    console.error("Could not fetch players");
+    console.error('Could not fetch players')
   }
-};
+}
 
 const closePlayersPopup = () => {
-  showPlayersPopup.value = false;
-};
+  showPlayersPopup.value = false
+}
 
-const editPopup = ref(false);
-const editedTeamId = ref<number | null>(null);
-const editedName = ref('');
-const editedPlayer = ref('');
-const editedPlayers = ref<string[]>([]);
+const editPopup = ref(false)
+const editedTeamId = ref<number | null>(null)
+const editedName = ref('')
+const editedPlayer = ref('')
+const editedPlayers = ref<string[]>([])
 
 const openEditPopup = async (team: Team) => {
-  editPopup.value = true;
-  editedTeamId.value = team.id;
-};
+  editPopup.value = true
+  editedTeamId.value = team.id
+}
 
 const saveEditedTeam = async () => {
-  editPopup.value = false;
+  editPopup.value = false
 
-  if(editedName.value !== '') {
+  if (editedName.value !== '') {
     //Update Name
-    await fetchRestEndpoint(`/teams/${editedTeamId.value}/${editedName.value}`, 'PUT');
-    await getAllTeams();
+    await fetchRestEndpoint(`/teams/${editedTeamId.value}/${editedName.value}`, 'PUT')
+    await getAllTeams()
   }
 
-  if(editedPlayers.value.length !== 0) {
-    for(let i = 0; i < editedPlayers.value.length; i++) {
+  if (editedPlayers.value.length !== 0) {
+    for (let i = 0; i < editedPlayers.value.length; i++) {
       //Put one player
-      await fetchRestEndpoint(`/teams/${editedTeamId.value}`, 'PUT', { name: editedPlayers.value[i] });
+      await fetchRestEndpoint(`/teams/${editedTeamId.value}`, 'PUT', {
+        name: editedPlayers.value[i],
+      })
     }
-    await getAllTeams();
+    await getAllTeams()
   }
 
-  editedName.value = '';
-  editedPlayer.value = '';
-  editedPlayers.value = [];
-  editedTeamId.value = null;
-
-
-};
+  editedName.value = ''
+  editedPlayer.value = ''
+  editedPlayers.value = []
+  editedTeamId.value = null
+}
 
 const closeEditPopup = () => {
-  editPopup.value = false;
-  editedName.value = '';
-  editedPlayer.value = '';
-  editedPlayers.value = [];
-  editedTeamId.value = null;
-};
+  editPopup.value = false
+  editedName.value = ''
+  editedPlayer.value = ''
+  editedPlayers.value = []
+  editedTeamId.value = null
+}
 
 const addEditedPlayer = (editedPlayer: string) => {
-  editedPlayers.value.push(editedPlayer);
-};
+  editedPlayers.value.push(editedPlayer)
+}
 </script>
 
 <template>
@@ -184,12 +174,14 @@ const addEditedPlayer = (editedPlayer: string) => {
         <Card v-for="team in teams" :key="team.id" class="small-card compact-card">
           <CardContent class="card-row compact-row">
             <div class="game-info text-sm">
-              <div class="teams"><strong>{{ team.name }}</strong></div>
+              <div class="teams">
+                <strong>{{ team.name }}</strong>
+              </div>
             </div>
             <div class="button-group">
-              <Button id="delete-btn" size="sm" @click="deleteTeam(team.id)">Delete</Button>
-              <Button id="edit-btn" size="sm" @click="openEditPopup(team)">Edit</Button>
               <Button id="players-btn" size="sm" @click="openPlayersPopup(team)">Players</Button>
+              <Button id="edit-btn" size="sm" @click="openEditPopup(team)">Edit</Button>
+              <Button id="delete-btn" size="sm" @click="deleteTeam(team.id)">Delete</Button>
             </div>
           </CardContent>
         </Card>
@@ -201,7 +193,9 @@ const addEditedPlayer = (editedPlayer: string) => {
         <div class="space-y-4">
           <div>
             <label class="block mb-1">Players</label>
-            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
+            <div
+              class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto"
+            >
               <div
                 v-for="(p, index) in selectedPlayers"
                 :key="index"
@@ -209,7 +203,9 @@ const addEditedPlayer = (editedPlayer: string) => {
               >
                 <span>{{ p }}</span>
               </div>
-              <div v-if="selectedPlayers.length === 0" class="text-sm text-gray-500 italic">No players available</div>
+              <div v-if="selectedPlayers.length === 0" class="text-sm text-gray-500 italic">
+                No players available
+              </div>
             </div>
           </div>
 
@@ -242,7 +238,9 @@ const addEditedPlayer = (editedPlayer: string) => {
 
           <div>
             <label class="block mb-1">Players</label>
-            <div class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto">
+            <div
+              class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto"
+            >
               <div
                 v-for="(p, index) in players"
                 :key="index"
@@ -251,7 +249,9 @@ const addEditedPlayer = (editedPlayer: string) => {
                 <span>{{ p }}</span>
                 <Button variant="destructive" size="sm" @click="removePlayer(index)">Delete</Button>
               </div>
-              <div v-if="players.length === 0" class="text-sm text-gray-500 italic">No players added</div>
+              <div v-if="players.length === 0" class="text-sm text-gray-500 italic">
+                No players added
+              </div>
             </div>
           </div>
 

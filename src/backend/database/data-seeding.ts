@@ -1,64 +1,7 @@
 import {Database} from "sqlite";
-import {Device, Game, Player, Team, User} from "./model";
-
-import bcrypt from "bcrypt";
 import {DevicesRepository} from "../repos/devices-repository";
 import {readFile} from "node:fs/promises";
-
-const saltRounds = 8;
-
-export const users: User[] = [{
-    firstName: "System",
-    lastName: "Admin",
-    isAdmin: true,
-    username: "admin",
-    password: bcrypt.hashSync("pw4admin", saltRounds),
-}, {
-    firstName: "John",
-    lastName: "Doe",
-    isAdmin: false,
-    username: "john-doe",
-    password: bcrypt.hashSync("pw4user", saltRounds),
-},];
-
-export const goalfinders: Device[] = [{
-    macAddress: "00:1A:7D:DA:71:13", name: "GoalFinder Alpha",
-}, {
-    macAddress: "00:1A:7D:DA:71:14", name: "GoalFinder Beta",
-},];
-
-export const players: Player[] = [{id: 1, name: "Alice Anderson"}, {id: 2, name: "Bob Brown"}, {
-    id: 3,
-    name: "Charlie Clark"
-}, {id: 4, name: "Dana Davis"},];
-
-export const teams: Team[] = [{
-    id: 1, name: "Red Hawks"
-}, {
-    id: 2, name: "Blue Bears"
-},];
-
-export const teamsPlayers = [{id: 1, teamId: 1, playerId: 1}, {id: 2, teamId: 1, playerId: 2}, {
-    id: 3,
-    teamId: 2,
-    playerId: 3
-}, {id: 4, teamId: 2, playerId: 4},];
-
-export const games: Game[] = [{
-    id: 1,
-    date: new Date("2025-05-10T14:00:00Z"),
-    homeTeamScore: 3,
-    awayTeamScore: 2,
-    homeTeamId: 1,
-    awayTeamId: 2
-}, {
-    id: 2,
-    date: new Date("2025-05-12T16:30:00Z"),
-    homeTeamScore: 1,
-    awayTeamScore: 1,
-    homeTeamId: 2,
-    awayTeamId: 1
-},];
+import {games, goalfinders, players, teams, teamsPlayers, users} from "./sample-data";
 
 export async function dropTables(connection: Database): Promise<void> {
     try {

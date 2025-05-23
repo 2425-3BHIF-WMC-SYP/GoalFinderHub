@@ -5,22 +5,30 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-
-import AccountButton from '@/components/AccountButton.vue'
-import { Label } from '@/components/ui/label'
-import { Toggle } from '@/components/ui/toggle'
-import { Button } from '@/components/ui/button'
 import MenuIcon from '@/components/icons/MenuIcon.vue'
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
   DrawerClose,
 } from '@/components/ui/drawer'
+
+interface MenuItem {
+  name: string;
+  link: string;
+}
+
+const menuItems: MenuItem[] = [
+  {name: 'Dashboard', link: '/'},
+  {name: 'Games', link: '/games'},
+  {name: 'Teams', link: '/teams'},
+  {name: 'Devices', link: '/devices'},
+  {name: 'Settings', link: '/settings'}
+];
+
 </script>
 
 <template>
@@ -33,26 +41,11 @@ import {
       <NavigationMenu class="desktop-menu">
         <NavigationMenuList>
           <NavigationMenuItem>
-            <RouterLink to="/"> GoalFinder Hub</RouterLink>
+            <RouterLink to="/" class="font-medium">GoalFinder Hub</RouterLink>
           </NavigationMenuItem>
-          <NavigationMenuItem>
-            <RouterLink class="font-normal" to="/games" :class="navigationMenuTriggerStyle()">
-              Games
-            </RouterLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <RouterLink class="font-normal" to="/teams" :class="navigationMenuTriggerStyle()">
-              Teams
-            </RouterLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <RouterLink class="font-normal" to="/devices" :class="navigationMenuTriggerStyle()">
-              Devices
-            </RouterLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <RouterLink class="font-normal" to="/settings" :class="navigationMenuTriggerStyle()">
-              Settings
+          <NavigationMenuItem v-for="menuItem in menuItems" :key="menuItem.link">
+            <RouterLink class="font-normal" :to="menuItem.link" :class="navigationMenuTriggerStyle()">
+              {{ menuItem.name }}
             </RouterLink>
           </NavigationMenuItem>
         </NavigationMenuList>
@@ -68,34 +61,18 @@ import {
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Menu</DrawerTitle>
-              <DrawerDescription>Desc.</DrawerDescription>
+              <!--<DrawerDescription>Desc.</DrawerDescription>-->
             </DrawerHeader>
             <div class="flex flex-col gap-3">
-              <div class="text-center">
+              <div class="text-center" v-for="menuItem in menuItems" :key="menuItem.link">
                 <DrawerClose>
-                  <RouterLink to="/"> GoalFinder Hub</RouterLink>
+                  <RouterLink :to="menuItem.link">{{ menuItem.name }}</RouterLink>
                 </DrawerClose>
               </div>
-              <div class="text-center">
-                <DrawerClose>
-                  <RouterLink class="font-normal" to="/games"> Games</RouterLink>
-                </DrawerClose>
-              </div>
-              <div class="text-center">
-                <DrawerClose>
-                  <RouterLink class="font-normal" to="/devices"> Devices</RouterLink>
-                </DrawerClose>
-              </div>
-              <!--<div class="text-center">
-                <DrawerClose>
-                  <RouterLink class="font-normal" to="/settings"> Settings</RouterLink>
-                </DrawerClose>
-              </div>-->
             </div>
             <DrawerFooter></DrawerFooter>
           </DrawerContent>
         </Drawer>
-
         <!--<AccountButton class="desktop-menu" />-->
       </div>
     </div>
