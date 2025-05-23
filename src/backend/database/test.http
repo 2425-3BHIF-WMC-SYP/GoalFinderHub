@@ -35,3 +35,20 @@ PUT http://localhost:3000/api/teams/3/Delta
 
 ###
 GET http://localhost:3000/api/leaderboard
+
+###
+GET http://localhost:3000/api/games
+
+###
+POST http://localhost:3000/api/games
+Content-Type: application/json
+
+{
+  "gameData": {
+    "date": "2025-05-22T14:35:00.000Z",
+    "homeTeamScore": 0,
+    "awayTeamScore": 0,
+    "homeTeamId": 3,
+    "awayTeamId": 4
+  }
+}
