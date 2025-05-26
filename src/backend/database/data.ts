@@ -1,7 +1,6 @@
 import sqlite3 from 'sqlite3'
 import {open, Database} from "sqlite";
 import {readFile} from "node:fs/promises";
-import {dropTables} from "./data-seeding";
 
 sqlite3.verbose();
 

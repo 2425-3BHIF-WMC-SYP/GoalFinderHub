@@ -80,7 +80,7 @@ export const teamsPlayers = [
     { id: 14, teamId: 7, playerId: 14 },
 ];
 
-export const games: Game[] = [
+export const games = [
     {
         id: 1,
         date: new Date("2025-05-10T14:00:00Z"),

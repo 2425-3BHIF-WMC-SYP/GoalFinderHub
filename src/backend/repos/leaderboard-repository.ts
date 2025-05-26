@@ -68,6 +68,7 @@ export class LeaderboardRepository {
                      JOIN TEAMS t ON gr.team_id = t.id
             GROUP BY t.id, t.name
             ORDER BY points DESC, goalDifference DESC, goalsFor DESC
+            LIMIT 10
         `;
 
         return await db.all<TeamStanding[]>(query);

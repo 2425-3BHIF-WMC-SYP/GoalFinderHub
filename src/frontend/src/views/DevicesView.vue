@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from '@/components/ui/dialog'
 import {
   Select,
@@ -19,7 +22,7 @@ import {
 import { Slider } from '@/components/ui/slider'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'vue-router'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 import { type Device } from '@/model/model.ts'
 
@@ -28,7 +31,6 @@ const devices = ref<Device[]>([])
 const loading = ref(true)
 
 // Dialog state
-const isDialogOpen = ref(false)
 const currentDevice = ref<Device>({
   macAddress: '',
   name: '',
@@ -50,7 +52,7 @@ const fetchDevices = async () => {
 
 const deleteDevice = async (macAddress: string) => {
   try {
-    const response = await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE');
+    await fetchRestEndpoint(`/devices/${macAddress}`, 'DELETE')
     await fetchDevices()
   } catch (error) {
     console.error('Error deleting device:', error)
@@ -64,51 +66,38 @@ const openEditDialog = (Device: Device) => {
   }
   currentVolume.value = [currentDevice.value.volume || 50]
   currentLedMode.value = currentDevice.value.ledMode || 'Normal'
-  isDialogOpen.value = true
 }
 
 const saveChanges = async () => {
   try {
-    /*const response = await fetch(
-      `http://localhost:3000/api/devices/${currentDevice.value.macAddress}`,
-      {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: currentDevice.value.name,
-        }),
-      },
-    )*/
-
-    const response = await fetchRestEndpoint(
-      `/devices/${currentDevice.value.macAddress}`,
-      'PUT',
-      {
-        name: currentDevice.value.name,
-      },
-    )
+    await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
+      name: currentDevice.value.name,
+    })
 
     await fetchDevices()
-    isDialogOpen.value = false
   } catch (error) {
     console.error('Error updating device:', error)
   }
 }
 
-onMounted(async () => await fetchDevices());
+async function onInit() {
+  try {
+    await fetchDevices()
+  } catch (error) {
+    console.error(error)
+  }
+}
 </script>
 
 <template>
   <main>
-    <Page title="Overview" description="Overview of all Devices.">
+    <Page title="Devices" description="Overview of all Devices." :on-init="onInit">
       <div class="header-container">
         <Button @click="router.push('/addDevice')">Add Device</Button>
       </div>
 
       <div v-if="loading" class="text-muted-foreground">Loading devices...</div>
-      <div v-else-if="devices.length === 0" class="text-muted-foreground">
-        No Device added yet.
-      </div>
+      <div v-else-if="devices.length === 0" class="text-muted-foreground">No Device added yet.</div>
 
       <div class="devices-grid">
         <Card v-for="device in devices" :key="device.macAddress" class="device-card">
@@ -118,63 +107,63 @@ onMounted(async () => await fetchDevices());
 
             <div class="card-footer">
               <div class="action-row">
-                <Button @click="openEditDialog(device)"
-                >Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  @click="deleteDevice(device.macAddress)"
-                >Delete
+                <Dialog>
+                  <DialogTrigger>
+                    <Button @click="openEditDialog(device)">Edit</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Edit {{ currentDevice.name }}</DialogTitle>
+                      <DialogDescription>Make changes to your Device here.</DialogDescription>
+                    </DialogHeader>
+
+                    <div class="edit-form">
+                      <div class="form-section">
+                        <h4>Name</h4>
+                        <Input v-model="currentDevice.name" placeholder="Device Name" />
+                      </div>
+
+                      <div class="form-section">
+                        <h4>Lautstärke</h4>
+                        <div class="volume-control">
+                          <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
+                          <span>{{ currentVolume[0] }}%</span>
+                        </div>
+                      </div>
+
+                      <div class="form-section">
+                        <h4>LED Modus</h4>
+                        <Select v-model="currentLedMode">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Mode" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Blink">Blink</SelectItem>
+                            <SelectItem value="Flash">Flash</SelectItem>
+                            <SelectItem value="Normal">Normal</SelectItem>
+                            <SelectItem value="Off">Off</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <DialogClose>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <DialogClose>
+                        <Button @click="saveChanges">Save changes</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+                <Button variant="destructive" @click="deleteDevice(device.macAddress)"
+                  >Delete
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      <Dialog v-model:open="isDialogOpen">
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit {{ currentDevice.name }}</DialogTitle>
-            <DialogDescription>Make changes to your Device here.</DialogDescription>
-          </DialogHeader>
-
-          <div class="edit-form">
-            <div class="form-section">
-              <h4>Name</h4>
-              <Input v-model="currentDevice.name" placeholder="Device Name" />
-            </div>
-
-            <div class="form-section">
-              <h4>Lautstärke</h4>
-              <div class="volume-control">
-                <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
-                <span>{{ currentVolume[0] }}%</span>
-              </div>
-            </div>
-
-            <div class="form-section">
-              <h4>LED Modus</h4>
-              <Select v-model="currentLedMode">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Blink">Blink</SelectItem>
-                  <SelectItem value="Flash">Flash</SelectItem>
-                  <SelectItem value="Normal">Normal</SelectItem>
-                  <SelectItem value="Off">Off</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div class="dialog-footer">
-            <Button variant="outline" @click="isDialogOpen = false">Cancel</Button>
-            <Button @click="saveChanges">Save changes</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </Page>
   </main>
 </template>
@@ -194,8 +183,6 @@ onMounted(async () => await fetchDevices());
 }
 
 .device-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
   display: flex;
   flex-basis: 33%;
   flex-grow: 1;

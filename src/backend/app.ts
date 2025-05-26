@@ -13,7 +13,7 @@ import {authRouter} from "./routers/auth-router";
 import dotenv from "dotenv";
 import {teamsRouter} from "./routers/teams-router";
 import {leaderboardRouter} from "./routers/leaderboard-router";
-import {gamesRouter} from "./routers/game-router";
+import {gamesRouter} from "./routers/games-router";
 import { settingsRouter } from "./routers/settings-router";
 
 const API_URL = "/api"

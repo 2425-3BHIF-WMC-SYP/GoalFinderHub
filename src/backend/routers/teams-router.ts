@@ -2,7 +2,7 @@ import express from "express";
 import {DB} from "../database/data";
 import {TeamsRepository} from "../repos/teams-repository";
 import {StatusCodes} from "http-status-codes";
-import {Player, Team} from "../database/model";
+import {Player} from "../database/model";
 
 export const teamsRouter = express.Router();
 
@@ -39,7 +39,7 @@ teamsRouter.delete("/:teamId", async (req, res) => {
 
     try {
         await TeamsRepository.deleteTeam(db, parseInt(req.params.teamId));
-        res.status(StatusCodes.OK).json({ message: "ok" });
+        res.status(StatusCodes.OK).json({message: "ok"});
 
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
@@ -53,7 +53,7 @@ teamsRouter.delete("/:teamId/:playerId", async (req, res) => {
     const db = await DB.createDBConnection();
     try {
         await TeamsRepository.deletePlayer(db, parseInt(req.params.playerId));
-        res.status(StatusCodes.OK).json({ message: "ok" });
+        res.status(StatusCodes.OK).json({message: "ok"});
 
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
@@ -69,7 +69,7 @@ teamsRouter.put("/:teamId", async (req, res) => {
 
     try {
         await TeamsRepository.insertPlayer(db, playerName, parseInt(req.params.teamId));
-        res.status(StatusCodes.OK).json({ message: "ok" });
+        res.status(StatusCodes.OK).json({message: "ok"});
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     } finally {
@@ -90,7 +90,7 @@ teamsRouter.put("/:teamId/:name", async (req, res) => {
 
         await stmt.run();
         await stmt.finalize();
-        res.status(StatusCodes.OK).json({ message: "ok" });
+        res.status(StatusCodes.OK).json({message: "ok"});
 
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
@@ -105,7 +105,7 @@ teamsRouter.post("/", async (req, res) => {
     const name: string = req.body.name;
     const players: Player[] = req.body.players;
 
-    if(name === undefined || players.length === 0) {
+    if (name === undefined || players.length === 0) {
         res.status(StatusCodes.BAD_REQUEST).send("Missing Fields");
         return;
     }

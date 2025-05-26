@@ -4,11 +4,11 @@ import Page from "@/components/Page.vue";
 </script>
 
 <template>
-  <main>
+  <div>
     <Page title="About" description="About us.">
       <p>Hello about page!</p>
     </Page>
-  </main>
+  </div>
 </template>
 
 <style scoped>

@@ -32,13 +32,21 @@ const handleUpdate = () => {
 };
 
 onMounted(async () => {
-  await fetchSettings();
 });
+
+async function onInit() {
+  try {
+    await fetchSettings();
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
   <main>
-    <Page title="Settings" description="Configure system settings.">
+    <Page title="Settings" description="Configure system settings." :on-init="onInit">
       <div class="space-y-8 mt-6">
 
         <section class="space-y-2">

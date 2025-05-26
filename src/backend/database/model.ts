@@ -35,10 +35,11 @@ export interface TeamStanding {
 export interface Game {
     id: number;
     date: Date;
+    duration: number;
     homeTeamScore: number;
     awayTeamScore: number;
-    homeTeamId: number;
-    awayTeamId: number;
+    homeTeam: Team;
+    awayTeam: Team;
 }
 
 enum LedMode {

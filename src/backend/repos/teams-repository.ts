@@ -1,8 +1,5 @@
 import {Player, Team} from "../database/model";
 import {Database} from "sqlite";
-import {RunResult} from "sqlite3";
-import {teamsRouter} from "../routers/teams-router";
-import {StatusCodes} from "http-status-codes";
 
 export class TeamsRepository {
     public static async getAllTeams(db: Database): Promise<Team[]> {
@@ -10,6 +7,15 @@ export class TeamsRepository {
         const teams: Team[] = await stmt.all<Team[]>();
         await stmt.finalize();
         return teams;
+    }
+
+    public static async getTeamById(db: Database, id: number): Promise<Team | undefined> {
+        const stmt = await db.prepare("select * from TEAMS where id = ?;");
+        await stmt.bind(id);
+        const team = await stmt.get<Team>();
+        await stmt.finalize();
+
+        return team;
     }
 
     public static async getAllPlayersByTeam(db: Database, teamId: Number | undefined): Promise<(Player | undefined)[]> {

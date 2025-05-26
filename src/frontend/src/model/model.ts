@@ -13,6 +13,21 @@ export interface Device {
   ledMode?: string
 }
 
+export interface Player {
+  id: number;
+  name: string;
+}
+
+export interface Game {
+  id?: number;
+  date: Date;
+  duration: number;
+  homeTeamScore: number;
+  awayTeamScore: number;
+  homeTeam: Team;
+  awayTeam: Team;
+}
+
 export interface Team {
   id: number;
   name: string;

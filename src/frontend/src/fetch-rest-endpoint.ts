@@ -36,7 +36,7 @@ export async function fetchRestEndpoint(
     const message = await res.text()
     throw new Error(`${message}`)
   }
-  if (res.status !== 204 ) {
+  if (res.status !== 204) {
     return await res.json();
   }
 }

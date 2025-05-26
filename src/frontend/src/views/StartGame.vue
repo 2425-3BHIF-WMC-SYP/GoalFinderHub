@@ -1,24 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import Page from "@/components/Page.vue";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import {fetchRestEndpoint} from "@/fetch-rest-endpoint.ts";
-import {GameStore} from "@/model/Gamestore.ts";
+import type { Team, Game, Device } from '@/model/model.ts'
 
-const router = useRouter()
-
-interface Team {
-  id: number | string;
-  name: string;
-}
-
-interface Device {
-  macAddress: string;
-  name: string;
-}
+const router = useRouter();
 
 const teams = ref<Team[]>([])
 const devices = ref<Device[]>([])
@@ -31,26 +21,22 @@ const fetchInitialData = async () => {
 
   try {
     const [teamsResponse, devicesResponse] = await Promise.all([
-      fetchRestEndpoint('/teams', "GET"),
-      fetchRestEndpoint('/devices', "GET"),
+      await fetchRestEndpoint('/teams', "GET"),
+      await fetchRestEndpoint('/devices', "GET"),
     ])
 
-    teams.value = await teamsResponse
-    devices.value = await devicesResponse
+    teams.value = teamsResponse
+    devices.value = devicesResponse
   } catch (err) {
-    error.value = 'Failed to load data'
+    error.value = `${err}`;
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(() => {
-  fetchInitialData()
-})
-
-const homeTeam = ref<number>(0)
+const homeTeam = ref<Team>()
 const homeDevice = ref<string>('')
-const awayTeam = ref<number>(0)
+const awayTeam = ref<Team>()
 const awayDevice = ref<string>('')
 
 const validateForm = (): boolean => {
@@ -76,24 +62,28 @@ const validateForm = (): boolean => {
 const handleStartGame = async () => {
   if (!validateForm()) return;
 
-  const gameData = {
-    id: Date.now(),
-    date: new Date().toISOString(),
+  const gameData: Game = {
+    duration: 12,
+    date: new Date(),
     homeTeamScore: 0,
     awayTeamScore: 0,
-    homeTeamId: homeTeam.value,
-    awayTeamId: awayTeam.value,
+    homeTeam: homeTeam.value!,
+    awayTeam: awayTeam.value!,
   };
 
-  GameStore.startGame(gameData);
-
+  await fetchRestEndpoint("/games/start", "POST", gameData);
   await router.push("/games");
 };
+
+async function onInit() {
+  await fetchInitialData();
+}
+
 </script>
 
 <template>
   <main>
-    <Page title="Create Game" description="Create a new Game">
+    <Page title="Create Game" description="Create a new Game" :on-init="onInit">
       <Button
         id="start-game-btn"
         @click="handleStartGame"
@@ -117,7 +107,7 @@ const handleStartGame = async () => {
           <CardContent>
             <div class="dropdown-group">
               <label>Team</label>
-              <Select v-model.number="homeTeam" :disabled="isLoading">
+              <Select v-model="homeTeam" :disabled="isLoading">
                 <SelectTrigger>
                   <SelectValue placeholder="Select Team" />
                 </SelectTrigger>
@@ -125,7 +115,7 @@ const handleStartGame = async () => {
                   <SelectItem
                     v-for="team in teams"
                     :key="team.id"
-                    :value="team.id"
+                    :value="team"
                   >
                     {{ team.name }}
                   </SelectItem>
@@ -158,7 +148,7 @@ const handleStartGame = async () => {
           <CardContent>
             <div class="dropdown-group">
               <label>Team</label>
-              <Select v-model.number="awayTeam" :disabled="isLoading">
+              <Select v-model="awayTeam" :disabled="isLoading">
                 <SelectTrigger>
                   <SelectValue placeholder="Select Team" />
                 </SelectTrigger>
@@ -166,7 +156,7 @@ const handleStartGame = async () => {
                   <SelectItem
                     v-for="team in teams"
                     :key="team.id"
-                    :value="team.id"
+                    :value="{id: team.id, name: team.name}"
                   >
                     {{ team.name }}
                   </SelectItem>

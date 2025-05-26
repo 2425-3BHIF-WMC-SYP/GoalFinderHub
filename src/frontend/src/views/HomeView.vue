@@ -1,72 +1,95 @@
 <script setup lang="ts">
-import Page from "@/components/Page.vue";
-import { ref, onMounted } from 'vue';
+import Page from '@/components/Page.vue'
+import { ref } from 'vue'
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import CurrentGameCard from '@/components/CurrentGameCard.vue'
+import { Button } from '@/components/ui/button'
+import router from '@/router'
 
 interface TeamStanding {
-  teamId: number;
-  teamName: string;
-  points: number;
+  teamId: number
+  teamName: string
+  points: number
 }
 
-const topPlayers = ref<{name: string, score: number}[]>([]);
-const isLoading = ref(true);
-const error = ref<string | null>(null);
+const topPlayers = ref<{ name: string; score: number }[]>([])
+const error = ref<string | null>(null)
 
 async function fetchLeaderboard() {
   try {
-    const data: TeamStanding[] = await fetchRestEndpoint("/leaderboard", "GET");
+    const data: TeamStanding[] = await fetchRestEndpoint('/leaderboard', 'GET')
 
-    console.log(data);
+    console.log(data)
 
-    topPlayers.value = data.map(team => ({
-      name: team.teamName,
-      score: team.points
-    })).sort((a, b) => b.score - a.score);
-
+    topPlayers.value = data
+      .map((team) => ({
+        name: team.teamName,
+        score: team.points,
+      }))
+      .sort((a, b) => b.score - a.score)
   } catch (err) {
-    error.value = err instanceof Error ? err.message : 'Unknown error occurred';
-    console.error('Error fetching leaderboard:', err);
-  } finally {
-    isLoading.value = false;
+    error.value = err instanceof Error ? err.message : 'Unknown error occurred'
+    console.error('Error fetching leaderboard:', err)
   }
 }
 
-onMounted(() => {
-  fetchLeaderboard();
-});
+async function openGamesView() {
+  await router.push('/games')
+}
+
+async function onInit() {
+  try {
+    await fetchLeaderboard()
+  } catch (error) {
+    console.error(error)
+  }
+}
 </script>
 
 <template>
   <main>
-    <Page title="Dashboard" description="Top teams.">
-      <Card>
-        <CardHeader>
-          <CardTitle>Leaderboard</CardTitle>
-          <CardDescription>Top 10 teams</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div v-if="isLoading" class="loading-indicator">Loading leaderboard...</div>
-          <div v-else-if="error" class="error-message">{{ error }}</div>
-          <div v-else class="leaderboard-container">
-            <div class="leaderboard-header">
-              <span class="rank">Rank</span>
-              <span class="team-name">Team</span>
-              <span class="points">Points</span>
+    <Page title="Dashboard" description="Get an overview of your activity and key insights." :on-init="onInit">
+      <div class="flex flex-wrap gap-4">
+        <Card class="flex-1 h-max">
+          <CardHeader>
+            <CardTitle>Leaderboard</CardTitle>
+            <CardDescription>Top 10 teams</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div v-if="error" class="error-message">{{ error }}</div>
+            <div v-else class="leaderboard-container">
+              <div class="leaderboard-header">
+                <span class="rank">Rank</span>
+                <span class="team-name">Team</span>
+                <span class="points">Points</span>
+              </div>
+              <ul class="leaderboard-list">
+                <li v-for="(player, index) in topPlayers" :key="player.name" class="leaderboard-item">
+                  <span class="rank">{{ index + 1 }}.</span>
+                  <span class="team-name">{{ player.name }}</span>
+                  <span class="points" :class="{ negative: player.score < 0 }">
+                  {{ player.score }} pts
+                </span>
+                </li>
+              </ul>
             </div>
-            <ul class="leaderboard-list">
-              <li v-for="(player, index) in topPlayers" :key="player.name" class="leaderboard-item">
-                <span class="rank">{{ index + 1 }}.</span>
-                <span class="team-name">{{ player.name }}</span>
-                <span class="points" :class="{ 'negative': player.score < 0 }">
-              {{ player.score }} pts
-            </span>
-              </li>
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+        <Card class="flex-1 h-max">
+          <CardHeader>
+            <div class="flex items-center justify-between">
+              <CardTitle>Games</CardTitle>
+              <Button @click="openGamesView">Open in Games</Button>
+            </div>
+
+          </CardHeader>
+          <CardContent>
+            <CurrentGameCard/>
+          </CardContent>
+        </Card>
+      </div>
+
     </Page>
   </main>
 </template>
