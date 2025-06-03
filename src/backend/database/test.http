@@ -59,3 +59,6 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/api/settings
+
+###
+DELETE http://localhost:3000/api/teams/9/16

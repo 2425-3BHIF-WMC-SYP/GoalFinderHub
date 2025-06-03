@@ -54,7 +54,6 @@ teamsRouter.delete("/:teamId/:playerId", async (req, res) => {
     try {
         await TeamsRepository.deletePlayer(db, parseInt(req.params.playerId));
         res.status(StatusCodes.OK).json({message: "ok"});
-
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     } finally {

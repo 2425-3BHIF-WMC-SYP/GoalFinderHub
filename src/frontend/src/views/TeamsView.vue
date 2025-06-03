@@ -32,8 +32,20 @@ const addPlayer = () => {
   }
 }
 
-const removePlayer = (index: number) => {
-  players.value.splice(index, 1)
+const selectedPlayers = ref<Player[]>([])
+const selectedTeamName = ref('')
+const selectedTeamId = ref<number | undefined>(undefined)
+
+const removePlayer = async (teamId: number | undefined, playerId: number) => {
+  selectedPlayers.value = selectedPlayers.value.filter(p => p.id !== playerId)
+
+  const team = teams.value.find(t => t.id === teamId)
+  if (team) {
+    team.players = team.players.filter(p => (p as Player).id !== playerId)
+  }
+
+  await fetchRestEndpoint(`/teams/${teamId}/${playerId}`, 'DELETE')
+  await getAllTeams()
 }
 
 const createTeam = async () => {
@@ -74,7 +86,19 @@ const getAllTeams = async () => {
   const data = await fetchRestEndpoint('/teams', 'GET')
 
   if (data !== undefined) {
-    teams.value = data
+    const teamsWithPlayers = await Promise.all(
+      data.map(async (team: Team) => {
+        const teamDetails = await fetchRestEndpoint(`/teams/${team.id}`, 'GET')
+        return {
+          ...team,
+          players: teamDetails,
+        }
+      }),
+    )
+
+    teams.value = teamsWithPlayers.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    )
   } else {
     console.error('Error loading teams')
   }
@@ -85,14 +109,12 @@ const deleteTeam = async (teamId: number) => {
   await fetchRestEndpoint(`/teams/${teamId}`, 'DELETE')
 }
 
-const selectedPlayers = ref<string[]>([])
-const selectedTeamName = ref('')
-
 const openPlayersPopup = async (team: Team) => {
   const data = await fetchRestEndpoint(`/teams/${team.id}`, 'GET')
   if (data !== undefined) {
-    selectedPlayers.value = data.map((p: Player) => p.name) // vorausgesetzt Backend liefert Players mit name-Feld
+    selectedPlayers.value = data
     selectedTeamName.value = team.name
+    selectedTeamId.value = team.id
   } else {
     console.error('Could not fetch players')
   }
@@ -109,14 +131,12 @@ const openEditPopup = async (team: Team) => {
 
 const saveEditedTeam = async () => {
   if (editedName.value !== '') {
-    //Update Name
     await fetchRestEndpoint(`/teams/${editedTeamId.value}/${editedName.value}`, 'PUT')
     await getAllTeams()
   }
 
   if (editedPlayers.value.length !== 0) {
     for (let i = 0; i < editedPlayers.value.length; i++) {
-      //Put one player
       await fetchRestEndpoint(`/teams/${editedTeamId.value}`, 'PUT', {
         name: editedPlayers.value[i],
       })
@@ -181,9 +201,7 @@ async function onInit() {
                     class="flex justify-between items-center border-b pb-1"
                   >
                     <span>{{ p }}</span>
-                    <Button variant="destructive" size="sm" @click="removePlayer(index)"
-                      >Delete
-                    </Button>
+                    <Button variant="destructive" size="sm">Delete</Button>
                   </div>
                   <div v-if="players.length === 0" class="text-sm text-gray-500 italic">
                     No players added
@@ -212,20 +230,21 @@ async function onInit() {
         <Card v-for="team in teams" :key="team.id" class="small-card compact-card">
           <CardContent class="card-row compact-row">
             <div class="game-info text-sm">
-              <div class="teams">
-                <strong>{{ team.name }}</strong>
+              <div class="grid grid-cols-[300px_auto] items-center w-full">
+                <strong class="truncate">{{ team.name }}</strong>
+                <span class="text-sm text-gray-600 text-left">
+                  Spieler: {{ team.players.length }}
+                </span>
               </div>
             </div>
             <div class="button-group">
               <Dialog>
                 <DialogTrigger>
-                  <Button id="players-btn" size="sm" @click="openPlayersPopup(team)"
-                    >Players
-                  </Button>
+                  <Button id="players-btn" size="sm" @click="openPlayersPopup(team)">Players</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Players in "{{ selectedTeamName }}</DialogTitle>
+                    <DialogTitle>Players in "{{ selectedTeamName }}"</DialogTitle>
                   </DialogHeader>
                   <div class="space-y-4">
                     <div>
@@ -233,16 +252,14 @@ async function onInit() {
                         class="space-y-1 border border-gray-300 bg-gray-50 p-4 rounded-lg max-h-[200px] overflow-y-auto"
                       >
                         <div
-                          v-for="(p, index) in selectedPlayers"
-                          :key="index"
+                          v-for="p in selectedPlayers"
+                          :key="p.id"
                           class="flex justify-between items-center border-b pb-1"
                         >
-                          <span>{{ p }}</span>
+                          <span>{{ p.name }}</span>
+                          <Button variant="destructive" size="sm" @click="removePlayer(selectedTeamId, p.id)">Delete</Button>
                         </div>
-                        <div
-                          v-if="selectedPlayers.length === 0"
-                          class="text-sm text-gray-500 italic"
-                        >
+                        <div v-if="selectedPlayers.length === 0" class="text-sm text-gray-500 italic">
                           No players available
                         </div>
                       </div>
@@ -255,6 +272,7 @@ async function onInit() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+
               <Dialog>
                 <DialogTrigger>
                   <Button id="edit-btn" size="sm" @click="openEditPopup(team)">Edit</Button>
@@ -327,7 +345,6 @@ async function onInit() {
   gap: 0.4rem;
 }
 
-/* Button Hover Styles */
 #delete-btn {
   background-color: #ef4444;
   color: white;
