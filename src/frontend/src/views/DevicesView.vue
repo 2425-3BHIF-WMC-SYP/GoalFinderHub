@@ -30,7 +30,6 @@ const router = useRouter()
 const devices = ref<Device[]>([])
 const loading = ref(true)
 
-// Dialog state
 const currentDevice = ref<Device>({
   macAddress: '',
   name: '',
@@ -43,6 +42,10 @@ const currentLedMode = ref('Normal')
 const fetchDevices = async () => {
   try {
     devices.value = await fetchRestEndpoint('/devices', 'GET')
+    devices.value.forEach(device => {
+      device.volume = device.volume || 50
+      device.ledMode = device.ledMode || 'Normal'
+    })
   } catch (error) {
     console.error('Error fetching devices:', error)
   } finally {
@@ -58,23 +61,32 @@ const deleteDevice = async (macAddress: string) => {
     console.error('Error deleting device:', error)
   }
 }
-const openEditDialog = (Device: Device) => {
+
+const openEditDialog = (device: Device) => {
   currentDevice.value = {
-    ...Device,
-    volume: Device.volume || 50,
-    ledMode: Device.ledMode || 'Normal',
+    ...device,
+    volume: device.volume || 50,
+    ledMode: device.ledMode || 'Normal',
   }
-  currentVolume.value = [currentDevice.value.volume || 50]
-  currentLedMode.value = currentDevice.value.ledMode || 'Normal'
+  currentVolume.value = [currentDevice.value.volume]
+  currentLedMode.value = currentDevice.value.ledMode
 }
 
 const saveChanges = async () => {
   try {
     await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
-      name: currentDevice.value.name,
+      name: currentDevice.value.name
     })
 
-    await fetchDevices()
+    const deviceIndex = devices.value.findIndex(d => d.macAddress === currentDevice.value.macAddress)
+    if (deviceIndex !== -1) {
+      devices.value[deviceIndex] = {
+        ...devices.value[deviceIndex],
+        name: currentDevice.value.name,
+        volume: currentVolume.value[0],
+        ledMode: currentLedMode.value
+      }
+    }
   } catch (error) {
     console.error('Error updating device:', error)
   }
@@ -88,7 +100,6 @@ async function onInit() {
   }
 }
 </script>
-
 <template>
   <main>
     <Page title="Devices" description="Overview of all Devices." :on-init="onInit">
@@ -104,6 +115,17 @@ async function onInit() {
           <CardContent class="card-content">
             <h3 class="card-title">{{ device.name }}</h3>
             <p class="card-mac">{{ device.macAddress }}</p>
+
+            <div class="device-details">
+              <div class="detail-row">
+                <span class="detail-label">Lautstärke:</span>
+                <span class="detail-value">{{ device.volume || 50 }}%</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">LED Modus:</span>
+                <span class="detail-value">{{ device.ledMode || 'Normal' }}</span>
+              </div>
+            </div>
 
             <div class="card-footer">
               <div class="action-row">
@@ -157,7 +179,7 @@ async function onInit() {
                   </DialogContent>
                 </Dialog>
                 <Button variant="destructive" @click="deleteDevice(device.macAddress)"
-                  >Delete
+                >Delete
                 </Button>
               </div>
             </div>
@@ -209,7 +231,33 @@ async function onInit() {
   text-align: center;
   font-size: 0.875rem;
   color: #475569;
-  margin-bottom: auto;
+  margin-bottom: 0.5rem;
+}
+
+.device-details {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #334155;
+}
+
+.detail-value {
+  color: #475569;
 }
 
 .card-footer {
@@ -241,6 +289,12 @@ async function onInit() {
   font-size: 0.875rem;
   font-weight: 500;
   margin: 0;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .dialog-footer {
