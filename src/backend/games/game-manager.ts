@@ -1,4 +1,5 @@
 import { Game } from "../database/model";
+import {DeviceManager} from "../devices/device-manager";
 
 export class GameManager {
     private localGames: Game[] = [];
@@ -27,6 +28,9 @@ export class GameManager {
 
         this.currentGame = { ...this.localGames[gameIndex], started: true };
         this.localGames[gameIndex].started = true;
+
+        await DeviceManager.getInstance().startDevice(this.localGames[gameIndex].homeDevice.macAddress);
+        await DeviceManager.getInstance().startDevice(this.localGames[gameIndex].awayDevice.macAddress);
     }
 
     public async stop(): Promise<Game> {

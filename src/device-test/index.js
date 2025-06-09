@@ -1,12 +1,15 @@
-const macAddress = "14:1A:7D:DA:71:13";
 const ipAddress = "127.0.0.1";
+
+const macAddress = () => {
+    return document.getElementById("mac-address").value;
+}
 
 const refresh = async () => {
     const data = await fetch("http://localhost:3001/api/status");
     const text = await data.text();
 
     const statusText = document.getElementById("status-text");
-    statusText.innerText = `${macAddress}-${ipAddress} Status: ${text}`;
+    statusText.innerText = `${macAddress()}-${ipAddress} Status: ${text}`;
 
     console.log(statusText);
 }
@@ -18,7 +21,7 @@ document.getElementById("register-button").addEventListener("click", async () =>
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-            macAddress: macAddress,
+            macAddress: macAddress(),
             ipAddress: ipAddress
         })
     });
@@ -35,7 +38,7 @@ document.getElementById("hit-button").addEventListener("click", async () => {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-            macAddress
+            macAddress: macAddress()
         })
     });
 
@@ -50,7 +53,7 @@ document.getElementById("miss-button").addEventListener("click", async () => {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-            macAddress
+            macAddress: macAddress()
         })
     });
 

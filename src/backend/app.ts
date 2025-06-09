@@ -17,6 +17,7 @@ import {gamesRouter} from "./routers/games-router";
 import {settingsRouter} from "./routers/settings-router";
 import {Server} from "socket.io"
 import * as http from "node:http";
+import {DeviceManager} from "./devices/device-manager";
 
 const API_URL = "/api"
 
@@ -44,6 +45,15 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());    // parse JSON data and place result in req.body
 
+// ensure database is created and populated
+const db: Database = await DB.createDBConnection();
+await dropTables(db); //Only for testing
+await DB.ensureTablesCreated(db); //moved from DB class for testing
+await ensureSampleDataInserted(db); //Only for testing
+await db.close();
+
+await DeviceManager.getInstance().loadDevices();
+
 // mount router(s)
 app.use(`${API_URL}/auth`, authRouter);
 app.use(`${API_URL}/devices`, devicesRouter);
@@ -51,14 +61,8 @@ app.use(`${API_URL}/teams`, teamsRouter);
 app.use(`${API_URL}/leaderboard`, leaderboardRouter);
 app.use(`${API_URL}/games`, gamesRouter);
 app.use(`${API_URL}/settings`, settingsRouter);
-app.use(`${API_URL}/createGame`, gamesRouter)
+app.use(`${API_URL}/createGame`, gamesRouter);
 
-// ensure database is created and populated
-const db: Database = await DB.createDBConnection();
-await dropTables(db); //Only for testing
-await DB.ensureTablesCreated(db); //moved from DB class for testing
-await ensureSampleDataInserted(db); //Only for testing
-await db.close();
 
 // start http server
 /*app.listen(3000, () => {

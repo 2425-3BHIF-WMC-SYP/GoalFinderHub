@@ -233,7 +233,7 @@ async function onInit() {
                      <div class="grid grid-cols-[300px_auto] items-center w-full">
                         <strong class="truncate">{{ team.name }}</strong>
                         <span class="text-sm text-gray-600 text-left">
-                           Spieler: {{ team.players.length }}
+                           Players: {{ team.players.length }}
                         </span>
                      </div>
                   </div>
