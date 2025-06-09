@@ -2,7 +2,6 @@ import express from "express";
 import {DB} from "../database/data";
 import {DevicesRepository} from "../repos/devices-repository";
 import {StatusCodes} from "http-status-codes";
-import {Device} from "../database/model";
 import {DeviceManager} from "../devices/device-manager";
 
 export const devicesRouter = express.Router();

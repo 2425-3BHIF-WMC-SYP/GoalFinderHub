@@ -304,11 +304,4 @@ async function onInit() {
   align-items: center;
   gap: 1rem;
 }
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
 </style>
