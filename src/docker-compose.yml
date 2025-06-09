@@ -1,13 +1,13 @@
 services:
   backend:
-    restart: on-failure
+    restart: always
     build: ./backend
     hostname: backend
     network_mode: "host"
     ports:
       - '3000:3000'
   frontend:
-    restart: on-failure
+    restart: always
     build: ./frontend
     hostname: frontend
     ports:
