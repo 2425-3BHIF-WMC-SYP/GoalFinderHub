@@ -79,7 +79,11 @@ export class DeviceManager {
     }
 
     public getAllDevices() {
-        return [...this.devices];
+        return [...this.devices].sort((a, b) => {
+            const aPriority = a.isActive === true ? 2 : a.isActive === false ? 1 : 0;
+            const bPriority = b.isActive === true ? 2 : b.isActive === false ? 1 : 0;
+            return bPriority - aPriority;
+        });
     }
 
     public getDevice(macAddress: string) {
