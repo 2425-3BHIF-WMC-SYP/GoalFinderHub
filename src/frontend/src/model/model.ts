@@ -9,6 +9,8 @@ export interface User {
 export interface Device {
   macAddress: string
   name: string
+  ipAddress?: string
+  isActive?: boolean;
   volume?: number
   ledMode?: string
 }

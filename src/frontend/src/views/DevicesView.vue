@@ -36,13 +36,14 @@ const currentDevice = ref<Device>({
   volume: 50,
   ledMode: 'Normal',
 })
+
 const currentVolume = ref([50])
 const currentLedMode = ref('Normal')
 
 const fetchDevices = async () => {
   try {
     devices.value = await fetchRestEndpoint('/devices', 'GET')
-    devices.value.forEach(device => {
+    devices.value.forEach((device) => {
       device.volume = device.volume || 50
       device.ledMode = device.ledMode || 'Normal'
     })
@@ -68,23 +69,25 @@ const openEditDialog = (device: Device) => {
     volume: device.volume || 50,
     ledMode: device.ledMode || 'Normal',
   }
-  currentVolume.value = [currentDevice.value.volume]
-  currentLedMode.value = currentDevice.value.ledMode
+  currentVolume.value = [currentDevice.value!.volume]
+  currentLedMode.value = currentDevice.value!.ledMode
 }
 
 const saveChanges = async () => {
   try {
     await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
-      name: currentDevice.value.name
+      name: currentDevice.value.name,
     })
 
-    const deviceIndex = devices.value.findIndex(d => d.macAddress === currentDevice.value.macAddress)
+    const deviceIndex = devices.value.findIndex(
+      (d) => d.macAddress === currentDevice.value.macAddress,
+    )
     if (deviceIndex !== -1) {
       devices.value[deviceIndex] = {
         ...devices.value[deviceIndex],
         name: currentDevice.value.name,
         volume: currentVolume.value[0],
-        ledMode: currentLedMode.value
+        ledMode: currentLedMode.value,
       }
     }
   } catch (error) {
@@ -115,15 +118,20 @@ async function onInit() {
           <CardContent class="card-content">
             <h3 class="card-title">{{ device.name }}</h3>
             <p class="card-mac">{{ device.macAddress }}</p>
+            <p class="card-mac">{{ device.ipAddress }}</p>
 
             <div class="device-details">
               <div class="detail-row">
-                <span class="detail-label">Lautstärke:</span>
+                <span class="detail-label">Volume:</span>
                 <span class="detail-value">{{ device.volume || 50 }}%</span>
               </div>
               <div class="detail-row">
-                <span class="detail-label">LED Modus:</span>
+                <span class="detail-label">LED Mode:</span>
                 <span class="detail-value">{{ device.ledMode || 'Normal' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Status: </span>
+                <span class="detail-value">{{ device.isActive ? 'On' : 'Off' }}</span>
               </div>
             </div>
 
@@ -146,7 +154,7 @@ async function onInit() {
                       </div>
 
                       <div class="form-section">
-                        <h4>Lautstärke</h4>
+                        <h4>Volume</h4>
                         <div class="volume-control">
                           <Slider v-model="currentVolume" :max="100" :step="1" class="w-full" />
                           <span>{{ currentVolume[0] }}%</span>
@@ -154,7 +162,7 @@ async function onInit() {
                       </div>
 
                       <div class="form-section">
-                        <h4>LED Modus</h4>
+                        <h4>LED Mode</h4>
                         <Select v-model="currentLedMode">
                           <SelectTrigger>
                             <SelectValue placeholder="Select Mode" />
@@ -179,7 +187,7 @@ async function onInit() {
                   </DialogContent>
                 </Dialog>
                 <Button variant="destructive" @click="deleteDevice(device.macAddress)"
-                >Delete
+                  >Delete
                 </Button>
               </div>
             </div>
@@ -295,12 +303,5 @@ async function onInit() {
   display: flex;
   align-items: center;
   gap: 1rem;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
 }
 </style>
