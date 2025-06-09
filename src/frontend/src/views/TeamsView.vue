@@ -41,7 +41,7 @@ const removePlayer = async (teamId: number | undefined, playerId: number) => {
 
   const team = teams.value.find(t => t.id === teamId)
   if (team) {
-    team.players = team.players.filter(p => (p as Player).id !== playerId)
+    team.players = selectedPlayers.value.filter(p => (p as Player).id !== playerId).map(player => player.name);
   }
 
   await fetchRestEndpoint(`/teams/${teamId}/${playerId}`, 'DELETE')

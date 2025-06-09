@@ -23,11 +23,12 @@ export interface Player {
 export interface Game {
   id?: number;
   date: Date;
-  duration: number;
+  duration?: number;
   homeTeamScore: number;
   awayTeamScore: number;
   homeTeam: Team;
   awayTeam: Team;
+  started?: boolean;
 }
 
 export interface Team {

@@ -69,8 +69,8 @@ const openEditDialog = (device: Device) => {
     volume: device.volume || 50,
     ledMode: device.ledMode || 'Normal',
   }
-  currentVolume.value = [currentDevice.value!.volume]
-  currentLedMode.value = currentDevice.value!.ledMode
+  currentVolume.value = [currentDevice.value.volume!]
+  currentLedMode.value = currentDevice.value.ledMode!
 }
 
 const saveChanges = async () => {

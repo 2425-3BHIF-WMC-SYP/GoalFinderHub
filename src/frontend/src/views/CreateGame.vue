@@ -62,7 +62,7 @@ const validateForm = (): boolean => {
 const handleStartGame = async () => {
   if (!validateForm()) return;
 
-  const gameData: Partial<Game> = {
+  const gameData: Game = {
     date: new Date(),
     homeTeamScore: 0,
     awayTeamScore: 0,
@@ -74,8 +74,8 @@ const handleStartGame = async () => {
   try {
     await fetchRestEndpoint('/games/local', 'POST', gameData);
     await router.push("/games");
-  } catch (err: any) {
-    const errMsg = err?.message || `${err}`
+  } catch (err) {
+    const errMsg = `${err}`
     if (errMsg.includes("Stop the current Game before starting a new one")) {
       error.value = "Stop the current Game before starting a new one."
     } else {
