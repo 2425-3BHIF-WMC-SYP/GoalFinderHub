@@ -1,12 +1,9 @@
 import express from "express";
-import {DB} from "../database/data";
-import {DevicesRepository} from "../repos/devices-repository";
 import {StatusCodes} from "http-status-codes";
 import {DeviceManager} from "../devices/device-manager";
 
 export const devicesRouter = express.Router();
-const deviceManager = new DeviceManager();
-await deviceManager.loadDevices();
+const deviceManager = DeviceManager.getInstance();
 
 devicesRouter.get("/", async (req, res) => {
     res.send(deviceManager.getAllDevices());
@@ -28,43 +25,30 @@ devicesRouter.post("/", async (req, res) => {
 });
 
 devicesRouter.delete("/:macAddress", async (req, res) => {
-    const db = await DB.createDBConnection();
-
     try {
-        let macAddress = req.params.macAddress as string;
-        await DevicesRepository.deleteDevice(macAddress, db);
-
+        await deviceManager.deleteDevice(req.params.macAddress);
         res.sendStatus(StatusCodes.NO_CONTENT);
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).send(`Bad request: ${error}`);
-    } finally {
-        await db.close();
+    }
+    catch (error) {
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 });
 
 devicesRouter.put('/:macAddress', async (req, res) => {
-    const db = await DB.createDBConnection();
-    const oldMacAddress = req.params.macAddress;
-    const {name} = req.body;
-
-    if (!name) {
-        //Name must be provided
-        res.status(StatusCodes.BAD_REQUEST).send("Name must be provided");
+    if(!req.body.name) {
+        res.status(StatusCodes.BAD_REQUEST).send("Missing input");
         return;
     }
 
-    try {
-        if (!await DevicesRepository.deviceExists(oldMacAddress, db)) {
-            res.status(StatusCodes.BAD_REQUEST).send('Device not found.');
-            return;
-        }
+    const device = deviceManager.getDevice(req.params.macAddress);
 
-        await DevicesRepository.updateDevice(oldMacAddress, db, name);
-        res.sendStatus(StatusCodes.NO_CONTENT);
-    } catch (error) {
-        console.error('Update failed:', error);
-        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
-    } finally {
-        await db.close();
+    if(!device) {
+        res.status(StatusCodes.BAD_REQUEST).send("Device does not exist!");
+        return;
     }
+
+    device.name = req.body.name;
+    await deviceManager.saveDevice(device);
+
+    res.send(device);
 });

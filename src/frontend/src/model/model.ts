@@ -29,6 +29,8 @@ export interface Game {
   homeTeam: Team;
   awayTeam: Team;
   started?: boolean;
+  homeDevice: Device;
+  awayDevice: Device;
 }
 
 export interface Team {

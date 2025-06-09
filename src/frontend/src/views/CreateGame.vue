@@ -26,13 +26,11 @@ const fetchInitialData = async () => {
    error.value = null
 
    try {
-      const [teamsResponse, devicesResponse] = await Promise.all([
-         fetchRestEndpoint('/teams', 'GET'),
-         fetchRestEndpoint('/devices', 'GET'),
-      ])
+      const teamsResponse = await fetchRestEndpoint('/teams', 'GET')
+      const devicesResponse: Device[] = await fetchRestEndpoint('/devices', 'GET')
 
       teams.value = teamsResponse
-      devices.value = devicesResponse
+      devices.value = devicesResponse.filter((d) => d.isActive)
    } catch (err) {
       error.value = `${err}`
    } finally {
@@ -41,9 +39,9 @@ const fetchInitialData = async () => {
 }
 
 const homeTeam = ref<Team>()
-const homeDevice = ref<string>('')
+const homeDevice = ref<Device>()
 const awayTeam = ref<Team>()
-const awayDevice = ref<string>('')
+const awayDevice = ref<Device>()
 
 const validateForm = (): boolean => {
    if (!homeTeam.value || !awayTeam.value || !homeDevice.value || !awayDevice.value) {
@@ -74,6 +72,8 @@ const handleStartGame = async () => {
       awayTeamScore: 0,
       homeTeam: homeTeam.value!,
       awayTeam: awayTeam.value!,
+      homeDevice: homeDevice.value!,
+      awayDevice: awayDevice.value!,
       started: false,
    }
 
@@ -140,7 +140,7 @@ async function onInit() {
                         <SelectItem
                            v-for="device in devices"
                            :key="device.macAddress"
-                           :value="device.macAddress"
+                           :value="device"
                         >
                            {{ device.name }}
                         </SelectItem>
@@ -175,7 +175,7 @@ async function onInit() {
                         <SelectItem
                            v-for="device in devices"
                            :key="device.macAddress"
-                           :value="device.macAddress"
+                           :value="device"
                         >
                            {{ device.name }}
                         </SelectItem>
