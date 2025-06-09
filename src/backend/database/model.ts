@@ -19,6 +19,8 @@ export interface Team {
 export interface Device {
     macAddress: string;
     name: string;
+    isActive?: boolean;
+    ipAddress?: string;
 }
 
 export interface TeamStanding {

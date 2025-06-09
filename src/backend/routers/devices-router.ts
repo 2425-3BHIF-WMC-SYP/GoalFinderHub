@@ -3,42 +3,28 @@ import {DB} from "../database/data";
 import {DevicesRepository} from "../repos/devices-repository";
 import {StatusCodes} from "http-status-codes";
 import {Device} from "../database/model";
+import {DeviceManager} from "../devices/device-manager";
 
 export const devicesRouter = express.Router();
+const deviceManager = new DeviceManager();
+await deviceManager.loadDevices();
 
 devicesRouter.get("/", async (req, res) => {
-    const db = await DB.createDBConnection();
-
-    try {
-        const devices = await DevicesRepository.getAllDevices(db);
-
-        res.send(devices);
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).send(`Bad request: ${error}`);
-    } finally {
-        await db.close();
-    }
+    res.send(deviceManager.getAllDevices());
 });
 
 devicesRouter.post("/", async (req, res) => {
-    const db = await DB.createDBConnection();
+    if(!req.body.macAddress || !req.body.ipAddress) {
+        res.status(StatusCodes.BAD_REQUEST).send("Missing input");
+        return;
+    }
 
     try {
-        if (await DevicesRepository.deviceExists(req.body.macAddress as string, db)) {
-            throw new Error("Device already exists");
-        }
-
-        let device: Device = {
-            macAddress: req.body.macAddress as string,
-            name: req.body.name as string,
-        };
-        device = await DevicesRepository.addDevice(device, db);
-
-        res.send(device);
-    } catch (error) {
-        res.status(StatusCodes.BAD_REQUEST).send(`Bad request: ${error}`);
-    } finally {
-        await db.close();
+        await deviceManager.registerDevice(req.body.macAddress, req.body.ipAddress);
+        res.sendStatus(StatusCodes.NO_CONTENT);
+    }
+    catch (error) {
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 });
 
@@ -57,7 +43,6 @@ devicesRouter.delete("/:macAddress", async (req, res) => {
     }
 });
 
-// @ts-ignore
 devicesRouter.put('/:macAddress', async (req, res) => {
     const db = await DB.createDBConnection();
     const oldMacAddress = req.params.macAddress;
