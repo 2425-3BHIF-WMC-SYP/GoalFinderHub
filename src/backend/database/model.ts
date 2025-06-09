@@ -40,6 +40,7 @@ export interface Game {
     awayTeamScore: number;
     homeTeam: Team;
     awayTeam: Team;
+    started: boolean;
 }
 
 enum LedMode {

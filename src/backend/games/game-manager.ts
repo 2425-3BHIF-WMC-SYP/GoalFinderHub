@@ -1,48 +1,38 @@
-import {Game} from "../database/model";
-import {GamesRepository} from "../repos/game-repository";
-import {DB} from "../database/data";
+import { Game } from "../database/model";
 
 export class GameManager {
-    private readonly MAX_GAME_DURATION: number = 50;
+    private localGames: Game[] = [];
+    public currentGame: Game | null = null;
 
-    private intervalId: NodeJS.Timeout | undefined;
-    private game: Game | undefined;
-
-    public get currentGame() {
-        return this.game;
+    public getAllGames(): Game[] {
+        return [...this.localGames];
     }
 
-    public async start(game: Game) {
-        await this.stop();
+    private nextId = 1;
 
-        this.game = game;
-
-        this.intervalId = setInterval(async () => {
-            this.game!.duration += 1;
-
-            if (this.game!.duration >= this.MAX_GAME_DURATION) {
-                await this.stop();
-            }
-        }, 1000);
-
-        //TODO: logic for goalfinders hit and miss detection
-    }
-
-    public async stop() {
-        //TODO: save game in database
-        if (this.game) {
-            clearInterval(this.intervalId);
-
-            const db = await DB.createDBConnection();
-
-            try {
-                await GamesRepository.insertGame(db, this.game);
-                this.game = undefined;
-            } catch (error) {
-                console.error(error);
-            } finally {
-                await db.close();
-            }
+    public addGame(game: Game): void {
+        if (game.id === undefined) {
+            game.id = this.nextId++;
         }
+        this.localGames.push({ ...game, started: false });
+    }
+
+    public async start(gameId: number): Promise<void> {
+        if (this.currentGame) {
+            throw new Error("Stop the current Game before starting a new one.");
+        }
+
+        const gameIndex = this.localGames.findIndex(g => g.id === gameId);
+        if (gameIndex === -1) throw new Error("Game not found");
+
+        this.currentGame = { ...this.localGames[gameIndex], started: true };
+        this.localGames[gameIndex].started = true;
+    }
+
+    public async stop(): Promise<Game> {
+        if (!this.currentGame) throw new Error("No game running");
+        const finishedGame = this.currentGame;
+        this.currentGame = null;
+        return finishedGame;
     }
 }

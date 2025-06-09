@@ -26,11 +26,11 @@ async function deletePreviousGame(gameId: number) {
       method: 'DELETE',
     })
     if (!response.ok) {
-      throw new Error('Löschen fehlgeschlagen')
+      throw new Error('Delete failed.')
     }
     await loadPreviousGames()
   } catch (error) {
-    alert('Fehler beim Löschen des Spiels')
+    alert('Error while deleting game')
     console.error(error)
   }
 }
@@ -44,14 +44,15 @@ async function onInit() {
     console.error(error)
   }
 }
+
 </script>
 
 <template>
   <main>
     <Page title="Games" description="See information about your games." :on-init="onInit">
       <div class="header-row">
-        <div />
-        <Button id="create-game-btn" @click="router.push('/createGame')"> Create Game</Button>
+        <Button id="create-game-btn" @click="router.push('/createGame')">Create Game</Button>
+        <Button id="go-to-start-game" @click="router.push('/startGame')">Start Game</Button>
       </div>
       <CurrentGameCard :on-stop="loadPreviousGames"/>
       <Card id="previous-games" class="mt-4">
@@ -82,6 +83,7 @@ async function onInit() {
               <div style="flex-basis: 30%; text-align: right; color: #666">
                 {{ new Date(game.date).toLocaleDateString() }}
               </div>
+
             </div>
             <Button variant="destructive" @click="deletePreviousGame(game.id!)">Delete</Button>
           </div>
@@ -99,6 +101,7 @@ async function onInit() {
   display: flex;
   justify-content: flex-end;
   margin-bottom: 1rem;
+  gap: 0.5rem;
 }
 
 .section-title {

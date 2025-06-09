@@ -34,6 +34,7 @@ app.use(`${API_URL}/teams`, teamsRouter);
 app.use(`${API_URL}/leaderboard`, leaderboardRouter);
 app.use(`${API_URL}/games`, gamesRouter);
 app.use(`${API_URL}/settings`, settingsRouter);
+app.use(`${API_URL}/createGame`, gamesRouter)
 
 // ensure database is created and populated
 const db: Database = await DB.createDBConnection();

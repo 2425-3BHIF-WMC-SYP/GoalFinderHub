@@ -49,7 +49,7 @@ const router = createRouter({
     {
       path: '/createGame',
       name: 'createGame',
-      component: () => import("@/views/StartGame.vue"),
+      component: () => import("@/views/CreateGame.vue"),
       meta: { requiresAuth: true }
     },
 
@@ -62,6 +62,13 @@ const router = createRouter({
       component: () => import('@/views/AboutView.vue'),
       meta: { requiresAuth: true }
     },
+
+    {
+      path: '/startGame',
+      name: 'startGame',
+      component: () => import("@/views/StartGame.vue"),
+      meta: { requiresAuth: true }
+    }
   ],
 })
 
