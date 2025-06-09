@@ -66,8 +66,7 @@ gamesRouter.post("/start/:id", async (req, res) => {
     try {
         const gameId = Number(req.params.id);
         await gameManager.start(gameId);
-        res.status(StatusCodes.OK);
-        res.json(gameId);
+        res.status(StatusCodes.OK).send(gameId);
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     }

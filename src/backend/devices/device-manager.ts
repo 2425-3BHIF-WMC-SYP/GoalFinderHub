@@ -102,7 +102,7 @@ export class DeviceManager {
         }
     }
 
-    public getDevice(macAddress: string) {
+    public getDevice(macAddress: string): Device | undefined{
         return this.devices.find(d => d.macAddress === macAddress);
     }
 
@@ -124,12 +124,17 @@ export class DeviceManager {
     }
 
     public async startDevice(macAddress: string) {
-        const device = this.getDevice(macAddress);
+        const device: Device | undefined = this.getDevice(macAddress);
 
-        if(device) {
-            await fetch(`http://${device.ipAddress}/api/start`, {
-                method: "POST"
-            });
+        if(device !== undefined && device.isActive) {
+            try {
+                const data = await fetch(`http://${device.ipAddress}/api/start`, {
+                    method: "POST"
+                });
+            }
+            catch (error) {
+                throw error.cause;
+            }
         }
     }
 }
