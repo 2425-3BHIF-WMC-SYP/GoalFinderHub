@@ -36,6 +36,10 @@ export class GameManager {
     public async stop(): Promise<Game> {
         if (!this.currentGame) throw new Error("No game running");
         const finishedGame = this.currentGame;
+
+        await DeviceManager.getInstance().stopDevice(finishedGame.homeDevice.macAddress);
+        await DeviceManager.getInstance().stopDevice(finishedGame.awayDevice.macAddress);
+
         this.currentGame = null;
         return finishedGame;
     }

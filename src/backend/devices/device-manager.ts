@@ -127,14 +127,19 @@ export class DeviceManager {
         const device: Device | undefined = this.getDevice(macAddress);
 
         if(device !== undefined && device.isActive) {
-            try {
-                const data = await fetch(`http://${device.ipAddress}/api/start`, {
-                    method: "POST"
-                });
-            }
-            catch (error) {
-                throw error.cause;
-            }
+            const data = await fetch(`http://${device.ipAddress}/api/start`, {
+                method: "POST"
+            });
+        }
+    }
+
+    public async stopDevice(macAddress: string) {
+        const device: Device | undefined = this.getDevice(macAddress);
+
+        if(device !== undefined && device.isActive) {
+            const data = await fetch(`http://${device.ipAddress}/api/stop`, {
+                method: "POST"
+            });
         }
     }
 }
