@@ -104,3 +104,13 @@ gamesRouter.post("/local", (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     }
 });
+
+gamesRouter.post("/hit/:macAddress", async (req, res) => {
+   try {
+       gameManager.registerHit(req.params.macAddress);
+       res.sendStatus(StatusCodes.NO_CONTENT);
+   }
+   catch (error) {
+       res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+   }
+});

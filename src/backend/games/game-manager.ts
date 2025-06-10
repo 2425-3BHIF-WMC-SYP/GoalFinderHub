@@ -43,4 +43,15 @@ export class GameManager {
         this.currentGame = null;
         return finishedGame;
     }
+
+    public registerHit(macAddress: string) {
+        if (!this.currentGame) throw new Error("No game running");
+
+        if(this.currentGame.homeDevice.macAddress === macAddress) {
+            this.currentGame.homeTeamScore++;
+        }
+        else if(this.currentGame.awayDevice.macAddress === macAddress) {
+            this.currentGame.awayTeamScore++;
+        }
+    }
 }
