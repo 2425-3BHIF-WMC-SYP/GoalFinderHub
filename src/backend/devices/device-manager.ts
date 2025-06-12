@@ -57,7 +57,11 @@ export class DeviceManager {
     }
 
     public getAllDevices() {
-        return [...this.devices].sort((a, b) => Number(a.isActive) - Number(b.isActive));
+        return [...this.devices].sort((a, b) => {
+            const aActive = a.isActive ? 1 : 0;
+            const bActive = b.isActive ? 1 : 0;
+            return bActive - aActive;
+        });
     }
 
     public async saveDevice(device: Device): Promise<void> {

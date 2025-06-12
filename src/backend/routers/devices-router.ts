@@ -47,14 +47,25 @@ devicesRouter.put('/:macAddress', async (req, res) => {
         const device = deviceManager.getDevice(req.params.macAddress);
 
         if (device) {
-            device.name = req.body.name ?? device.name;
-            device.volume = req.body.volume ?? device.volume;
-            device.ledMode = req.body.ledMode ?? device.ledMode;
-            res.status(StatusCodes.NO_CONTENT).send();
+            const request = await fetch(`http://${device.ipAddress}/api/settings`, {
+                method: "POST",
+                body: JSON.stringify(req.body)
+            });
+
+            if(request.ok) {
+                device.name = req.body.name ?? device.name;
+                device.volume = req.body.volume ?? device.volume;
+                device.ledMode = req.body.ledMode ?? device.ledMode;
+                res.status(StatusCodes.NO_CONTENT).send();
+            }
+            else {
+                res.status(StatusCodes.BAD_REQUEST).send("Could not connect to the device.");
+            }
 
         } else {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
         }
     } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     }
 });
