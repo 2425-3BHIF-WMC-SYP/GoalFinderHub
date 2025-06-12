@@ -38,7 +38,7 @@ devicesRouter.delete("/:macAddress", async (req, res) => {
 });
 
 devicesRouter.put('/:macAddress', async (req, res) => {
-    if (!req.body.name) {
+    if (!req.body.name || !req.body.volume || !req.body.ledMode) {
         res.status(StatusCodes.BAD_REQUEST).send("Missing input");
         return;
     }
@@ -46,21 +46,21 @@ devicesRouter.put('/:macAddress', async (req, res) => {
     try {
         const device = deviceManager.getDevice(req.params.macAddress);
 
-        if (device) {
+        if (device && device.isActive) {
             const request = await fetch(`http://${device.ipAddress}/api/settings`, {
                 method: "POST",
                 body: JSON.stringify({
-                    deviceName: req.body.name  ?? device.name,
+                    deviceName: req.body.name,
                     vibrationSensorSensitivity: 0,
-                    volume: Number(req.body.volume) ?? device.volume,
-                    ledMode: req.body.ledMode ?? device.ledMode
+                    volume: Number(req.body.volume),
+                    ledMode: Number(req.body.ledMode)
                 })
             });
 
             if(request.ok) {
-                device.name = req.body.name ?? device.name;
-                device.volume = req.body.volume ?? device.volume;
-                device.ledMode = req.body.ledMode ?? device.ledMode;
+                device.name = req.body.name;
+                device.volume = req.body.volume;
+                device.ledMode = req.body.ledMode;
                 res.status(StatusCodes.NO_CONTENT).send();
             }
             else {
