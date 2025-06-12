@@ -51,6 +51,7 @@ devicesRouter.put('/:macAddress', async (req, res) => {
                 method: "POST",
                 body: JSON.stringify({
                     deviceName: req.body.name  ?? device.name,
+                    vibrationSensorSensitivity: 0,
                     volume: Number(req.body.volume) ?? device.volume,
                     ledMode: req.body.ledMode ?? device.ledMode
                 })
