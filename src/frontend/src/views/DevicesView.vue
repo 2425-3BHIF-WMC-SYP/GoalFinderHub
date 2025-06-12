@@ -70,7 +70,7 @@ const openEditDialog = (device: Device) => {
 const saveChanges = async () => {
    try {
       await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
-         deviceName: currentDevice.value.name,
+         name: currentDevice.value.name,
          volume: currentDevice.value.volume,
          ledMode: currentDevice.value.ledMode,
       })
