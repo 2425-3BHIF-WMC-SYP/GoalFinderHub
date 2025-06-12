@@ -24,7 +24,7 @@ import { Input } from '@/components/ui/input'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { fetchRestEndpoint } from '@/fetch-rest-endpoint.ts'
-import { type Device } from '@/model/model.ts'
+import { type Device, LedMode } from '@/model/model.ts'
 
 const router = useRouter()
 const devices = ref<Device[]>([])
@@ -33,20 +33,14 @@ const loading = ref(true)
 const currentDevice = ref<Device>({
    macAddress: '',
    name: '',
-   volume: 50,
-   ledMode: 'Normal',
 })
 
-const currentVolume = ref([50])
-const currentLedMode = ref('Normal')
+const currentVolume = ref()
+const currentLedMode = ref<LedMode>(LedMode.Standard)
 
 const fetchDevices = async () => {
    try {
       devices.value = await fetchRestEndpoint('/devices', 'GET')
-      devices.value.forEach((device) => {
-         device.volume = device.volume || 50
-         device.ledMode = device.ledMode || 'Normal'
-      })
    } catch (error) {
       console.error('Error fetching devices:', error)
    } finally {
@@ -66,8 +60,8 @@ const deleteDevice = async (macAddress: string) => {
 const openEditDialog = (device: Device) => {
    currentDevice.value = {
       ...device,
-      volume: device.volume || 50,
-      ledMode: device.ledMode || 'Normal',
+      volume: device.volume,
+      ledMode: device.ledMode,
    }
    currentVolume.value = [currentDevice.value.volume!]
    currentLedMode.value = currentDevice.value.ledMode!
@@ -76,7 +70,9 @@ const openEditDialog = (device: Device) => {
 const saveChanges = async () => {
    try {
       await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
-         name: currentDevice.value.name,
+         deviceName: currentDevice.value.name,
+         volume: currentDevice.value.volume,
+         ledMode: currentDevice.value.ledMode,
       })
 
       const deviceIndex = devices.value.findIndex(
@@ -122,18 +118,14 @@ async function onInit() {
                   <p class="card-mac">{{ device.macAddress }}</p>
                   <p class="card-mac">{{ device.ipAddress }}</p>
 
-                  <div class="device-details">
+                  <div v-if="device.isActive" class="device-details">
                      <div class="detail-row">
                         <span class="detail-label">Volume:</span>
-                        <span class="detail-value">{{ device.volume || 50 }}%</span>
+                        <span class="detail-value">{{ device.volume }}%</span>
                      </div>
                      <div class="detail-row">
                         <span class="detail-label">LED Mode:</span>
-                        <span class="detail-value">{{ device.ledMode || 'Normal' }}</span>
-                     </div>
-                     <div class="detail-row">
-                        <span class="detail-label">Status: </span>
-                        <span class="detail-value">{{ device.isActive ? 'On' : 'Off' }}</span>
+                        <span class="detail-value">{{ device.ledMode }}</span>
                      </div>
                   </div>
 

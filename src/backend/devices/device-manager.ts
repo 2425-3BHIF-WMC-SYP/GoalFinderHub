@@ -1,4 +1,4 @@
-import {Device} from "../database/model";
+import {Device, LedMode} from "../database/model";
 import {DB} from "../database/data";
 import {DevicesRepository} from "../repos/devices-repository";
 
@@ -31,7 +31,7 @@ export class DeviceManager {
         }
     }
 
-    public async registerDevice(macAddress: string, ipAddress: string) {
+    public async registerDevice(macAddress: string, ipAddress: string, volume: number = 0, ledMode: LedMode = LedMode.Standard) {
         console.log(`Registering device ${macAddress} ${ipAddress}`);
 
         const existingDevice = this.devices.find(d => d.macAddress === macAddress);
@@ -39,12 +39,16 @@ export class DeviceManager {
         if (existingDevice) {
             existingDevice.ipAddress = ipAddress;
             existingDevice.isActive = true;
+            existingDevice.volume = volume;
+            existingDevice.ledMode = ledMode;
         } else {
             const device: Device = {
                 macAddress: macAddress,
                 name: DeviceManager.DEFAULT_DEVICE_NAME,
                 ipAddress: ipAddress,
-                isActive: true
+                isActive: true,
+                volume: volume,
+                ledMode: ledMode,
             };
 
             this.devices.push(device);
@@ -52,37 +56,8 @@ export class DeviceManager {
         }
     }
 
-    public async saveDevices() {
-        const db = await DB.createDBConnection();
-
-        try {
-            const stmt = await db.prepare("SELECT * FROM GOALFINDERS WHERE macAddress = ?");
-
-            for (const device of this.devices) {
-                await stmt.bind(device.macAddress);
-                const existingDevice = await stmt.get<Device>();
-
-                if (!existingDevice) {
-                    await DevicesRepository.addDevice(device, db);
-                }
-
-                await stmt.reset();
-            }
-
-            await stmt.finalize();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            await db.close();
-        }
-    }
-
     public getAllDevices() {
-        return [...this.devices].sort((a, b) => {
-            const aPriority = a.isActive === true ? 2 : a.isActive === false ? 1 : 0;
-            const bPriority = b.isActive === true ? 2 : b.isActive === false ? 1 : 0;
-            return bPriority - aPriority;
-        });
+        return [...this.devices].sort((a, b) => Number(b.isActive) - Number(a.isActive));
     }
 
     public async saveDevice(device: Device): Promise<void> {
@@ -102,7 +77,7 @@ export class DeviceManager {
         }
     }
 
-    public getDevice(macAddress: string): Device | undefined{
+    public getDevice(macAddress: string): Device | undefined {
         return this.devices.find(d => d.macAddress === macAddress);
     }
 
@@ -114,11 +89,9 @@ export class DeviceManager {
 
         try {
             await DevicesRepository.deleteDevice(macAddress, db);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
-        }
-        finally {
+        } finally {
             await db.close();
         }
     }
@@ -126,7 +99,7 @@ export class DeviceManager {
     public async startDevice(macAddress: string) {
         const device: Device | undefined = this.getDevice(macAddress);
 
-        if(device !== undefined && device.isActive) {
+        if (device && device.isActive) {
             const data = await fetch(`http://${device.ipAddress}/api/start`, {
                 method: "POST"
             });
@@ -136,10 +109,24 @@ export class DeviceManager {
     public async stopDevice(macAddress: string) {
         const device: Device | undefined = this.getDevice(macAddress);
 
-        if(device !== undefined && device.isActive) {
+        if (device && device.isActive) {
             const data = await fetch(`http://${device.ipAddress}/api/stop`, {
                 method: "POST"
             });
         }
     }
+
+    /*public async setDeviceSettings(macAddress: string, settings: DeviceSettings) {
+        const device: Device | undefined = this.getDevice(macAddress);
+
+        if (device && device.isActive) {
+            const data = await fetch(`http://${device.ipAddress}/api/settings`, {
+                method: "POST", body: JSON.stringify(settings)
+            });
+
+            if (data.ok) {
+                await this.saveDevice(device);
+            }
+        }
+    }*/
 }

@@ -16,11 +16,21 @@ export interface Team {
     name: string;
 }
 
+export enum LedMode {
+    Standard = 1,
+    Fade,
+    Flash,
+    Turbo,
+    Off
+}
+
 export interface Device {
     macAddress: string;
-    name: string;
-    isActive?: boolean;
     ipAddress?: string;
+    isActive: boolean;
+    name: string;
+    volume: number;
+    ledMode: LedMode;
 }
 
 export interface TeamStanding {
@@ -45,10 +55,4 @@ export interface Game {
     started: boolean;
     homeDevice: Device;
     awayDevice: Device;
-}
-
-enum LedMode {
-    Off,
-    Blink,
-    //TODO
 }

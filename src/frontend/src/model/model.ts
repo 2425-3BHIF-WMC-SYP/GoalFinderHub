@@ -12,7 +12,15 @@ export interface Device {
   ipAddress?: string
   isActive?: boolean;
   volume?: number
-  ledMode?: string
+  ledMode?: LedMode
+}
+
+export enum LedMode {
+   Standard = 1,
+   Fade,
+   Flash,
+   Turbo,
+   Off
 }
 
 export interface Player {

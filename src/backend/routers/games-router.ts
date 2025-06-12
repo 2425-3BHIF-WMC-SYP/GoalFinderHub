@@ -1,9 +1,9 @@
 import express from "express";
-import { DB } from "../database/data";
-import { StatusCodes } from "http-status-codes";
-import { Game } from "../database/model";
-import { GamesRepository } from "../repos/game-repository";
-import { GameManager } from "../games/game-manager";
+import {DB} from "../database/data";
+import {StatusCodes} from "http-status-codes";
+import {Game} from "../database/model";
+import {GamesRepository} from "../repos/game-repository";
+import {GameManager} from "../games/game-manager";
 
 export const gamesRouter = express.Router();
 const gameManager = new GameManager();
@@ -47,7 +47,7 @@ gamesRouter.delete("/:id", async (req, res) => {
 
         res.status(StatusCodes.OK).send("Game deleted");
     } catch (error) {
-        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
     } finally {
         await db.close();
     }
@@ -77,7 +77,7 @@ gamesRouter.post("/stop", async (req, res) => {
     try {
         const finishedGame = await gameManager.stop();
         await GamesRepository.insertGame(db, finishedGame);
-        res.sendStatus(StatusCodes.NO_CONTENT);
+        res.status(StatusCodes.NO_CONTENT).send();
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(`Error: ${error}`);
     } finally {
@@ -105,12 +105,15 @@ gamesRouter.post("/local", (req, res) => {
     }
 });
 
-gamesRouter.post("/hit/:macAddress", async (req, res) => {
-   try {
-       gameManager.registerHit(req.params.macAddress);
-       res.sendStatus(StatusCodes.NO_CONTENT);
-   }
-   catch (error) {
-       res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
-   }
+gamesRouter.post("/hit", async (req, res) => {
+    if (!req.body.macAddress) {
+        res.status(StatusCodes.BAD_REQUEST).send("Missing input");
+    }
+
+    try {
+        gameManager.registerHit(req.body.macAddress);
+        res.status(StatusCodes.NO_CONTENT).send();
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+    }
 });
