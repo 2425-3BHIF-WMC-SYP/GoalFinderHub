@@ -71,8 +71,8 @@ const saveChanges = async () => {
    try {
       await fetchRestEndpoint(`/devices/${currentDevice.value.macAddress}`, 'PUT', {
          name: currentDevice.value.name,
-         volume: currentDevice.value.volume,
-         ledMode: Number(currentDevice.value.ledMode),
+         volume: currentVolume.value[0],
+         ledMode: Number(currentLedMode.value),
       })
 
       const deviceIndex = devices.value.findIndex(

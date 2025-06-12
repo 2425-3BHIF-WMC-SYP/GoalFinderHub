@@ -38,7 +38,7 @@ devicesRouter.delete("/:macAddress", async (req, res) => {
 });
 
 devicesRouter.put('/:macAddress', async (req, res) => {
-    if (!req.body.name || !req.body.volume || !req.body.ledMode) {
+    if (req.body.name !== undefined || req.body.volume !== undefined || req.body.ledMode !== undefined) {
         res.status(StatusCodes.BAD_REQUEST).send("Missing input");
         return;
     }
