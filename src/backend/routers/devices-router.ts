@@ -49,7 +49,11 @@ devicesRouter.put('/:macAddress', async (req, res) => {
         if (device) {
             const request = await fetch(`http://${device.ipAddress}/api/settings`, {
                 method: "POST",
-                body: JSON.stringify(req.body)
+                body: JSON.stringify({
+                    deviceName: req.body.name  ?? device.name,
+                    volume: Number(req.body.volume) ?? device.volume,
+                    ledMode: req.body.ledMode ?? device.ledMode
+                })
             });
 
             if(request.ok) {
