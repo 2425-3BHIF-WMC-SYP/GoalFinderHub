@@ -106,14 +106,16 @@ gamesRouter.post("/local", (req, res) => {
 });
 
 gamesRouter.post("/hit", async (req, res) => {
-    if (!req.body.macAddress) {
-        res.status(StatusCodes.BAD_REQUEST).send("Missing input");
-    }
+   if(!req.body.macAddress) {
+       res.sendStatus(StatusCodes.BAD_REQUEST);
+       return;
+   }
 
     try {
-        gameManager.registerHit(req.body.macAddress);
-        res.status(StatusCodes.NO_CONTENT).send();
-    } catch (error) {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-    }
+       gameManager.registerHit(req.body.macAddress);
+       res.sendStatus(StatusCodes.NO_CONTENT);
+   }
+   catch (error) {
+       res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+   }
 });

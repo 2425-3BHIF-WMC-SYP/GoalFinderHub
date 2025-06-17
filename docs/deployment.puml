@@ -1,0 +1,49 @@
+@startuml Deployment
+skinparam node {
+    BackgroundColor White
+    BorderColor Black
+}
+
+skinparam component {
+    BackgroundColor White
+    BorderColor DarkGreen
+}
+
+node "Browser Client" {
+  component "Web Browser"
+  component  "Vue.js Frontend" as client
+}
+
+node "GoalFinder Hub (Raspberry Pi 4)" {
+
+    node "Docker Frontend" {
+        component "Nginx (Port:80)" as proxy
+        component "Vue.js Frontend" as frontend 
+    }
+
+    node "Docker Backend" {
+        component "Express.js REST API\n(Port:3000)" as api
+        file "SQLite.db" as db
+    }
+
+}
+
+node "GoalFinder (ESP32) C++" {
+    node "AsyncWebServer" {
+        component "REST API" as esp
+        component "Vue.js Frontend"
+    }
+    component "Sensors" as sensors
+}
+
+"Web Browser" --> proxy : HTTP
+proxy --> frontend : serves
+proxy --> api : serves
+api --> db : Reads/Writes
+api --> esp : REST
+esp --> api : REST
+sensors --> esp
+client -right-> api : REST
+api -left-> client : Websockets (notify)
+
+@enduml
